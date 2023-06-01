@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "711690358031",
+    "project_id": "alshiaka-d810f",
+    "storage_bucket": "alshiaka-d810f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711690358031:android:26c3dc30af4281a1ec827a",
+        "android_client_info": {
+          "package_name": "com.Digital_Partner.ahshiaka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711690358031-8htgvh573lmiafv8vee5kla121mo7sqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzXzBhikX9mfd8p-AtKb4AuJrNX3_iC3M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711690358031-8htgvh573lmiafv8vee5kla121mo7sqn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
