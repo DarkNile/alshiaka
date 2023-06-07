@@ -98,16 +98,15 @@ class _HomeTabState extends State<HomeTab> {
             borderRadius: BorderRadius.circular(10),
             child: CachedNetworkImage(
               imageUrl: element.image!,
-              height: 160,
               fit: BoxFit.fill,
               placeholder: (context, url) => Image.asset(
                 "${AppUI.imgPath}product_background.png",
-                height: 150,
+                height: 350,
                 fit: BoxFit.fill,
               ),
               errorWidget: (context, url, error) => Image.asset(
                 "${AppUI.imgPath}product_background.png",
-                height: 170,
+                height: 350,
                 fit: BoxFit.fill,
               ),
             ),
@@ -145,7 +144,7 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                   if (banners.isNotEmpty)
                     SizedBox(
-                        height: 180.0,
+                        height: 350.0,
                         width: double.infinity,
                         child: LightCarousel(
                           images: banners,
