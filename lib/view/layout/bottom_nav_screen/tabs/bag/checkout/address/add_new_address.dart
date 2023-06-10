@@ -103,20 +103,22 @@ class _AddNewAddressState extends State<AddNewAddress> {
                       AppUtil.mainNavigator(
                           context, AddressesScreen(isquest: widget.isquest));
                     },
-                    leading: InkWell(
-                        onTap: () async {
-                          address = await AppUtil.mainNavigator(
-                              context, const SelectAddressFromMap());
-                          cubit.addressController.text = address[1];
-                          cubit.postCodeController.text = address[0];
-                          // cubit.stateController.text = address[1].split(',')[0];
-                          // cubit.countryController.text = address[1].split(',')[1];
-                          // cubit.cityController.text = address[1].split(',')[2];
-                        },
-                        child: SvgPicture.asset(
-                          "${AppUI.iconPath}location.svg",
-                          color: AppUI.blackColor,
-                        ))),
+                    // leading: InkWell(
+                    //     onTap: () async {
+                    //       address = await AppUtil.mainNavigator(
+                    //           context, const SelectAddressFromMap());
+                    //       cubit.addressController.text = address[1];
+                    //       cubit.postCodeController.text = address[0];
+                    //       // cubit.stateController.text = address[1].split(',')[0];
+                    //       // cubit.countryController.text = address[1].split(',')[1];
+                    //       // cubit.cityController.text = address[1].split(',')[2];
+                    //     },
+                    //     child: SvgPicture.asset(
+                    //       "${AppUI.iconPath}location.svg",
+                    //       color: AppUI.blackColor,
+                    //     ))
+                        
+                        ),
                 SizedBox(
                   height: AppUtil.responsiveHeight(context) * 0.86,
                   child: SingleChildScrollView(

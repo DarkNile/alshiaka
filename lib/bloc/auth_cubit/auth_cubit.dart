@@ -87,8 +87,9 @@ class AuthCubit extends Cubit<AuthState> {
   void registerConfirmChangeVisibility() {
     registerConfirmVisibility = !registerConfirmVisibility;
     registerConfirmVisibilityIcon = registerConfirmVisibility
-        ? Icons.visibility_off_outlined
-        : Icons.visibility_outlined;
+
+        ? Icons.visibility_outlined:
+        Icons.visibility_off_outlined;
     emit(RegisterVisibilityChangeState());
   }
 

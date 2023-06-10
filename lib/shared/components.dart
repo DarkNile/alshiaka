@@ -413,7 +413,9 @@ class CustomInput extends StatelessWidget {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(radius),
                 bottomLeft: Radius.circular(radius),
-                bottomRight: Radius.circular(radius)),
+                bottomRight: Radius.circular(radius),
+                topRight: Radius.circular(radius)
+                ),
             borderSide: BorderSide(color: borderColor ?? AppUI.mainColor)),
       ),
     );
