@@ -90,22 +90,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               )
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 40),
-                            child: InkWell(
-                              onTap: () {
-                                AppUtil.mainNavigator(context, SettingScreen());
-                              },
-                              child: CircleAvatar(
-                                backgroundColor: AppUI.backgroundColor,
-                                radius: 20,
-                                child: Icon(
-                                  Icons.settings_outlined,
-                                  color: AppUI.blackColor,
-                                ),
-                              ),
-                            ),
-                          )
+                          // Padding(
+                          //   padding: const EdgeInsets.symmetric(vertical: 40),
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       AppUtil.mainNavigator(context, SettingScreen());
+                          //     },
+                          //     child: CircleAvatar(
+                          //       backgroundColor: AppUI.backgroundColor,
+                          //       radius: 20,
+                          //       child: Icon(
+                          //         Icons.settings_outlined,
+                          //         color: AppUI.blackColor,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // )
                         ],
                       ),
                     ),
