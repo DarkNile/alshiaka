@@ -30,76 +30,90 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(
-      appBar: customAppBar(
-        title: "",
-        toolbarHeight: 0.0,
-        elevation: 0,
-        //bottomChildHeight: 100.0,
-        bottomChildHeight: SizeConfig.safeBlockVertical* 20,
-        bottomChild: Container(
-          alignment: Alignment.center,
-          //height: 100,
-          height: SizeConfig.safeBlockVertical* 20,
-          child: Image.asset(
-            "${AppUI.imgPath}logo.png",
-            //height: 33,
-            height: SizeConfig.safeBlockVertical* 7,
-          ),
-        ),
-      ),
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              color: AppUI.whiteColor,
-              child: Column(
-                children: [
-                  Container(
-                    height: 0.5,
-                    width: double.infinity,
-                    color: AppUI.shimmerColor,
-                  ),
-                /*  TabBar(
-                      controller: tabBarController,
-                      indicatorWeight: 4,
-                      indicatorColor: AppUI.mainColor,
-                      indicatorPadding: EdgeInsets.symmetric(
-                          horizontal: AppUtil.responsiveWidth(context) * 0.15),
-                      // isScrollable: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      physics: const BouncingScrollPhysics(),
-                      tabs: <Widget>[
-                        Tab(
-                          child: Text("signup".tr(),
-                              style: TextStyle(
-                                  color: AppUI.mainColor,
-                                  fontSize: SizeConfig.titleFontSize,
-                                  fontWeight: FontWeight.w600),
-                              textAlign: TextAlign.center),
-                        ),
-                        Tab(
-                          child: Text("signin".tr(),
-                              style: TextStyle(
-                                  color: AppUI.mainColor,
-                                  fontSize: SizeConfig.titleFontSize,
-                                  fontWeight: FontWeight.w600),
-                              textAlign: TextAlign.center),
-                        ),
-                      ]),*/
-                  Container(
-                    height: 0.5,
-                    width: double.infinity,
-                    color: AppUI.shimmerColor,
-                  ),
-                ],
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: customAppBar(
+            title: "",
+            toolbarHeight: 0.0,
+            elevation: 0,
+            //bottomChildHeight: 100.0,
+            bottomChildHeight: SizeConfig.safeBlockVertical* 20,
+            bottomChild: Container(
+              alignment: Alignment.center,
+              //height: 100,
+              height: SizeConfig.safeBlockVertical* 20,
+              child: Image.asset(
+                "${AppUI.imgPath}logo.png",
+                //height: 33,
+                height: SizeConfig.safeBlockVertical* 7,
               ),
             ),
-            Expanded(
-              child: SignIn(),
+          ),
+          body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  color: AppUI.whiteColor,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 0.5,
+                        width: double.infinity,
+                        color: AppUI.shimmerColor,
+                      ),
+                    /*  TabBar(
+                          controller: tabBarController,
+                          indicatorWeight: 4,
+                          indicatorColor: AppUI.mainColor,
+                          indicatorPadding: EdgeInsets.symmetric(
+                              horizontal: AppUtil.responsiveWidth(context) * 0.15),
+                          // isScrollable: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          physics: const BouncingScrollPhysics(),
+                          tabs: <Widget>[
+                            Tab(
+                              child: Text("signup".tr(),
+                                  style: TextStyle(
+                                      color: AppUI.mainColor,
+                                      fontSize: SizeConfig.titleFontSize,
+                                      fontWeight: FontWeight.w600),
+                                  textAlign: TextAlign.center),
+                            ),
+                            Tab(
+                              child: Text("signin".tr(),
+                                  style: TextStyle(
+                                      color: AppUI.mainColor,
+                                      fontSize: SizeConfig.titleFontSize,
+                                      fontWeight: FontWeight.w600),
+                                  textAlign: TextAlign.center),
+                            ),
+                          ]),*/
+                      Container(
+                        height: 0.5,
+                        width: double.infinity,
+                        color: AppUI.shimmerColor,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: SignIn(),
+                ),
+              ],
             ),
-          ],
         ),
+
+        Positioned(
+          top: 60,
+          right: 30,
+          child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Icon(
+                Icons.arrow_back,
+                size: 30,
+              )),)
+      ],
     );
   }
 }

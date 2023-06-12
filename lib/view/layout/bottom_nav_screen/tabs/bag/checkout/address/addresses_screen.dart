@@ -338,8 +338,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         )
                       : Expanded(
                           child: cubit.addresses == null ||
-                                  cubit.addresses!.shipping!.address0!.length ==
-                                      0
+                                  cubit.addresses!.shipping!.address0!.length == 0
                               ? Center(
                                   child: Column(
                                   children: [
