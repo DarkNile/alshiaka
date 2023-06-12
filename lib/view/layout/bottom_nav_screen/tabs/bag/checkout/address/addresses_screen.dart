@@ -18,7 +18,12 @@ import 'package:ahshiaka/shared/CheckNetwork.dart';
 
 class AddressesScreen extends StatefulWidget {
   bool isquest;
-  AddressesScreen({Key? key, required this.isquest}) : super(key: key);
+  final bool isFromProfile;
+  AddressesScreen({
+    Key? key,
+    required this.isquest,
+    this.isFromProfile = false,
+  }) : super(key: key);
 
   @override
   _AddressesScreenState createState() => _AddressesScreenState();
@@ -58,7 +63,11 @@ class _AddressesScreenState extends State<AddressesScreen> {
             CustomAppBar(
               title: "addresses".tr(),
               onBack: () {
-                AppUtil.mainNavigator(context, CheckoutScreen());
+                if (widget.isFromProfile) {
+                  Navigator.of(context).pop();
+                } else {
+                  AppUtil.mainNavigator(context, CheckoutScreen());
+                }
               },
             ),
             BlocBuilder<CheckoutCubit, CheckoutState>(
@@ -338,7 +347,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         )
                       : Expanded(
                           child: cubit.addresses == null ||
-                                  cubit.addresses!.shipping!.address0!.length == 0
+                                  cubit.addresses!.shipping == null ||
+                                  cubit.addresses!.shipping!.address0 == null ||
+                                  cubit.addresses!.shipping!.address0!.isEmpty
                               ? Center(
                                   child: Column(
                                   children: [

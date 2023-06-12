@@ -18,7 +18,7 @@ import 'bloc/profile_cubit/profile_cubit.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
- // print('Handling a background message ${message.messageId}');
+  // print('Handling a background message ${message.messageId}');
 }
 
 Future<void> main() async {
@@ -37,21 +37,22 @@ Future<void> main() async {
     provisional: false,
     sound: true,
   );
- // print('User granted permission: ${settings.authorizationStatus}');
+  // print('User granted permission: ${settings.authorizationStatus}');
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //  print('foreground notification');
+    //  print('foreground notification');
 //  print('Message data: ${message.data}');
     if (message.notification != null) {
-    //  print('yes notification: ${message.notification}');
+      //  print('yes notification: ${message.notification}');
     }
   });
   await EasyLocalization.ensureInitialized();
   runApp(
     EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('ar')],
-        path: 'lang',
-        fallbackLocale: const Locale('en'),
-        child: Phoenix(child: const MyApp())),
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      path: 'lang',
+      fallbackLocale: const Locale('en'),
+      child: const MyApp(),
+    ),
   );
 }
 
