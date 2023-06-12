@@ -28,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(const Duration(milliseconds: 5500), () async {
       String jwt = await CashHelper.getSavedString("jwt", "");
+      print('jwt $jwt');
       String lang = await CashHelper.getSavedString("lang", "");
       if (lang == "") {
         if (AppUtil.rtlDirection(context)) {
