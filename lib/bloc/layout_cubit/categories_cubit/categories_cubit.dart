@@ -40,9 +40,11 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   int initialIndex = 0;
   TabController? tapBarController;
   fetchCategories() async {
+    String lang = await CashHelper.getSavedString("lang", "en");
+    print('lang $lang');
     emit(CategoriesLoadingState());
     try {
-      List response = await CategoriesRepository.fetchCategories();
+      List response = await CategoriesRepository.fetchCategories(lang);
       for (var element in response) {
         if (element['parent'] == 0) {
           categoriesModel.add(CategoriesModel.fromJson(element));

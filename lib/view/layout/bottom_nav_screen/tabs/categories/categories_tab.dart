@@ -4,7 +4,7 @@ import 'package:ahshiaka/bloc/profile_cubit/profile_cubit.dart';
 import 'package:ahshiaka/utilities/app_util.dart';
 import 'package:ahshiaka/utilities/size_config.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products_screen.dart';
-import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/sub_category_screen.dart';
+import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/sub_sub_category_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +119,7 @@ class _CategoriesTabState extends State<CategoriesTab> {
                                     } else {
                                       AppUtil.mainNavigator(
                                           context,
-                                          SubCategoryScreen(
+                                          SubSubCategoryScreen(
                                             catName: cubit
                                                 .subCategoriesModel[index]
                                                 .name!,
