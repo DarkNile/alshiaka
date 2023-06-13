@@ -1,10 +1,19 @@
+import 'dart:convert';
+
 import '../shared/network_helper.dart';
+import 'package:http/http.dart' as http;
 
 class CategoriesRepository {
-  static Future fetchCategories() async {
+  static Future fetchCategories(lang) async {
+    final response = await http
+        .get(Uri.parse('https://alshiaka.com/__api_test_ali.php?lang=$lang'));
+    final ids = jsonDecode(response.body);
+    print('ids $ids');
     return await NetworkHelper.repo(
-        "wp-json/wc/v3/products/categories?per_page=100&", "get",
-        headerState: false);
+      "wp-json/wc/v3/products/categories?per_page=100&orderby=id&include=$ids&",
+      "get",
+      headerState: false,
+    );
   }
 
   static Future fetchHomeMenu() async {

@@ -12,10 +12,10 @@ import 'package:ahshiaka/shared/CheckNetwork.dart';
 
 class SubCategoryScreen extends StatefulWidget {
   final String catName;
-  const SubCategoryScreen({Key? key, required this.catName}) : super(key: key);
+  const SubCategoryScreen({super.key, required this.catName});
 
   @override
-  _SubCategoryScreenState createState() => _SubCategoryScreenState();
+  State<SubCategoryScreen> createState() => _SubCategoryScreenState();
 }
 
 class _SubCategoryScreenState extends State<SubCategoryScreen> {
@@ -47,8 +47,8 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                     builder: (context, states) {
                       final cubit = CategoriesCubit.get(context);
                       return Column(
-                        children: List.generate(
-                            cubit.subSubCategoriesModel.length, (index) {
+                        children: List.generate(cubit.subCategoriesModel.length,
+                            (index) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ListTile(
@@ -56,10 +56,10 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                                 AppUtil.mainNavigator(
                                     context,
                                     ProductsScreen(
-                                      catId: cubit
-                                          .subSubCategoriesModel[index].id!,
-                                      catName: cubit
-                                          .subSubCategoriesModel[index].name!,
+                                      catId:
+                                          cubit.subCategoriesModel[index].id!,
+                                      catName:
+                                          cubit.subCategoriesModel[index].name!,
                                     ));
                               },
                               // leading: CircleAvatar(
@@ -84,8 +84,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                               //   ),
                               // ),
                               title: CustomText(
-                                  text:
-                                      cubit.subSubCategoriesModel[index].name),
+                                  text: cubit.subCategoriesModel[index].name),
                             ),
                           );
                         }),

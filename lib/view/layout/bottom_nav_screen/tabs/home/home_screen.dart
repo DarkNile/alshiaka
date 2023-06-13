@@ -3,14 +3,12 @@ import 'package:ahshiaka/shared/components.dart';
 import 'package:ahshiaka/utilities/app_ui.dart';
 import 'package:ahshiaka/utilities/app_util.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products_screen.dart';
+import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/sub_category_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/home/shimmer/home_shimmer.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_version_checker/flutter_app_version_checker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ahshiaka/shared/CheckNetwork.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../../bloc/layout_cubit/categories_cubit/categories_cubit.dart';
 import '../../../../../bloc/layout_cubit/categories_cubit/categories_states.dart';
 import 'home_tab.dart';
@@ -26,47 +24,12 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   List<Widget> tabs = [];
   late CategoriesCubit cubit;
-  final _checker = AppVersionChecker();
 
   @override
   void initState() {
     super.initState();
     cubit = CategoriesCubit.get(context);
     CheckoutCubit.get(context).fetchCartList(context);
-    checkAppVersion();
-  }
-
-  Future<void> checkAppVersion() async {
-    await _checker.checkUpdate().then((value) async {
-      print(value.canUpdate); //return true if update is available
-      print(value.currentVersion); //return current app version
-      print(value.newVersion); //return the new app version
-      print(value.appURL); //return the app url
-      print(value
-          .errorMessage); //return error message if found else it will return null
-      if (value.canUpdate) {
-        return await AppUtil.dialog2(
-          context,
-          "versionTitle".tr(),
-          [
-            ElevatedButton(
-              onPressed: () async {
-                await launchUrlString(
-                  value.appURL!,
-                );
-              },
-              child: CustomText(
-                text: "updateNow".tr(),
-                textAlign: TextAlign.center,
-                color: Colors.white,
-              ),
-            ),
-          ],
-          barrierDismissible: false,
-          showClose: false,
-        );
-      }
-    });
   }
 
   // List<String> bannersText = [
@@ -201,15 +164,39 @@ class _HomeScreenState extends State<HomeScreen>
                                     child: TabBar(
                                         controller: cubit.tapBarController,
                                         onTap: (index) {
-                                          AppUtil.mainNavigator(
-                                              context,
-                                              ProductsScreen(
+                                          // AppUtil.mainNavigator(
+                                          //     context,
+                                          //     ProductsScreen(
+                                          //         catId: cubit
+                                          //             .categoriesModel[index]
+                                          //             .id!,
+                                          //         catName: cubit
+                                          //             .categoriesModel[index]
+                                          //             .name!));
+                                          cubit.fetchSubCategories(
+                                              cubit.categoriesModel[index].id!);
+                                          if (cubit
+                                              .subCategoriesModel.isEmpty) {
+                                            AppUtil.mainNavigator(
+                                                context,
+                                                ProductsScreen(
                                                   catId: cubit
                                                       .categoriesModel[index]
                                                       .id!,
                                                   catName: cubit
                                                       .categoriesModel[index]
-                                                      .name!));
+                                                      .name!,
+                                                ));
+                                          } else {
+                                            AppUtil.mainNavigator(
+                                              context,
+                                              SubCategoryScreen(
+                                                catName: cubit
+                                                    .categoriesModel[index]
+                                                    .name!,
+                                              ),
+                                            );
+                                          }
                                           // cubit.tapBarController!.index = 0;
                                           // cubit.tapBarController!.index = cubit.tapBarController!.previousIndex;
                                           // cubit.initialIndex = index;

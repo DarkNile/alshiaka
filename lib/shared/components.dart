@@ -414,8 +414,7 @@ class CustomInput extends StatelessWidget {
                 topLeft: Radius.circular(radius),
                 bottomLeft: Radius.circular(radius),
                 bottomRight: Radius.circular(radius),
-                topRight: Radius.circular(radius)
-                ),
+                topRight: Radius.circular(radius)),
             borderSide: BorderSide(color: borderColor ?? AppUI.mainColor)),
       ),
     );
@@ -701,8 +700,8 @@ class ProductCard extends StatelessWidget {
                                       product.images!.isNotEmpty
                                   ? product.images![0].src!
                                   : "",
-                          height: 130,
-                          fit: BoxFit.cover,
+                          // height: 130,
+                          // fit: BoxFit.cover,
                           placeholder: (context, url) => Stack(
                             children: [
                               Image.asset(
