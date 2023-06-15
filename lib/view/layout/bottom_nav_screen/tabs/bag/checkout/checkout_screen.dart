@@ -8,7 +8,6 @@ import 'package:ahshiaka/view/layout/bottom_nav_screen/bottom_nav_tabs_screen.da
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/payment/Webview.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/payment/saved_credit_card.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/my_orders/my_orders_screen.dart';
-import 'package:amazon_payfort/amazon_payfort.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';

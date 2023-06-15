@@ -142,28 +142,32 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            cubit.selectedAddress =
-                                                AddressesModel(
-                                                    fullName: c.firstname,
-                                                    surName: c.lastname,
-                                                    phoneNumber: c.phone,
-                                                    email: c.email,
-                                                    address:
-                                                        c.address.toString(),
-                                                    state: c.state,
-                                                    address2:
-                                                        c.address.toString(),
-                                                    city: c.city,
-                                                    postCode: c.code,
-                                                    country: c.region,
-                                                    defaultAddress: index == 0
-                                                        ? true
-                                                        : false);
+                                            if (widget.isFromProfile) {
+                                              print('from profile');
+                                            } else {
+                                              cubit.selectedAddress =
+                                                  AddressesModel(
+                                                      fullName: c.firstname,
+                                                      surName: c.lastname,
+                                                      phoneNumber: c.phone,
+                                                      email: c.email,
+                                                      address:
+                                                          c.address.toString(),
+                                                      state: c.state,
+                                                      address2:
+                                                          c.address.toString(),
+                                                      city: c.city,
+                                                      postCode: c.code,
+                                                      country: c.region,
+                                                      defaultAddress: index == 0
+                                                          ? true
+                                                          : false);
 
-                                            cubit.emit(AddressesState());
-                                            Navigator.pop(context);
-                                            // AppUtil.mainNavigator(
-                                            //     context, CheckoutScreen());
+                                              cubit.emit(AddressesState());
+                                              Navigator.pop(context);
+                                              // AppUtil.mainNavigator(
+                                              //     context, CheckoutScreen());
+                                            }
                                           },
                                           child: Container(
                                             color: AppUI.whiteColor,
@@ -414,68 +418,72 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            cubit.selectedAddress =
-                                                AddressesModel(
-                                                    fullName: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingFirstName,
-                                                    surName: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingLastName,
-                                                    phoneNumber: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingPhone,
-                                                    email: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingEmail,
-                                                    address: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingAddress1,
-                                                    state: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingState,
-                                                    address2: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingAddress2,
-                                                    city: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingCity,
-                                                    postCode: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingPostcode,
-                                                    country: cubit
-                                                        .addresses!
-                                                        .shipping!
-                                                        .address0![index]
-                                                        .shippingCountry,
-                                                    defaultAddress: index == 0
-                                                        ? true
-                                                        : false);
+                                            if (widget.isFromProfile) {
+                                              print('from profile');
+                                            } else {
+                                              cubit.selectedAddress =
+                                                  AddressesModel(
+                                                      fullName: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingFirstName,
+                                                      surName: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingLastName,
+                                                      phoneNumber: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingPhone,
+                                                      email: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingEmail,
+                                                      address: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingAddress1,
+                                                      state: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingState,
+                                                      address2: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingAddress2,
+                                                      city: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingCity,
+                                                      postCode: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingPostcode,
+                                                      country: cubit
+                                                          .addresses!
+                                                          .shipping!
+                                                          .address0![index]
+                                                          .shippingCountry,
+                                                      defaultAddress: index == 0
+                                                          ? true
+                                                          : false);
 
-                                            cubit.emit(AddressesState());
-                                            print(
-                                                cubit.selectedAddress!.email!);
-                                            print(
-                                                "---------------------------------------------");
-                                            Navigator.pop(context);
+                                              cubit.emit(AddressesState());
+                                              print(cubit
+                                                  .selectedAddress!.email!);
+                                              print(
+                                                  "---------------------------------------------");
+                                              Navigator.pop(context);
+                                            }
                                           },
                                           child: Container(
                                             color: AppUI.whiteColor,
