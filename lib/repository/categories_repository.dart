@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 
 class CategoriesRepository {
   static Future fetchCategories(lang) async {
-    final response = await http
-        .get(Uri.parse('https://alshiaka.com/__api_test_ali.php?lang=$lang'));
+    final response = await http.get(Uri.parse(
+        'http://alshiaka.com/custom_api/api_app_top_cat.php?lang=$lang'));
     final ids = jsonDecode(response.body);
     print('ids $ids');
     return await NetworkHelper.repo(

@@ -1330,15 +1330,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 height: 75,
                 child: CustomButton(
                   text: "addToBag".tr(),
-                  color: ((isSizeSelectedMap.isEmpty || isTallSelectedMap.isEmpty) &&
-   length > 1) ||
-                          (isTallSelectedMap.isEmpty && length == 1) || cubit!.isLoading
+                  color: ((isSizeSelectedMap.isEmpty ||
+                                  isTallSelectedMap.isEmpty) &&
+                              length > 1) ||
+                          (isTallSelectedMap.isEmpty && length == 1) ||
+                          cubit!.isLoading
                       ? AppUI.greyColor
                       : AppUI.mainColor,
                   onPressed: ((isSizeSelectedMap.isEmpty ||
                                   isTallSelectedMap.isEmpty) &&
                               length > 1) ||
-                          (isTallSelectedMap.isEmpty && length == 1)  || cubit!.isLoading
+                          (isTallSelectedMap.isEmpty && length == 1) ||
+                          cubit!.isLoading
                       ? null
                       : () async {
                           bool exists = await cubit.fetchItemInCart(
