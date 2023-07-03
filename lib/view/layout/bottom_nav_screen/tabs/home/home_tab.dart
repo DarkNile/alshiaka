@@ -7,7 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:light_carousel/main/light_carousel.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../../../bloc/layout_cubit/categories_cubit/categories_cubit.dart';
 import '../../../../../bloc/layout_cubit/categories_cubit/categories_states.dart';
 import '../../../../../shared/components.dart';
@@ -32,7 +31,6 @@ class _HomeTabState extends State<HomeTab> {
     var url =
         "https://alshiaka.com/wp-json/settings/addon/shiaka_addon?consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b";
     print(url);
-    var header = {};
     var response;
     try {
       response = await http.get(Uri.parse(url));
@@ -57,7 +55,6 @@ class _HomeTabState extends State<HomeTab> {
   String banner = "";
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     cubit = CategoriesCubit.get(context);
     loadData();
@@ -99,16 +96,17 @@ class _HomeTabState extends State<HomeTab> {
             child: CachedNetworkImage(
               imageUrl: element.image!,
               fit: BoxFit.fill,
+              height: 350,
               placeholder: (context, url) => Image.asset(
                 "${AppUI.imgPath}product_background.png",
-                // height: 350,
-                height: 180.0,
+                height: 350,
+                // height: 180.0,
                 fit: BoxFit.fill,
               ),
               errorWidget: (context, url, error) => Image.asset(
                 "${AppUI.imgPath}product_background.png",
-                // height: 350,
-                height: 180.0,
+                height: 350,
+                // height: 180.0,
                 fit: BoxFit.fill,
               ),
             ),
@@ -146,8 +144,8 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                   if (banners.isNotEmpty)
                     SizedBox(
-                        // height: 350.0,
-                        height: 180.0,
+                        height: 350.0,
+                        // height: 180.0,
                         width: double.infinity,
                         child: LightCarousel(
                           images: banners,
