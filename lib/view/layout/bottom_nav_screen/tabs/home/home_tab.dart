@@ -83,6 +83,10 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    print(width);
+    print(height * 0.53);
     final cubit = CategoriesCubit.get(context);
     banners.clear();
     for (var element in cubit.bannerModel) {
@@ -96,17 +100,12 @@ class _HomeTabState extends State<HomeTab> {
             child: CachedNetworkImage(
               imageUrl: element.image!,
               fit: BoxFit.fill,
-              height: 350,
               placeholder: (context, url) => Image.asset(
                 "${AppUI.imgPath}product_background.png",
-                height: 350,
-                // height: 180.0,
                 fit: BoxFit.fill,
               ),
               errorWidget: (context, url, error) => Image.asset(
                 "${AppUI.imgPath}product_background.png",
-                height: 350,
-                // height: 180.0,
                 fit: BoxFit.fill,
               ),
             ),
@@ -144,14 +143,12 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                   if (banners.isNotEmpty)
                     SizedBox(
-                        height: 350.0,
-                        // height: 180.0,
-                        width: double.infinity,
+                        height: height * 0.53,
+                        width: width,
                         child: LightCarousel(
                           images: banners,
                           dotSize: 5.0,
                           dotSpacing: 15.0,
-                          boxFit: BoxFit.cover,
                           dotColor: AppUI.whiteColor,
                           dotIncreasedColor: AppUI.mainColor,
                           indicatorBgPadding: 20.0,

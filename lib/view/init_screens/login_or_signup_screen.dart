@@ -46,6 +46,8 @@ class _LoginOrSignupScreenState extends State<LoginOrSignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+    print(height * 0.7);
     SizeConfig().init(context);
     return CheckNetwork(
       child: Scaffold(
@@ -59,7 +61,7 @@ class _LoginOrSignupScreenState extends State<LoginOrSignupScreen> {
                     padding: const EdgeInsets.only(top: 8),
                     child: Image.network(
                       image,
-                      height: 600,
+                      height: height * 0.7,
                       width: double.infinity,
                       fit: BoxFit.contain,
                     ),
