@@ -40,17 +40,22 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   int initialIndex = 0;
   TabController? tapBarController;
   fetchCategories() async {
+    categoriesModel.clear();
+    allSubCategoriesModel.clear();
     String lang = await CashHelper.getSavedString("lang", "en");
     print('lang $lang');
     emit(CategoriesLoadingState());
     try {
-      List response = await CategoriesRepository.fetchCategories(lang);
-      for (var element in response) {
-        if (element['parent'] == 0) {
-          categoriesModel.add(CategoriesModel.fromJson(element));
-        } else {
-          allSubCategoriesModel.add(CategoriesModel.fromJson(element));
-        }
+      Map<String, dynamic> response =
+          await CategoriesRepository.fetchCategories(lang);
+      List data = response["items"];
+      for (var element in data) {
+        // if (element['parent'] == 0) {
+        //   categoriesModel.add(CategoriesModel.fromJson(element));
+        // } else {
+        //   allSubCategoriesModel.add(CategoriesModel.fromJson(element));
+        // }
+        categoriesModel.add(CategoriesModel.fromJson(element));
       }
       print(categoriesModel.length);
       print(allSubCategoriesModel.length);
@@ -59,12 +64,18 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       if (categoriesModel.isEmpty) {
         emit(CategoriesEmptyState());
       } else {
-        categoriesModel
-            .removeWhere((element) => element.name == "Uncategorized");
-        categoriesModel.removeWhere((element) => element.name == "غير مصنف");
+        // categoriesModel
+        //     .removeWhere((element) => element.name == "Uncategorized");
+        // categoriesModel.removeWhere((element) => element.name == "غير مصنف");
         emit(CategoriesLoadedState());
+        // for (var element in categoriesModel) {
+        // fetchSubCategories(element.id!.toString());
+        // }
         for (var element in categoriesModel) {
-          fetchSubCategories(element.id!);
+          if (element.childItems != null) {
+            allSubCategoriesModel.addAll(element.childItems!);
+            fetchSubCategories(element.id);
+          }
         }
       }
     } catch (e) {

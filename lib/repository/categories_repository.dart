@@ -4,16 +4,33 @@ import '../shared/network_helper.dart';
 import 'package:http/http.dart' as http;
 
 class CategoriesRepository {
+  // static Future fetchCategories(lang) async {
+  //   final response = await http.get(
+  //     Uri.parse(
+  //       'http://alshiaka.com/custom_api/api_app_top_cat.php?lang=$lang',
+  //     ),
+  //   );
+  //   final ids = jsonDecode(response.body);
+  //   print('ids ${ids.toString().split('[').join().split(']').join()}');
+  //   final result = await NetworkHelper.repo(
+  //     "wp-json/wc/v3/products/categories?per_page=100&orderby=id&include=${ids.toString().split('[').join().split(']').join()}&",
+  //     "get",
+  //     headerState: false,
+  //   );
+  //   print('result $result');
+  //   return result;
+  // }
+
   static Future fetchCategories(lang) async {
-    final response = await http.get(Uri.parse(
-        'http://alshiaka.com/custom_api/api_app_top_cat.php?lang=$lang'));
-    final ids = jsonDecode(response.body);
-    print('ids $ids');
-    return await NetworkHelper.repo(
-      "wp-json/wc/v3/products/categories?per_page=100&orderby=id&include=$ids&",
-      "get",
-      headerState: false,
+    final response = await http.get(
+      Uri.parse(
+        lang == 'ar'
+            ? 'https://alshiaka.com/wp-json/menus/v1/menus/mobile_app_menu_sections_ar'
+            : 'https://alshiaka.com/wp-json/menus/v1/menus/mobile_app_menu_sections',
+      ),
     );
+    print('response ${response.body}');
+    return jsonDecode(response.body);
   }
 
   static Future fetchHomeMenu() async {
