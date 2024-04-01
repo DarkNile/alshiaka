@@ -16,7 +16,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tabby_flutter_sdk/tabby_flutter_sdk.dart' as tabby;
+// import 'package:tabby_flutter_sdk/tabby_flutter_sdk.dart' as tabby;
 import '../../../models/AddressLocalModel.dart';
 import '../../../models/categories/products_model.dart';
 import '../../../repository/checkout_repository.dart';
@@ -680,66 +680,66 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     }
   }
 
-  testTabby(context) async {
-    final tabbySdk = tabby.TabbyFlutterSdk();
-    tabbySdk.setApiKey("Your Public Key");
-    final payload = tabby.TabbyCheckoutPayload(
-        merchantCode: "eyewa",
-        lang: tabby.Language.en,
-        payment: tabby.Payment(
-            amount: (selectedPaymentGetaways != null &&
-                        selectedPaymentGetaways!.id == "cod"
-                    ? (selectedShippingMethods != null
-                            ? selectedShippingMethods!.methodId == "flat_rate"
-                                ? total +
-                                    double.parse(selectedShippingMethods!
-                                        .settings!.cost!.value!)
-                                : total
-                            : total) +
-                        5
-                    : (selectedShippingMethods != null
-                        ? selectedShippingMethods!.methodId == "flat_rate"
-                            ? total +
-                                double.parse(selectedShippingMethods!
-                                    .settings!.cost!.value!)
-                            : total
-                        : total))
-                .toString(),
-            description: "Just a dest payment",
-            currency: tabby.Currency.AED,
-            buyer: tabby.Buyer(
-                email: "successful.payment@tabby.ai",
-                phone: selectedAddress!.phoneNumber!,
-                name: "Test Name"),
-            order: tabby.Order(
-                referenceId: "#xxxx-xxxxxx-xxxx",
-                items: [
-                  tabby.OrderItem(
-                      description: "Jersey",
-                      productUrl: "https://tabby.store/p/SKU123",
-                      quantity: 1,
-                      referenceId: "SKU123",
-                      title: "Pink jersey",
-                      unitPrice: "300")
-                ],
-                shippingAmount: "21",
-                taxAmount: "0"),
-            shippingAddress: tabby.ShippingAddress(
-                address: "Sample Address #2", city: "Dubai")));
+  // testTabby(context) async {
+  //   final tabbySdk = tabby.TabbyFlutterSdk();
+  //   tabbySdk.setApiKey("Your Public Key");
+  //   final payload = tabby.TabbyCheckoutPayload(
+  //       merchantCode: "eyewa",
+  //       lang: tabby.Language.en,
+  //       payment: tabby.Payment(
+  //           amount: (selectedPaymentGetaways != null &&
+  //                       selectedPaymentGetaways!.id == "cod"
+  //                   ? (selectedShippingMethods != null
+  //                           ? selectedShippingMethods!.methodId == "flat_rate"
+  //                               ? total +
+  //                                   double.parse(selectedShippingMethods!
+  //                                       .settings!.cost!.value!)
+  //                               : total
+  //                           : total) +
+  //                       5
+  //                   : (selectedShippingMethods != null
+  //                       ? selectedShippingMethods!.methodId == "flat_rate"
+  //                           ? total +
+  //                               double.parse(selectedShippingMethods!
+  //                                   .settings!.cost!.value!)
+  //                           : total
+  //                       : total))
+  //               .toString(),
+  //           description: "Just a dest payment",
+  //           currency: tabby.Currency.AED,
+  //           buyer: tabby.Buyer(
+  //               email: "successful.payment@tabby.ai",
+  //               phone: selectedAddress!.phoneNumber!,
+  //               name: "Test Name"),
+  //           order: tabby.Order(
+  //               referenceId: "#xxxx-xxxxxx-xxxx",
+  //               items: [
+  //                 tabby.OrderItem(
+  //                     description: "Jersey",
+  //                     productUrl: "https://tabby.store/p/SKU123",
+  //                     quantity: 1,
+  //                     referenceId: "SKU123",
+  //                     title: "Pink jersey",
+  //                     unitPrice: "300")
+  //               ],
+  //               shippingAmount: "21",
+  //               taxAmount: "0"),
+  //           shippingAddress: tabby.ShippingAddress(
+  //               address: "Sample Address #2", city: "Dubai")));
 
-    tabbySdk.makePayment(context, payload).then((value) {
-      print("tabbySdk result ${value}");
+  //   tabbySdk.makePayment(context, payload).then((value) {
+  //     print("tabbySdk result ${value}");
 
-      if (value == tabby.TabbyResult.authorized) {
-        tabby.showToast(context, "Payment has been authorized", success: true);
-        return;
-      }
-      tabby.showToast(
-        context,
-        "Payment is ${value.name}",
-      );
-    });
-  }
+  //     if (value == tabby.TabbyResult.authorized) {
+  //       tabby.showToast(context, "Payment has been authorized", success: true);
+  //       return;
+  //     }
+  //     tabby.showToast(
+  //       context,
+  //       "Payment is ${value.name}",
+  //     );
+  //   });
+  // }
 
   List<OrdersModel> pendingOrders = [];
   List<OrdersModel> otherOrders = [];
