@@ -299,6 +299,32 @@ class AppUtil {
     ]);
   }
 
+  static couponToast(context, msg) async {
+    await dialog2(context, "", [
+      CircleAvatar(
+        radius: 35,
+        backgroundColor: AppUI.orangeColor,
+        child: Icon(
+          Icons.discount,
+          size: 40,
+          color: AppUI.whiteColor,
+        ),
+      ),
+      const SizedBox(
+        height: 20,
+      ),
+      CustomText(
+        text: msg,
+        fontWeight: FontWeight.w600,
+        textAlign: TextAlign.center,
+        fontSize: 16,
+      ),
+      const SizedBox(
+        height: 20,
+      ),
+    ]);
+  }
+
   static errorToast(context, msg, {type = ""}) async {
     // ToastContext().init(context);
     // Toast.show(msg,duration: 3,gravity: 1,textStyle: TextStyle(color: AppUI.whiteColor),backgroundColor: AppUI.errorColor);

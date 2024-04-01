@@ -6,10 +6,11 @@ import 'package:ahshiaka/utilities/size_config.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/sub_sub_category_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:light_carousel/main/light_carousel.dart';
+// import 'package:light_carousel/main/light_carousel.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:ahshiaka/shared/CheckNetwork.dart';
 import '../../../../../shared/components.dart';
@@ -206,8 +207,40 @@ class _CategoriesTabState extends State<CategoriesTab> {
                       height: 130.0,
                       margin: EdgeInsets.only(bottom: 20),
                       width: double.infinity,
-                      child: LightCarousel(
-                        images: [
+                      // child: LightCarousel(
+                      //   images: [
+                      //     ClipRRect(
+                      //       borderRadius: BorderRadius.circular(10),
+                      //       child: CachedNetworkImage(
+                      //         imageUrl: cubit
+                      //             .categoriesModel[cubit.catInitIndex]
+                      //             .image!["src"],
+                      //         height: 200,
+                      //         width: MediaQuery.of(context).size.width,
+                      //         fit: BoxFit.fill,
+                      //         // placeholder: (context, url) => Image.asset(
+                      //         //   "${AppUI.imgPath}thope.png",
+                      //         //   // height: 150,
+                      //         //   fit: BoxFit.fill,
+                      //         // ),
+                      //         errorWidget: (context, url, error) => Image.asset(
+                      //           "${AppUI.imgPath}thope.png",
+                      //           // height: 170,
+                      //           fit: BoxFit.fill,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      //   dotSize: 5.0,
+                      //   dotSpacing: 15.0,
+                      //   dotColor: AppUI.whiteColor,
+                      //   dotIncreasedColor: Colors.transparent,
+                      //   indicatorBgPadding: 10.0,
+                      //   dotBgColor: Colors.purple.withOpacity(0.0),
+                      //   borderRadius: true,
+                      // ),
+                      child: CarouselSlider(
+                        items: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: CachedNetworkImage(
@@ -230,14 +263,9 @@ class _CategoriesTabState extends State<CategoriesTab> {
                             ),
                           ),
                         ],
-                        dotSize: 5.0,
-                        dotSpacing: 15.0,
-                        dotColor: AppUI.whiteColor,
-                        dotIncreasedColor: Colors.transparent,
-                        indicatorBgPadding: 10.0,
-                        dotBgColor: Colors.purple.withOpacity(0.0),
-                        borderRadius: true,
-                      )),
+                        options: CarouselOptions(),
+                      ),
+                    ),
               BlocBuilder<CategoriesCubit, CategoriesState>(
                   buildWhen: (_, state) =>
                       state is ProductsLoadingState ||
@@ -320,8 +348,40 @@ class _CategoriesTabState extends State<CategoriesTab> {
                   : Container(
                       height: 130.0,
                       width: double.infinity,
-                      child: LightCarousel(
-                        images: [
+                      // child: LightCarousel(
+                      //   images: [
+                      //     ClipRRect(
+                      //       borderRadius: BorderRadius.circular(10),
+                      //       child: CachedNetworkImage(
+                      //         imageUrl: cubit
+                      //             .categoriesModel[cubit.catInitIndex]
+                      //             .image!["src"],
+                      //         height: 200,
+                      //         width: MediaQuery.of(context).size.width,
+                      //         fit: BoxFit.fill,
+                      //         // placeholder: (context, url) => Image.asset(
+                      //         //   "${AppUI.imgPath}thope.png",
+                      //         //   // height: 150,
+                      //         //   fit: BoxFit.fill,
+                      //         // ),
+                      //         errorWidget: (context, url, error) => Image.asset(
+                      //           "${AppUI.imgPath}thope.png",
+                      //           // height: 170,
+                      //           fit: BoxFit.fill,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      //   dotSize: 5.0,
+                      //   dotSpacing: 15.0,
+                      //   dotColor: AppUI.whiteColor,
+                      //   dotIncreasedColor: Colors.transparent,
+                      //   indicatorBgPadding: 10.0,
+                      //   dotBgColor: Colors.purple.withOpacity(0.0),
+                      //   borderRadius: true,
+                      // ),
+                      child: CarouselSlider(
+                        items: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: CachedNetworkImage(
@@ -344,14 +404,9 @@ class _CategoriesTabState extends State<CategoriesTab> {
                             ),
                           ),
                         ],
-                        dotSize: 5.0,
-                        dotSpacing: 15.0,
-                        dotColor: AppUI.whiteColor,
-                        dotIncreasedColor: Colors.transparent,
-                        indicatorBgPadding: 10.0,
-                        dotBgColor: Colors.purple.withOpacity(0.0),
-                        borderRadius: true,
-                      )),
+                        options: CarouselOptions(),
+                      ),
+                    ),
             ],
           ),
         ),

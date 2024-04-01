@@ -2,8 +2,11 @@ import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_cubit.dar
 import 'package:ahshiaka/bloc/profile_cubit/profile_cubit.dart';
 import 'package:ahshiaka/utilities/app_ui.dart';
 import 'package:ahshiaka/view/init_screens/SelectLanguage.dart';
+import 'package:ahshiaka/view/init_screens/maintenance_screen.dart';
+import 'package:ahshiaka/view/init_screens/version_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/bottom_nav_tabs_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_version_checker/flutter_app_version_checker.dart';
 
 import '../../bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import '../../shared/cash_helper.dart';
@@ -18,6 +21,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final _checker = AppVersionChecker();
+
   @override
   initState() {
     // TODO: implement initState
@@ -39,13 +44,26 @@ class _SplashScreenState extends State<SplashScreen> {
       }
       // await HomeCubit.get(context).fetchInsurances();
       CheckoutCubit.get(context).fetchOrders(context);
-      AppUtil.removeUntilNavigator(
-          context,
-          lang == ""
-              ? SelectLanguage()
-              : jwt == ""
-                  ? const LoginOrSignupScreen()
-                  : const BottomNavTabsScreen());
+      await _checker.checkUpdate().then((value) async {
+        print(value.canUpdate); //return true if update is available
+        print(value.currentVersion); //return current app version
+        print(value.newVersion); //return the new app version
+        print(value.appURL); //return the app url
+        print(value
+            .errorMessage); //return error message if found else it will return null
+        if (value.canUpdate) {
+          AppUtil.removeUntilNavigator(context, VersionScreen(result: value));
+        } else {
+          AppUtil.removeUntilNavigator(
+            context,
+            lang == ""
+                ? SelectLanguage()
+                : jwt == ""
+                    ? const LoginOrSignupScreen()
+                    : const BottomNavTabsScreen(),
+          );
+        }
+      });
     });
   }
 

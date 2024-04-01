@@ -99,6 +99,7 @@ class MyApp extends StatelessWidget {
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         theme: ThemeData(
+          useMaterial3: false,
           fontFamily: AppUtil.rtlDirection(context) ? "cairo" : "Tajawal",
           scaffoldBackgroundColor: AppUI.whiteColor,
           appBarTheme: AppBarTheme(

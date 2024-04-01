@@ -490,6 +490,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(product.categoriesIds);
     return InkWell(
       onTap: onTap ??
           () {
@@ -543,8 +544,10 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 10),
+                      // padding: const EdgeInsets.symmetric(
+                      //     horizontal: 4, vertical: 10),
+                      // padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(8),
                       child: Row(
                         children: [
                           // Container(
@@ -557,7 +560,26 @@ class ProductCard extends StatelessWidget {
                           //   alignment: Alignment.center,
                           //   child: CustomText(text: product!.salePrice=="" || product!.salePrice == null?product!.stockStatus=="outofstock"?"outOfStock".tr():"inStock".tr() : "${int.parse((100-(int.parse(product!.salePrice!)/int.parse(product!.regularPrice==""?product!.price!:product!.regularPrice))*100).round().toString())}%",color: product!.salePrice==""?AppUI.whiteColor:AppUI.errorColor,fontSize: 10,)
                           // ),
-                          const Spacer(),
+                          // if (product.categoriesIds != null &&
+                          //     (product.categoriesIds.contains(1797) ||
+                          //         product.categoriesIds.contains(1627)))
+                          //   Container(
+                          //     width: 60,
+                          //     decoration: BoxDecoration(
+                          //       color: Color(0xffC7AC91),
+                          //       borderRadius: BorderRadius.circular(16),
+                          //     ),
+                          //     alignment: Alignment.center,
+                          //     padding: const EdgeInsets.all(4),
+                          //     child: CustomText(
+                          //       text: "newDiscount".tr(),
+                          //       color: Colors.white,
+                          //       fontSize: 8,
+                          //       fontWeight: FontWeight.w600,
+                          //       textAlign: TextAlign.center,
+                          //     ),
+                          //   ),
+                          // const Spacer(),
                           Stack(
                             alignment: Alignment.center,
                             children: [
@@ -613,7 +635,7 @@ class ProductCard extends StatelessWidget {
                           Text(""),
                         CustomText(
                           text:
-                              "${product!.salePrice == "" ? product!.price : product.salePrice} SAR",
+                              "${product!.salePrice == "" ? product!.price : product.salePrice.toStringAsFixed(2)} SAR",
                           color: product!.salePrice == ""
                               ? AppUI.blackColor
                               : AppUI.alshiakaColor,
@@ -768,7 +790,7 @@ class ProductCard extends StatelessWidget {
                                 else
                                   CustomText(
                                     text:
-                                        "${product!.salePrice == "" ? product!.price : product!.salePrice} SAR",
+                                        "${product!.salePrice == "" ? product!.price : product!.salePrice.toStringAsFixed(2)} SAR",
                                     color: product!.salePrice == ""
                                         ? AppUI.mainColor
                                         : AppUI.orangeColor,

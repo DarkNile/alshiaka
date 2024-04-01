@@ -6,6 +6,7 @@ import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products/
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products/tabs/details.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products/tabs/info_and_care.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ahshiaka/shared/CheckNetwork.dart';
@@ -14,7 +15,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:light_carousel/main/light_carousel.dart';
+// import 'package:light_carousel/main/light_carousel.dart';
 import 'package:string_similarity/string_similarity.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -126,50 +127,79 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     if (widget.product.images != null &&
                         widget.product.images!.isNotEmpty)
                       SizedBox(
-                          height: AppUtil.responsiveHeight(context) * 0.6,
-                          width: double.infinity,
-                          child: LightCarousel(
-                            images: List.generate(widget.product.images!.length,
-                                (index) {
-                              return CachedNetworkImage(
-                                imageUrl: widget.product.image != null
-                                    ? widget.product.image!['src']!
-                                    : widget.product.images != null &&
-                                            widget.product.images!.isNotEmpty
-                                        ? widget.product.images![index].src
-                                        : "",
-                                height: AppUtil.responsiveHeight(context) * 0.8,
-                                fit: BoxFit.cover,
-                                alignment: Alignment.topCenter,
-                                // placeholder: (context, url) =>
-                                //     const LoadingWidget(),
-                                // placeholder: (context, url) => Image.asset(
-                                //   "${AppUI.imgPath}men.png",
-                                //   height: AppUtil.responsiveHeight(context) * 0.4,
-                                //   width: double.infinity,
-                                //   fit: BoxFit.fill,
-                                // ),
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(
-                                  "${AppUI.imgPath}men.png",
-                                  height:
-                                      AppUtil.responsiveHeight(context) * 0.4,
-                                  width: double.infinity,
-                                ),
-                              );
-                            }),
-                            dotSize: 7.0,
-                            dotSpacing: 25.0,
-                            dotColor: AppUI.mainColor.withOpacity(0.3),
-                            dotPosition: AppUtil.rtlDirection(context)
-                                ? DotPosition.bottomRight
-                                : DotPosition.bottomLeft,
-                            dotHorizontalPadding: 20,
-                            dotIncreasedColor: AppUI.mainColor,
-                            indicatorBgPadding: 0.0,
-                            dotBgColor: Colors.purple.withOpacity(0.0),
-                            borderRadius: true,
-                          )),
+                        height: AppUtil.responsiveHeight(context) * 0.6,
+                        width: double.infinity,
+                        // child: LightCarousel(
+                        //   images: List.generate(widget.product.images!.length,
+                        //       (index) {
+                        //     return CachedNetworkImage(
+                        //       imageUrl: widget.product.image != null
+                        //           ? widget.product.image!['src']!
+                        //           : widget.product.images != null &&
+                        //                   widget.product.images!.isNotEmpty
+                        //               ? widget.product.images![index].src
+                        //               : "",
+                        //       height: AppUtil.responsiveHeight(context) * 0.8,
+                        //       fit: BoxFit.cover,
+                        //       alignment: Alignment.topCenter,
+                        //       // placeholder: (context, url) =>
+                        //       //     const LoadingWidget(),
+                        //       // placeholder: (context, url) => Image.asset(
+                        //       //   "${AppUI.imgPath}men.png",
+                        //       //   height: AppUtil.responsiveHeight(context) * 0.4,
+                        //       //   width: double.infinity,
+                        //       //   fit: BoxFit.fill,
+                        //       // ),
+                        //       errorWidget: (context, url, error) => Image.asset(
+                        //         "${AppUI.imgPath}men.png",
+                        //         height: AppUtil.responsiveHeight(context) * 0.4,
+                        //         width: double.infinity,
+                        //       ),
+                        //     );
+                        //   }),
+                        //   dotSize: 7.0,
+                        //   dotSpacing: 25.0,
+                        //   dotColor: AppUI.mainColor.withOpacity(0.3),
+                        //   dotPosition: AppUtil.rtlDirection(context)
+                        //       ? DotPosition.bottomRight
+                        //       : DotPosition.bottomLeft,
+                        //   dotHorizontalPadding: 20,
+                        //   dotIncreasedColor: AppUI.mainColor,
+                        //   indicatorBgPadding: 0.0,
+                        //   dotBgColor: Colors.purple.withOpacity(0.0),
+                        //   borderRadius: true,
+                        // ),
+                        child: CarouselSlider(
+                          items: List.generate(widget.product.images!.length,
+                              (index) {
+                            return CachedNetworkImage(
+                              imageUrl: widget.product.image != null
+                                  ? widget.product.image!['src']!
+                                  : widget.product.images != null &&
+                                          widget.product.images!.isNotEmpty
+                                      ? widget.product.images![index].src
+                                      : "",
+                              height: AppUtil.responsiveHeight(context) * 0.8,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                              // placeholder: (context, url) =>
+                              //     const LoadingWidget(),
+                              // placeholder: (context, url) => Image.asset(
+                              //   "${AppUI.imgPath}men.png",
+                              //   height: AppUtil.responsiveHeight(context) * 0.4,
+                              //   width: double.infinity,
+                              //   fit: BoxFit.fill,
+                              // ),
+                              errorWidget: (context, url, error) => Image.asset(
+                                "${AppUI.imgPath}men.png",
+                                height: AppUtil.responsiveHeight(context) * 0.4,
+                                width: double.infinity,
+                              ),
+                            );
+                          }),
+                          options: CarouselOptions(),
+                        ),
+                      ),
                     Positioned(
                       top: MediaQuery.of(context).padding.top,
                       left: AppUtil.rtlDirection(context) ? null : 20,
@@ -209,7 +239,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                             CustomText(
                               text:
-                                  "${int.parse((100 - (int.parse(widget.product.salePrice!) / int.parse(widget.product.regularPrice == "" ? widget.product.price! : widget.product.regularPrice!)) * 100).round().toString())}%",
+                                  "${int.parse((100 - (double.parse(widget.product.salePrice!.toString()) / int.parse(widget.product.regularPrice == "" ? widget.product.price! : widget.product.regularPrice!.split('.').first)) * 100).round().toString())}%",
                               color: AppUI.errorColor,
                               fontSize: 10,
                             )
@@ -297,7 +327,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           children: [
                             CustomText(
                               text:
-                                  "${widget.product.salePrice == "" ? widget.product.price : widget.product.salePrice} SAR",
+                                  "${widget.product.salePrice == "" ? widget.product.price : widget.product.salePrice.toStringAsFixed(2)} SAR",
                               // color: widget.product.salePrice == ""
                               //     ? AppUI.mainColor
                               //     : AppUI.orangeColor,

@@ -6,7 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:light_carousel/main/light_carousel.dart';
+// import 'package:light_carousel/main/light_carousel.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import '../../../../../bloc/layout_cubit/categories_cubit/categories_cubit.dart';
 import '../../../../../bloc/layout_cubit/categories_cubit/categories_states.dart';
 import '../../../../../shared/components.dart';
@@ -68,7 +69,7 @@ class _HomeTabState extends State<HomeTab> {
     // if(cubit.categoriesModel.length != homeTapWidgets.length) {
     //   cubit.tapBarController!.animateTo(cubit.tapBarController!.index+1);
     //   cubit.initialIndex = homeTapWidgets.length;
-    //   await cubit.fetchNewArrivalProductsByCategory(catId: cubit.categoriesModel[homeTapWidgets.length].id, page: 1, perPage: 20,ratingCount: 1,);
+    // await cubit.fetchNewArrivalProductsByCategory(catId: cubit.categoriesModel[homeTapWidgets.length].id, page: 1, perPage: 20,ratingCount: 1,);
     //   cubit.homeScrollController.jumpTo(cubit.homeScrollController.position.pixels+600);
     //   homeTapWidgets.add(SizedBox());
     // }
@@ -100,6 +101,7 @@ class _HomeTabState extends State<HomeTab> {
             child: CachedNetworkImage(
               imageUrl: element.image!,
               fit: BoxFit.fill,
+              width: width,
               placeholder: (context, url) => Image.asset(
                 "${AppUI.imgPath}product_background.png",
                 fit: BoxFit.fill,
@@ -143,18 +145,30 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                   if (banners.isNotEmpty)
                     SizedBox(
-                        height: height * 0.53,
-                        width: width,
-                        child: LightCarousel(
-                          images: banners,
-                          dotSize: 5.0,
-                          dotSpacing: 15.0,
-                          dotColor: AppUI.whiteColor,
-                          dotIncreasedColor: AppUI.mainColor,
-                          indicatorBgPadding: 20.0,
-                          dotBgColor: Colors.purple.withOpacity(0.0),
-                          borderRadius: true,
-                        )),
+                      height: height * 0.53,
+                      width: width,
+                      // child: LightCarousel(
+                      //   images: banners,
+                      // dotSize: 5.0,
+                      // dotSpacing: 15.0,
+                      // dotColor: AppUI.whiteColor,
+                      // dotIncreasedColor: AppUI.mainColor,
+                      // indicatorBgPadding: 20.0,
+                      // dotBgColor: Colors.purple.withOpacity(0.0),
+                      // borderRadius: true,
+                      // autoPlayDuration: Duration(seconds: 6),
+                      // ),
+                      child: CarouselSlider(
+                        items: banners,
+                        options: CarouselOptions(
+                          enlargeCenterPage: true,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 6),
+                          height: height * 0.53,
+                          viewportFraction: 1,
+                        ),
+                      ),
+                    ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -270,41 +284,69 @@ class _HomeTabState extends State<HomeTab> {
                     height: 10,
                   ),
                   Container(
-                      height: 150.0,
-                      // color: Colors.yellow,
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.only(left: 10, right: 10),
-                      child: LightCarousel(
-                        images: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: CachedNetworkImage(
-                              imageUrl: banner,
-                              height: 160,
+                    height: 150.0,
+                    // color: Colors.yellow,
+                    width: MediaQuery.of(context).size.width,
+                    margin: EdgeInsets.only(left: 10, right: 10),
+                    // child: LightCarousel(
+                    //   images: [
+                    //     ClipRRect(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //       child: CachedNetworkImage(
+                    //         imageUrl: banner,
+                    //         height: 160,
+                    //         fit: BoxFit.fill,
+                    //         placeholder: (context, url) => Image.asset(
+                    //           "${AppUI.imgPath}banner3.jpg",
+                    //           //height: 200,
+                    //           //width: MediaQuery.of(context).size.width,
+                    //           fit: BoxFit.fill,
+                    //         ),
+                    //         errorWidget: (context, url, error) => Image.asset(
+                    //           "${AppUI.imgPath}banner3.jpg",
+                    //           //  height: 200,
+                    //           //   width: MediaQuery.of(context).size.width,
+                    //           fit: BoxFit.fill,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    //   dotSize: 0.0,
+                    //   dotSpacing: 15.0,
+                    //   dotColor: AppUI.whiteColor,
+                    //   dotIncreasedColor: AppUI.mainColor,
+                    //   indicatorBgPadding: 20.0,
+                    //   dotBgColor: Colors.purple.withOpacity(0.0),
+                    //   borderRadius: true,
+                    // ),
+                    child: CarouselSlider(
+                      items: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: CachedNetworkImage(
+                            imageUrl: banner,
+                            height: 160,
+                            fit: BoxFit.fill,
+                            placeholder: (context, url) => Image.asset(
+                              "${AppUI.imgPath}banner3.jpg",
+                              //height: 200,
+                              //width: MediaQuery.of(context).size.width,
                               fit: BoxFit.fill,
-                              placeholder: (context, url) => Image.asset(
-                                "${AppUI.imgPath}banner3.jpg",
-                                //height: 200,
-                                //width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.fill,
-                              ),
-                              errorWidget: (context, url, error) => Image.asset(
-                                "${AppUI.imgPath}banner3.jpg",
-                                //  height: 200,
-                                //   width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.fill,
-                              ),
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              "${AppUI.imgPath}banner3.jpg",
+                              //  height: 200,
+                              //   width: MediaQuery.of(context).size.width,
+                              fit: BoxFit.fill,
                             ),
                           ),
-                        ],
-                        dotSize: 0.0,
-                        dotSpacing: 15.0,
-                        dotColor: AppUI.whiteColor,
-                        dotIncreasedColor: AppUI.mainColor,
-                        indicatorBgPadding: 20.0,
-                        dotBgColor: Colors.purple.withOpacity(0.0),
-                        borderRadius: true,
-                      )),
+                        ),
+                      ],
+                      options: CarouselOptions(
+                        viewportFraction: 1,
+                      ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 0,
                   ),

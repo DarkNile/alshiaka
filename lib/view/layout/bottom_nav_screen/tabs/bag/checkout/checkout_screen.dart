@@ -6,13 +6,16 @@ import 'package:ahshiaka/bloc/profile_cubit/profile_cubit.dart';
 import 'package:ahshiaka/shared/cash_helper.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/bottom_nav_tabs_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/payment/Webview.dart';
-import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/payment/saved_credit_card.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/my_orders/my_orders_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ahshiaka/shared/CheckNetwork.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_paytabs_bridge/BaseBillingShippingInfo.dart';
+import 'package:flutter_paytabs_bridge/PaymentSdkConfigurationDetails.dart';
+import 'package:flutter_paytabs_bridge/PaymentSdkLocale.dart';
+import 'package:flutter_paytabs_bridge/flutter_paytabs_bridge.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../../../shared/components.dart';
 import '../../../../../../../utilities/app_ui.dart';
@@ -215,7 +218,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   flex: 5,
                                                   child: Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         horizontal: 3),
                                                     child: Row(
                                                       children: [
@@ -271,7 +274,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                     null)
                                                               CustomText(
                                                                 text:
-                                                                    "${cubit.cartList[index].salePrice} SAR",
+                                                                    "${cubit.cartList[index].salePrice.toStringAsFixed(2)} SAR",
                                                                 color: AppUI
                                                                     .iconColor,
                                                                 textDecoration:
@@ -408,8 +411,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                       radius: 13,
                                                                       backgroundColor: AppUI.greyColor,
                                                                       child: Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(1.0),
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            1.0),
                                                                         child: CircleAvatar(
                                                                             backgroundColor: AppUI.whiteColor,
                                                                             child: const CustomText(
@@ -444,8 +448,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                       radius: 13,
                                                                       backgroundColor: AppUI.greyColor,
                                                                       child: Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(1.0),
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            1.0),
                                                                         child: CircleAvatar(
                                                                             backgroundColor: AppUI.whiteColor,
                                                                             child: const CustomText(
@@ -754,26 +759,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                AppUtil.mainNavigator(
-                                    context, SavedCreditCard());
-                              },
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                      "${AppUI.iconPath}credit.svg"),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  CustomText(
-                                    text: "chooseShippingMethods".tr(),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  // const Spacer(),
-                                  // IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_forward_ios,size: 16,))
-                                ],
-                              ),
+                            Row(
+                              children: [
+                                SvgPicture.asset("${AppUI.iconPath}credit.svg"),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                CustomText(
+                                  text: "chooseShippingMethods".tr(),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                // const Spacer(),
+                                // IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_forward_ios,size: 16,))
+                              ],
                             ),
                             const SizedBox(
                               height: 16,
@@ -1087,17 +1085,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
                               if (response['id'] != null) {
                                 var responseId = response['id'];
+                                var total = response['total'];
                                 if (cubit.selectedPaymentGetaways!.id ==
                                     "aps_cc") {
-                                  if (!mounted) return;
-                                  AppUtil.mainNavigator(
-                                      context,
-                                      CustomWebview(
-                                        url:
-                                            'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
-                                        type: "",
-                                        orderId: response['id'].toString(),
-                                      ));
+                                  // if (!mounted) return;
+                                  // AppUtil.mainNavigator(
+                                  //     context,
+                                  //     CustomWebview(
+                                  //       url:
+                                  //           'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
+                                  //       type: "",
+                                  //       orderId: response['id'].toString(),
+                                  //     ));
+                                  payWithVisa(
+                                    double.parse(total),
+                                    responseId.toString(),
+                                  );
                                 } else if (cubit.selectedPaymentGetaways!.id ==
                                     "cod") {
                                   await cubit.fetchOrders(context);
@@ -1116,6 +1119,70 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             }
           }),
     );
+  }
+
+  void payWithVisa(double amount, String orderId) {
+    final cubit = CheckoutCubit.get(context);
+    print('amount $amount');
+    print('orderId $orderId');
+    var configuration = PaymentSdkConfigurationDetails(
+      profileId: "108372",
+      serverKey: "STJN6LKZZK-JHNZLTKGHH-ZBDJDWZNGN",
+      clientKey: "CMKMVM-RRMT6H-Q9B7KT-2V929M",
+      cartId: orderId,
+      cartDescription: "Pay with Card",
+      merchantName: "Al Shiaka",
+      screentTitle: "Pay with Card",
+      locale: PaymentSdkLocale.AR,
+      amount: amount,
+      currencyCode: "SAR",
+      merchantCountryCode: "SA",
+      billingDetails: BillingDetails(
+        cubit.selectedAddress!.fullName!,
+        cubit.selectedAddress!.email!,
+        cubit.selectedAddress!.phoneNumber!,
+        cubit.selectedAddress!.address!,
+        'SA',
+        cubit.selectedAddress!.city!,
+        cubit.selectedAddress!.state!,
+        cubit.selectedAddress!.postCode!,
+      ),
+      shippingDetails: ShippingDetails(
+        cubit.selectedAddress!.fullName!,
+        cubit.selectedAddress!.email!,
+        cubit.selectedAddress!.phoneNumber!,
+        cubit.selectedAddress!.address!,
+        'SA',
+        cubit.selectedAddress!.city!,
+        cubit.selectedAddress!.state!,
+        cubit.selectedAddress!.postCode!,
+      ),
+    );
+    FlutterPaytabsBridge.startCardPayment(configuration, (event) {
+      print(event);
+      setState(() {
+        setState(() {
+          if (event["status"] == "success") {
+            var transactionDetails = event["data"];
+            print(transactionDetails);
+            print('${transactionDetails["isSuccess"]}');
+            if (transactionDetails["isSuccess"]) {
+              print("successful transaction");
+              cubit.sendEmail(orderId);
+            } else {
+              print("failed transaction");
+              AppUtil.errorToast(context, 'paymentFailed'.tr);
+            }
+          } else if (event["status"] == "error") {
+            // Handle error here.
+            print(event["status"]);
+          } else if (event["status"] == "event") {
+            // Handle cancel events here.
+            print(event["status"]);
+          }
+        });
+      });
+    });
   }
 
   // applePay(double amount) async {

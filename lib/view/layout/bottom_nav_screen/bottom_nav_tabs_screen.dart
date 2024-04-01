@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/bag_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/categories_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products_screen.dart';
@@ -16,6 +18,7 @@ import '../../../shared/components.dart';
 import '../../../utilities/app_ui.dart';
 import '../../../utilities/app_util.dart';
 import 'bottom_nav_widget.dart';
+import 'package:http/http.dart' as http;
 
 class BottomNavTabsScreen extends StatefulWidget {
   const BottomNavTabsScreen({Key? key}) : super(key: key);
@@ -30,41 +33,41 @@ class _BottomNavTabsScreenState extends State<BottomNavTabsScreen> {
   @override
   void initState() {
     super.initState();
-    checkAppVersion();
+    // checkAppVersion();
   }
 
-  Future<void> checkAppVersion() async {
-    await _checker.checkUpdate().then((value) async {
-      print(value.canUpdate); //return true if update is available
-      print(value.currentVersion); //return current app version
-      print(value.newVersion); //return the new app version
-      print(value.appURL); //return the app url
-      print(value
-          .errorMessage); //return error message if found else it will return null
-      if (value.canUpdate) {
-        return await AppUtil.dialog2(
-          context,
-          "versionTitle".tr(),
-          [
-            ElevatedButton(
-              onPressed: () async {
-                await launchUrlString(
-                  value.appURL!,
-                );
-              },
-              child: CustomText(
-                text: "updateNow".tr(),
-                textAlign: TextAlign.center,
-                color: Colors.white,
-              ),
-            ),
-          ],
-          barrierDismissible: false,
-          showClose: false,
-        );
-      }
-    });
-  }
+  // Future<void> checkAppVersion() async {
+  //   await _checker.checkUpdate().then((value) async {
+  //     print(value.canUpdate); //return true if update is available
+  //     print(value.currentVersion); //return current app version
+  //     print(value.newVersion); //return the new app version
+  //     print(value.appURL); //return the app url
+  //     print(value
+  //         .errorMessage); //return error message if found else it will return null
+  //     if (value.canUpdate) {
+  //       return await AppUtil.dialog2(
+  //         context,
+  //         "versionTitle".tr(),
+  //         [
+  //           ElevatedButton(
+  //             onPressed: () async {
+  //               await launchUrlString(
+  //                 value.appURL!,
+  //               );
+  //             },
+  //             child: CustomText(
+  //               text: "updateNow".tr(),
+  //               textAlign: TextAlign.center,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //         ],
+  //         barrierDismissible: false,
+  //         showClose: false,
+  //       );
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

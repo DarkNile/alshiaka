@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:ahshiaka/repository/checkout_repository.dart';
 import 'package:flutter_toastr/flutter_toastr.dart';
 import 'package:http/http.dart' as http;
 import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_cubit.dart';
@@ -29,11 +31,14 @@ class BagScreen extends StatefulWidget {
 
 class _BagScreenState extends State<BagScreen> {
   Map selectedCustomizations = {};
+  bool isCouponActivated = false;
+  bool isCouponLoading = false;
 
   @override
   void initState() {
     super.initState();
     getSelectedCustomizations();
+    // getCoupon();
   }
 
   Future<void> getSelectedCustomizations() async {
@@ -46,6 +51,37 @@ class _BagScreenState extends State<BagScreen> {
       selectedCustomizations = jsonDecode(data);
     }
     print('test $selectedCustomizations}');
+  }
+
+  Future<void> getCoupon() async {
+    final cubit = CheckoutCubit.get(context);
+    String lang = await CashHelper.getSavedString("lang", "en");
+    print('lang $lang');
+    try {
+      setState(() {
+        isCouponLoading = true;
+      });
+      final response = await http.get(Uri.parse(
+          'https://alshiaka.com/wp-json/wc/v3/coupons/145608?consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=$lang'));
+      String? coupon = jsonDecode(response.body)['code'];
+      String? description = jsonDecode(response.body)['description'];
+      List<dynamic>? metaData = jsonDecode(response.body)['meta_data'];
+      int? quantity = metaData!.first['value']['conditions']['quantity'];
+      if (quantity == 2) {
+        AppUtil.couponToast(context, description);
+      } else if (quantity == 3) {
+        setState(() {
+          cubit.couponController.text = coupon!;
+          isCouponActivated = true;
+        });
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        isCouponLoading = false;
+      });
+    }
   }
 
   @override
@@ -289,7 +325,7 @@ class _BagScreenState extends State<BagScreen> {
                                                                       null)
                                                                 CustomText(
                                                                   text:
-                                                                      "${cubit.cartList[index].salePrice} SAR",
+                                                                      "${cubit.cartList[index].salePrice.toStringAsFixed(2)} SAR",
                                                                   color: AppUI
                                                                       .iconColor,
                                                                   textDecoration:
@@ -466,8 +502,9 @@ class _BagScreenState extends State<BagScreen> {
                                                                                 .greyColor,
                                                                         child:
                                                                             Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(1.0),
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              1.0),
                                                                           child: CircleAvatar(
                                                                               backgroundColor: AppUI.whiteColor,
                                                                               child: Padding(
@@ -486,7 +523,7 @@ class _BagScreenState extends State<BagScreen> {
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
-                                                                            .only(
+                                                                        .only(
                                                                         top: 3),
                                                                 child:
                                                                     CustomText(
@@ -529,8 +566,9 @@ class _BagScreenState extends State<BagScreen> {
                                                                                 .greyColor,
                                                                         child:
                                                                             Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(1.0),
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              1.0),
                                                                           child: CircleAvatar(
                                                                               backgroundColor: AppUI.whiteColor,
                                                                               child: Padding(
@@ -716,6 +754,9 @@ class _BagScreenState extends State<BagScreen> {
                                             state is CheckoutChangeState ||
                                             state is ApplyCoupon,
                                         builder: (context, state) {
+                                          if (isCouponLoading) {
+                                            return const LoadingWidget();
+                                          }
                                           return Container(
                                             color: Colors.white,
                                             padding: const EdgeInsets.only(
@@ -726,33 +767,40 @@ class _BagScreenState extends State<BagScreen> {
                                                   height: 10,
                                                 ),
                                                 CustomInput(
+                                                  readOnly: isCouponActivated,
                                                   controller:
                                                       cubit.couponController,
                                                   hint: "enterCoupon".tr(),
                                                   textInputType:
                                                       TextInputType.text,
-                                                  fillColor: cubit.couponApplied
+                                                  fillColor: cubit
+                                                              .couponApplied ||
+                                                          isCouponActivated
                                                       ? AppUI.backgroundColor
                                                       : AppUI.whiteColor,
                                                   borderColor: AppUI.greyColor,
                                                   radius: 4,
-                                                  suffixIcon: InkWell(
-                                                      onTap: () {
-                                                        if (!cubit
-                                                            .couponApplied) {
-                                                          cubit.applyCoupon(
-                                                              context);
-                                                        } else {
-                                                          cubit.cancelCoupon();
-                                                        }
-                                                      },
-                                                      child: CustomText(
-                                                        text:
-                                                            cubit.couponApplied
+                                                  suffixIcon: isCouponActivated
+                                                      ? null
+                                                      : InkWell(
+                                                          onTap: () {
+                                                            if (!cubit
+                                                                .couponApplied) {
+                                                              cubit.applyCoupon(
+                                                                  context);
+                                                            } else {
+                                                              cubit
+                                                                  .cancelCoupon();
+                                                            }
+                                                          },
+                                                          child: CustomText(
+                                                            text: cubit
+                                                                    .couponApplied
                                                                 ? "cancel".tr()
                                                                 : "apply".tr(),
-                                                        color: AppUI.blueColor,
-                                                      )),
+                                                            color:
+                                                                AppUI.blueColor,
+                                                          )),
                                                 ),
                                               ],
                                             ),
