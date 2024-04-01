@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:ahshiaka/models/categories/products_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:lottie/lottie.dart';
@@ -318,10 +318,12 @@ class CustomInput extends StatelessWidget {
   final double radius;
   final TextAlign? textAlign;
   final Color? borderColor, fillColor;
+  final TextDirection? textDirection;
 
   const CustomInput(
       {Key? key,
       required this.controller,
+      this.textDirection,
       this.hint,
       this.lable,
       required this.textInputType,
@@ -344,6 +346,7 @@ class CustomInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textDirection: textDirection,
       controller: controller,
       obscureText: obscureText,
       onTap: onTap,
