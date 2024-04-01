@@ -757,8 +757,8 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     String cartKey = await CashHelper.getSavedString("cartKey", "");
 
     Map<String, dynamic> formData = {};
+    List<ProductModel> cartList = [];
     if (cartListString != "") {
-      List<ProductModel> cartList = [];
       jsonDecode(cartListString).forEach((element) {
         cartList.add(ProductModel.fromJson(element));
       });
@@ -901,6 +901,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     try {
       isLoading = true;
       List response = await CategoriesRepository.getCustomizations(id);
+      print('mego $response');
       length = response.first;
       for (var element in response.last) {
         customizations.add(element);

@@ -21,7 +21,7 @@ class ProductModel {
   String? price;
   bool? fav;
   String? regularPrice;
-  String? salePrice;
+  dynamic salePrice;
   bool? onSale;
   String? status;
   bool? purchasable;

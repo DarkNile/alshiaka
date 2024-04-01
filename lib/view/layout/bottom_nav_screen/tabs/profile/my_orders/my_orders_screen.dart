@@ -33,55 +33,87 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         },
         child: Scaffold(
           backgroundColor: AppUI.backgroundColor,
-          body: BlocBuilder<ProfileCubit,ProfileState>(
-            builder: (context, ProfileState state) {
-              return Column(
-                children: [
-                  CustomAppBar(title: "myOrders".tr(),onBack: (){
-                    AppUtil.removeUntilNavigator(context, const BottomNavTabsScreen());
-                  },),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16,horizontal: 45),
-                    child: CustomCard(
-                      height: 70,elevation: 0,padding: 0.0,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: cubit.tabState == "current" ? 5:4,
-                            child: CustomCard(
-                              onTap: (){
-                                cubit.changeTabState("current");
-                              },
-                              padding: 0.0,elevation: 0,
-                              color: cubit.tabState == "current" ? AppUI.mainColor:AppUI.whiteColor,
-                              child: CustomText(text: "currentOrders".tr(),color: cubit.tabState == "current" ? AppUI.whiteColor:AppUI.blackColor,),
+          body: BlocBuilder<ProfileCubit, ProfileState>(
+              builder: (context, ProfileState state) {
+            return Column(
+              children: [
+                CustomAppBar(
+                  title: "myOrders".tr(),
+                  onBack: () {
+                    AppUtil.removeUntilNavigator(
+                        context, const BottomNavTabsScreen());
+                  },
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 45),
+                  child: CustomCard(
+                    height: 70,
+                    elevation: 0,
+                    padding: 0.0,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: cubit.tabState == "current" ? 5 : 4,
+                          child: CustomCard(
+                            onTap: () {
+                              cubit.changeTabState("current");
+                            },
+                            padding: 0.0,
+                            elevation: 0,
+                            color: cubit.tabState == "current"
+                                ? AppUI.mainColor
+                                : AppUI.whiteColor,
+                            child: CustomText(
+                              text: "currentOrders".tr(),
+                              color: cubit.tabState == "current"
+                                  ? AppUI.whiteColor
+                                  : AppUI.blackColor,
                             ),
                           ),
-                          Expanded(
-                            flex: cubit.tabState == "current" ? 4:5,
-                            child: CustomCard(
-                              onTap: (){
-                                cubit.changeTabState("previous");
-                              },
-                              padding: 0.0,elevation: 0,
-                              color: cubit.tabState == "current" ? AppUI.whiteColor:AppUI.mainColor,
-                              child: CustomText(text: "previousOrders".tr(),color: cubit.tabState != "current" ? AppUI.whiteColor:AppUI.blackColor,),
+                        ),
+                        Expanded(
+                          flex: cubit.tabState == "current" ? 4 : 5,
+                          child: CustomCard(
+                            onTap: () {
+                              cubit.changeTabState("previous");
+                            },
+                            padding: 0.0,
+                            elevation: 0,
+                            color: cubit.tabState == "current"
+                                ? AppUI.whiteColor
+                                : AppUI.mainColor,
+                            child: CustomText(
+                              text: "previousOrders".tr(),
+                              color: cubit.tabState != "current"
+                                  ? AppUI.whiteColor
+                                  : AppUI.blackColor,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  BlocBuilder<CheckoutCubit,CheckoutState>(
-                    buildWhen: (_,__) => state is CheckoutChangeState,
+                ),
+                BlocBuilder<CheckoutCubit, CheckoutState>(
+                    buildWhen: (_, __) => state is CheckoutChangeState,
                     builder: (context, state) {
                       return Expanded(
                         child: ListView(
                           shrinkWrap: true,
-                          children: List.generate(cubit.tabState == "current" ? checkoutCubit.pendingOrders.length : checkoutCubit.otherOrders.length, (index) {
+                          children: List.generate(
+                              cubit.tabState == "current"
+                                  ? checkoutCubit.pendingOrders.length
+                                  : checkoutCubit.otherOrders.length, (index) {
                             return InkWell(
-                              onTap: (){
-                                AppUtil.mainNavigator(context, OrderDetailsScreen(order: cubit.tabState == "current" ? checkoutCubit.pendingOrders[index] : checkoutCubit.otherOrders[index]));
+                              onTap: () {
+                                AppUtil.mainNavigator(
+                                    context,
+                                    OrderDetailsScreen(
+                                        order: cubit.tabState == "current"
+                                            ? checkoutCubit.pendingOrders[index]
+                                            : checkoutCubit
+                                                .otherOrders[index]));
                               },
                               child: Column(
                                 children: [
@@ -93,55 +125,113 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                         Row(
                                           children: [
                                             Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                CustomText(text: "${"orderId".tr()}:- #${cubit.tabState == "current" ? checkoutCubit.pendingOrders[index].id! : checkoutCubit.otherOrders[index].id!}"),
-                                                const SizedBox(height: 10,),
-                                                CustomText(text: "${"orderDate".tr()}:- ${cubit.tabState == "current" ? checkoutCubit.pendingOrders[index].dateCreated!.substring(0,10):checkoutCubit.otherOrders[index].dateCreated!.substring(0,10)}"),
+                                                CustomText(
+                                                    text:
+                                                        "${"orderId".tr()}:- #${cubit.tabState == "current" ? checkoutCubit.pendingOrders[index].id! : checkoutCubit.otherOrders[index].id!}"),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                CustomText(
+                                                    text:
+                                                        "${"orderDate".tr()}:- ${cubit.tabState == "current" ? checkoutCubit.pendingOrders[index].dateCreated!.substring(0, 10) : checkoutCubit.otherOrders[index].dateCreated!.substring(0, 10)}"),
                                               ],
                                             ),
                                           ],
                                         ),
-                                        if(cubit.tabState=="current"?checkoutCubit.pendingOrders[index].lineItems!.isNotEmpty:checkoutCubit.otherOrders[index].lineItems!.isNotEmpty)
-                                        ProductCard(type: "order ${cubit.tabState}",product: cubit.tabState == "current" ? checkoutCubit.pendingOrders[index].lineItems![0]:checkoutCubit.otherOrders[index].lineItems![0],onDelete: () async {
-                                          AppUtil.dialog2(context, "", const[
-                                             LoadingWidget(),
-                                           SizedBox(height: 30,),
-                                          ]);
-                                          await checkoutCubit.deleteOrder(checkoutCubit.pendingOrders[index].id,context);
-                                          if(!mounted)return;
-                                          Navigator.pop(context);
-                                          setState(() {});
-                                        },onTap: (){
-                                          AppUtil.mainNavigator(context, OrderDetailsScreen(order: cubit.tabState == "current" ? checkoutCubit.pendingOrders[index] : checkoutCubit.otherOrders[index]),);
-                                        },),
-                                        const SizedBox(height: 10,),
+                                        if (cubit.tabState == "current"
+                                            ? checkoutCubit.pendingOrders[index]
+                                                .lineItems!.isNotEmpty
+                                            : checkoutCubit.otherOrders[index]
+                                                .lineItems!.isNotEmpty)
+                                          ProductCard(
+                                            type: "order ${cubit.tabState}",
+                                            product: cubit.tabState == "current"
+                                                ? checkoutCubit
+                                                    .pendingOrders[index]
+                                                    .lineItems![0]
+                                                : checkoutCubit
+                                                    .otherOrders[index]
+                                                    .lineItems![0],
+                                            onDelete: () async {
+                                              AppUtil.dialog2(
+                                                  context, "", const [
+                                                LoadingWidget(),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                              ]);
+                                              await checkoutCubit.deleteOrder(
+                                                  checkoutCubit
+                                                      .pendingOrders[index].id,
+                                                  context);
+                                              if (!mounted) return;
+                                              Navigator.pop(context);
+                                              setState(() {});
+                                            },
+                                            onTap: () {
+                                              AppUtil.mainNavigator(
+                                                context,
+                                                OrderDetailsScreen(
+                                                    order: cubit.tabState ==
+                                                            "current"
+                                                        ? checkoutCubit
+                                                                .pendingOrders[
+                                                            index]
+                                                        : checkoutCubit
+                                                                .otherOrders[
+                                                            index]),
+                                              );
+                                            },
+                                          ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
                                         Row(
                                           children: [
-                                            CustomText(text: "${"orderTotal".tr()}:- ${cubit.tabState == "current" ? checkoutCubit.pendingOrders[index].total!:checkoutCubit.otherOrders[index].total}"),
+                                            CustomText(
+                                                text:
+                                                    "${"orderTotal".tr()}:- ${cubit.tabState == "current" ? checkoutCubit.pendingOrders[index].total! : checkoutCubit.otherOrders[index].total}"),
                                           ],
                                         ),
-                                        const SizedBox(height: 10,),
-                                        if(cubit.tabState == "current")
-                                          CustomButton(text: "trackYourOrder".tr(),onPressed: (){
-                                            AppUtil.mainNavigator(context, TrackOrderScreen(order: cubit.tabState == "current" ? checkoutCubit.pendingOrders[index]:checkoutCubit.otherOrders[index]));
-                                          },)
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        if (cubit.tabState == "current")
+                                          CustomButton(
+                                            text: "trackYourOrder".tr(),
+                                            onPressed: () {
+                                              AppUtil.mainNavigator(
+                                                  context,
+                                                  TrackOrderScreen(
+                                                      order: cubit.tabState ==
+                                                              "current"
+                                                          ? checkoutCubit
+                                                                  .pendingOrders[
+                                                              index]
+                                                          : checkoutCubit
+                                                                  .otherOrders[
+                                                              index]));
+                                            },
+                                          )
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 20,),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
                                 ],
                               ),
                             );
                           }),
                         ),
                       );
-                    }
-                  )
-                ],
-              );
-            }
-          ),
+                    })
+              ],
+            );
+          }),
         ),
       ),
     );
