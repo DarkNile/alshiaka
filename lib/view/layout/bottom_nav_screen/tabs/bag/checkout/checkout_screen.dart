@@ -41,11 +41,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     print(email);
     print(
         "idddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
-    if (email != null) {
-      final cubit = CheckoutCubit.get(context);
-      cubit.selectedAddress == null;
-      setState(() {});
-    }
+    final cubit = CheckoutCubit.get(context);
+    cubit.selectedAddress == null;
+    setState(() {});
     setState(() {});
   }
 
@@ -666,78 +664,130 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     state is SelectedPaymentState,
                                 builder: (context, snapshot) {
                                   return SizedBox(
-                                    height: 50,
-                                    child: ListView(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      children: List.generate(
-                                          cubit.paymentGetaway.length, (index) {
-                                        return Row(
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                print(cubit
-                                                    .paymentGetaway[index].id);
-                                                print(cubit
-                                                    .paymentGetaway[index]
-                                                    .title);
-                                                print(
-                                                    "***********************************************");
-                                                if (cubit
-                                                        .selectedPaymentGetaways !=
-                                                    cubit.paymentGetaway[
-                                                        index]) {
-                                                  cubit.selectedPaymentGetaways =
-                                                      cubit.paymentGetaway[
-                                                          index];
-                                                } else {
-                                                  cubit.selectedPaymentGetaways =
-                                                      null;
-                                                }
-                                                cubit.emit(
-                                                    SelectedPaymentState());
-                                              },
-                                              child: Container(
-                                                height: 46,
-                                                width: 80,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8,
-                                                        horizontal: 15),
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: cubit.selectedPaymentGetaways !=
-                                                                null
-                                                            ? cubit.selectedPaymentGetaways!
-                                                                        .id ==
-                                                                    cubit
-                                                                        .paymentGetaway[
-                                                                            index]
-                                                                        .id
-                                                                ? AppUI
-                                                                    .mainColor
-                                                                : AppUI
-                                                                    .backgroundColor
-                                                            : AppUI
-                                                                .backgroundColor),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                alignment: Alignment.center,
-                                                // child: Image.asset(
-                                                //     "${AppUI.imgPath}${index == 0 ? "cash.png" : index == 1 ? "master_card.png" : index == 2 ? "tabby.png" : "apple.png"}"),
-                                                child: Image.asset(
-                                                    "${AppUI.imgPath}${index == 0 ? "cash.png" : index == 1 ? "master_card.png" : "tabby.png"}"),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                          ],
-                                        );
-                                      }),
-                                    ),
-                                  );
+                                      height: 50,
+                                      child:
+                                          (cubit.selectedState ==
+                                                  'المملكة العربية السعودية')
+                                              ? ListView(
+                                                  shrinkWrap: true,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  children: List.generate(
+                                                      cubit.paymentGetaway
+                                                          .length, (index) {
+                                                    return Row(
+                                                      children: [
+                                                        InkWell(
+                                                          onTap: () {
+                                                            print(cubit
+                                                                .paymentGetaway[
+                                                                    index]
+                                                                .id);
+                                                            print(cubit
+                                                                .paymentGetaway[
+                                                                    index]
+                                                                .title);
+                                                            print(
+                                                                "***********************************************");
+                                                            if (cubit
+                                                                    .selectedPaymentGetaways !=
+                                                                cubit.paymentGetaway[
+                                                                    index]) {
+                                                              cubit.selectedPaymentGetaways =
+                                                                  cubit.paymentGetaway[
+                                                                      index];
+                                                            } else {
+                                                              cubit.selectedPaymentGetaways =
+                                                                  null;
+                                                            }
+                                                            cubit.emit(
+                                                                SelectedPaymentState());
+                                                          },
+                                                          child: Container(
+                                                            height: 46,
+                                                            width: 80,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    vertical: 8,
+                                                                    horizontal:
+                                                                        15),
+                                                            decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: cubit.selectedPaymentGetaways != null
+                                                                        ? cubit.selectedPaymentGetaways!.id == cubit.paymentGetaway[index].id
+                                                                            ? AppUI.mainColor
+                                                                            : AppUI.backgroundColor
+                                                                        : AppUI.backgroundColor),
+                                                                borderRadius: BorderRadius.circular(10)),
+                                                            alignment: Alignment
+                                                                .center,
+                                                            // child: Image.asset(
+                                                            //     "${AppUI.imgPath}${index == 0 ? "cash.png" : index == 1 ? "master_card.png" : index == 2 ? "tabby.png" : "apple.png"}"),
+                                                            child: Image.asset(
+                                                                "${AppUI.imgPath}${index == 0 ? "cash.png" : index == 1 ? "master_card.png" : "tabby.png"}"),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                      ],
+                                                    );
+                                                  }),
+                                                )
+                                              : Row(
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        print(cubit
+                                                            .paymentGetaway[0]
+                                                            .id);
+                                                        print(cubit
+                                                            .paymentGetaway[0]
+                                                            .title);
+                                                        print(
+                                                            "***********************************************");
+                                                        if (cubit
+                                                                .selectedPaymentGetaways !=
+                                                            cubit.paymentGetaway[
+                                                                0]) {
+                                                          cubit.selectedPaymentGetaways =
+                                                              cubit.paymentGetaway[
+                                                                  0];
+                                                        } else {
+                                                          cubit.selectedPaymentGetaways =
+                                                              null;
+                                                        }
+                                                        cubit.emit(
+                                                            SelectedPaymentState());
+                                                      },
+                                                      child: Container(
+                                                        height: 46,
+                                                        width: 80,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 8,
+                                                                horizontal: 15),
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color: cubit.selectedPaymentGetaways != null
+                                                                    ? cubit.selectedPaymentGetaways!.id == cubit.paymentGetaway[0].id
+                                                                        ? AppUI.mainColor
+                                                                        : AppUI.backgroundColor
+                                                                    : AppUI.backgroundColor),
+                                                            borderRadius: BorderRadius.circular(10)),
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Image.asset(
+                                                            "${AppUI.imgPath}${"cash.png"}"),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                  ],
+                                                ));
                                 })
                           ],
                         ),

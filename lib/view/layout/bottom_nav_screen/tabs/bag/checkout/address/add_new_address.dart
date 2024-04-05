@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_state.dart';
@@ -8,7 +9,9 @@ import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/select_address_from_map.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../../../../../../../../shared/components.dart';
 import '../../../../../../../../utilities/app_ui.dart';
 import '../../../../../../../../utilities/app_util.dart';
@@ -36,12 +39,14 @@ class _AddNewAddressState extends State<AddNewAddress> {
   late List address;
   String user = "", email = "", selectedRegion = "", selectedCity = "";
   int selectedRegionIndex = 0;
+  int selectedStateIndex = 0;
   List<String> regions = [], regionsAr = [];
   List<List<String>> cities = [], citiesAr = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    final cubit = CheckoutCubit.get(context);
+    cubit.fetchCountries();
     getData();
   }
 
@@ -170,16 +175,104 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                 text: "phoneNumber".tr(),
                                 color: AppUI.greyColor,
                               ),
-                              CustomInput(
-                                controller: cubit.phoneController,
-                                hint: "phoneNumber".tr(),
-                                textInputType: TextInputType.phone,
-                                maxLength: 9,
-                                suffixIcon: Image.asset(
-                                  "${AppUI.imgPath}sar.png",
-                                  width: 50,
+                              // CustomInput(
+                              //   controller: cubit.phoneController,
+                              //   hint: "phoneNumber".tr(),
+                              //   textInputType: TextInputType.phone,
+
+                              //   maxLength: 9,
+                              //   suffixIcon:
+                              InternationalPhoneNumberInput(
+                                // maxLength: 9,
+
+                                onInputChanged: (PhoneNumber number) {
+                                  log(number.phoneNumber.toString());
+                                  cubit.phoneCode = number.dialCode ?? "+966";
+                                },
+                                onInputValidated: (bool value) {
+                                  log("Input Validated  " + value.toString());
+                                },
+                                validator: (number) {
+                                  if (number!.isEmpty) {
+                                    return "phoneNumberRequired".tr();
+                                  }
+                                  return null;
+                                },
+
+                                selectorConfig: SelectorConfig(
+                                  selectorType: PhoneInputSelectorType.DROPDOWN,
+                                  useBottomSheetSafeArea: true,
                                 ),
+                                ignoreBlank: false,
+                                autoValidateMode: AutovalidateMode.disabled,
+                                selectorTextStyle:
+                                    TextStyle(color: AppUI.blackColor),
+                                initialValue: PhoneNumber(
+                                    dialCode: "+966", isoCode: "SA"),
+                                textFieldController: cubit.phoneController,
+                                // formatInput: true,
+                                keyboardType: TextInputType.numberWithOptions(
+                                    signed: true, decimal: true),
+                                inputDecoration: InputDecoration(
+                                  hintText: "phoneNumber".tr(),
+                                  counterStyle:
+                                      TextStyle(fontSize: 0, height: 0),
+                                  hintStyle: TextStyle(
+                                    fontFamily: AppUtil.rtlDirection(context)
+                                        ? "cairo"
+                                        : "Tajawal",
+                                  ),
+                                  filled: true,
+                                  fillColor: AppUI.whiteColor,
+                                  suffixIconConstraints:
+                                      const BoxConstraints(minWidth: 63),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical:
+                                          AppUtil.responsiveHeight(context) *
+                                              0.021),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          bottomLeft: Radius.circular(15),
+                                          bottomRight: Radius.circular(15),
+                                          topRight: Radius.circular(15)),
+                                      borderSide: BorderSide(
+                                          color: AppUI.shimmerColor)),
+                                  disabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          bottomLeft: Radius.circular(15),
+                                          bottomRight: Radius.circular(15),
+                                          topRight: Radius.circular(15)),
+                                      borderSide: BorderSide(
+                                          color: AppUI.shimmerColor)),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          bottomLeft: Radius.circular(15),
+                                          bottomRight: Radius.circular(15),
+                                          topRight: Radius.circular(15)),
+                                      borderSide: BorderSide(
+                                          color: AppUI.shimmerColor,
+                                          width: 0.5)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          bottomLeft: Radius.circular(15),
+                                          bottomRight: Radius.circular(15),
+                                          topRight: Radius.circular(15)),
+                                      borderSide:
+                                          BorderSide(color: AppUI.mainColor)),
+                                ),
+                                onSaved: (PhoneNumber number) {
+                                  print('On Saved: $number');
+                                },
                               ),
+                              //  Image.asset(
+                              //   "${AppUI.imgPath}sar.png",
+                              //   width: 50,
+                              // ),
                             ],
                           ),
                         ),
@@ -194,110 +287,46 @@ class _AddNewAddressState extends State<AddNewAddress> {
                             ],
                           ),
                         ),
-                        Container(
-                          color: AppUI.whiteColor,
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                text: "email".tr(),
-                                color: AppUI.greyColor,
-                              ),
-                              CustomInput(
-                                controller: cubit.emailController2,
-                                textInputType: TextInputType.emailAddress,
-                                hint: "email".tr(),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              CustomText(
-                                text: "state".tr(),
-                                color: AppUI.greyColor,
-                              ),
-                              CustomInput(
-                                controller: cubit.stateController,
-                                textInputType: TextInputType.text,
-                                readOnly: true,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              CustomText(
-                                text: "region".tr(),
-                                color: AppUI.greyColor,
-                              ),
-                              CustomInput(
-                                hint: "region".tr(),
-                                controller: cubit.countryController,
-                                textInputType: TextInputType.text,
-                                suffixIcon:
-                                    const Icon(Icons.keyboard_arrow_down),
-                                readOnly: true,
-                                onTap: () {
-                                  AppUtil.dialog2(
-                                      context,
-                                      "region".tr(),
-                                      List.generate(regions.length, (index) {
-                                        return Column(
-                                          children: [
-                                            InkWell(
-                                                onTap: () {
-                                                  Navigator.of(context,
-                                                          rootNavigator: true)
-                                                      .pop();
-                                                  cubit.countryController.text =
-                                                      AppUtil.rtlDirection(
-                                                              context)
-                                                          ? regionsAr[index]
-                                                          : regions[index];
-                                                  selectedRegion =
-                                                      regions[index];
-                                                  selectedRegionIndex = index;
-                                                  print(selectedRegion);
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    CustomText(
-                                                        text: AppUtil
-                                                                .rtlDirection(
-                                                                    context)
-                                                            ? regionsAr[index]
-                                                            : regions[index]),
-                                                  ],
-                                                )),
-                                            const Divider(),
-                                          ],
-                                        );
-                                      }));
-                                },
-                              ),
-                              CustomText(
-                                text: "city".tr(),
-                                color: AppUI.greyColor,
-                              ),
-                              CustomInput(
-                                hint: "city".tr(),
-                                controller: cubit.cityController,
-                                textInputType: TextInputType.text,
-                                suffixIcon:
-                                    const Icon(Icons.keyboard_arrow_down),
-                                readOnly: true,
-                                onTap: () {
-                                  AppUtil.dialog2(context, "city".tr(), [
-                                    SizedBox(
-                                      height:
-                                          AppUtil.responsiveHeight(context) *
-                                              0.7,
-                                      child: SingleChildScrollView(
-                                        child: Column(
-                                          children: List.generate(
-                                              cities[selectedRegionIndex]
-                                                  .length, (index) {
+                        BlocBuilder<CheckoutCubit, CheckoutState>(
+                          buildWhen: (context, state) =>
+                              state is CheckoutChangeState,
+                          builder: (context, state) {
+                            return Container(
+                              color: AppUI.whiteColor,
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    text: "email".tr(),
+                                    color: AppUI.greyColor,
+                                  ),
+                                  CustomInput(
+                                    controller: cubit.emailController2,
+                                    textInputType: TextInputType.emailAddress,
+                                    hint: "email".tr(),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  // State Like KSA
+                                  CustomText(
+                                    text: "state".tr(),
+                                    color: AppUI.greyColor,
+                                  ),
+                                  CustomInput(
+                                    // hint: "state".tr(),
+                                    controller: cubit.stateController,
+                                    textInputType: TextInputType.text,
+                                    suffixIcon:
+                                        const Icon(Icons.keyboard_arrow_down),
+                                    readOnly: true,
+                                    onTap: () {
+                                      AppUtil.dialog2(
+                                          context,
+                                          "state".tr(),
+                                          List.generate(cubit.countries.length,
+                                              (index) {
                                             return Column(
                                               children: [
                                                 InkWell(
@@ -306,25 +335,171 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                                               rootNavigator:
                                                                   true)
                                                           .pop();
-                                                      cubit.cityController
-                                                          .text = AppUtil
-                                                              .rtlDirection(
-                                                                  context)
-                                                          ? citiesAr[
-                                                                  selectedRegionIndex]
-                                                              [index]
-                                                          : cities[
-                                                                  selectedRegionIndex]
-                                                              [index];
-                                                      selectedCity = cities[
-                                                              selectedRegionIndex]
-                                                          [index];
-                                                      print(selectedCity);
+                                                      cubit.stateController
+                                                              .text =
+                                                          cubit
+                                                              .countries[index];
+
+                                                      cubit.selectedState =
+                                                          cubit
+                                                              .countries[index];
+                                                      selectedStateIndex =
+                                                          index;
+                                                      print(
+                                                          cubit.selectedState);
+                                                      cubit.updateState();
                                                     },
                                                     child: Row(
                                                       children: [
                                                         CustomText(
-                                                            text: AppUtil
+                                                          text: cubit
+                                                              .countries[index],
+                                                        ),
+                                                      ],
+                                                    )),
+                                                const Divider(),
+                                              ],
+                                            );
+                                          }));
+                                    },
+                                  ),
+
+                                  // CustomInput(
+                                  //   controller: cubit.stateController,
+                                  //   textInputType: TextInputType.text,
+                                  //   readOnly: true,
+                                  // ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+
+                                  // const SizedBox(
+                                  //   height: 10,
+                                  // ),
+
+                                  (cubit.selectedState ==
+                                          'المملكة العربية السعودية')
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CustomText(
+                                              text: "region".tr(),
+                                              color: AppUI.greyColor,
+                                            ),
+                                            CustomInput(
+                                              hint: "region".tr(),
+                                              controller:
+                                                  cubit.countryController,
+                                              textInputType: TextInputType.text,
+                                              suffixIcon: const Icon(
+                                                  Icons.keyboard_arrow_down),
+                                              readOnly: true,
+                                              onTap: () {
+                                                AppUtil.dialog2(
+                                                    context,
+                                                    "region".tr(),
+                                                    List.generate(
+                                                        regions.length,
+                                                        (index) {
+                                                      return Column(
+                                                        children: [
+                                                          InkWell(
+                                                              onTap: () {
+                                                                Navigator.of(
+                                                                        context,
+                                                                        rootNavigator:
+                                                                            true)
+                                                                    .pop();
+                                                                cubit
+                                                                    .countryController
+                                                                    .text = AppUtil
+                                                                        .rtlDirection(
+                                                                            context)
+                                                                    ? regionsAr[
+                                                                        index]
+                                                                    : regions[
+                                                                        index];
+                                                                selectedRegion =
+                                                                    regions[
+                                                                        index];
+                                                                selectedRegionIndex =
+                                                                    index;
+                                                                print(
+                                                                    selectedRegion);
+                                                              },
+                                                              child: Row(
+                                                                children: [
+                                                                  CustomText(
+                                                                      text: AppUtil.rtlDirection(
+                                                                              context)
+                                                                          ? regionsAr[
+                                                                              index]
+                                                                          : regions[
+                                                                              index]),
+                                                                ],
+                                                              )),
+                                                          const Divider(),
+                                                        ],
+                                                      );
+                                                    }));
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CustomText(
+                                              text: "address".tr(),
+                                              color: AppUI.greyColor,
+                                            ),
+                                            CustomInput(
+                                              controller:
+                                                  cubit.addressController,
+                                              textInputType: TextInputType.text,
+                                              hint: "address".tr(),
+                                            ),
+                                          ],
+                                        ),
+
+                                  // ? If State Is KSA
+                                  if (cubit.selectedState ==
+                                      'المملكة العربية السعودية') ...[
+                                    CustomText(
+                                      text: "city".tr(),
+                                      color: AppUI.greyColor,
+                                    ),
+                                    CustomInput(
+                                      hint: "city".tr(),
+                                      controller: cubit.cityController,
+                                      textInputType: TextInputType.text,
+                                      suffixIcon:
+                                          const Icon(Icons.keyboard_arrow_down),
+                                      readOnly: true,
+                                      onTap: () {
+                                        AppUtil.dialog2(context, "city".tr(), [
+                                          SizedBox(
+                                            height: AppUtil.responsiveHeight(
+                                                    context) *
+                                                0.7,
+                                            child: SingleChildScrollView(
+                                              child: Column(
+                                                children: List.generate(
+                                                    cities[selectedRegionIndex]
+                                                        .length, (index) {
+                                                  return Column(
+                                                    children: [
+                                                      InkWell(
+                                                          onTap: () {
+                                                            Navigator.of(
+                                                                    context,
+                                                                    rootNavigator:
+                                                                        true)
+                                                                .pop();
+                                                            cubit.cityController
+                                                                .text = AppUtil
                                                                     .rtlDirection(
                                                                         context)
                                                                 ? citiesAr[
@@ -332,55 +507,77 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                                                     [index]
                                                                 : cities[
                                                                         selectedRegionIndex]
-                                                                    [index]),
-                                                      ],
-                                                    )),
-                                                const Divider(),
-                                              ],
-                                            );
-                                          }),
-                                        ),
-                                      ),
-                                    )
-                                  ]);
-                                },
+                                                                    [index];
+                                                            selectedCity = cities[
+                                                                    selectedRegionIndex]
+                                                                [index];
+                                                            print(selectedCity);
+                                                          },
+                                                          child: Row(
+                                                            children: [
+                                                              CustomText(
+                                                                  text: AppUtil
+                                                                          .rtlDirection(
+                                                                              context)
+                                                                      ? citiesAr[
+                                                                              selectedRegionIndex]
+                                                                          [
+                                                                          index]
+                                                                      : cities[
+                                                                              selectedRegionIndex]
+                                                                          [
+                                                                          index]),
+                                                            ],
+                                                          )),
+                                                      const Divider(),
+                                                    ],
+                                                  );
+                                                }),
+                                              ),
+                                            ),
+                                          )
+                                        ]);
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    CustomText(
+                                      text: "address".tr(),
+                                      color: AppUI.greyColor,
+                                    ),
+                                    CustomInput(
+                                      controller: cubit.addressController,
+                                      textInputType: TextInputType.text,
+                                      hint: "address".tr(),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                  // CustomText(text: "${"address".tr()} 2",color: AppUI.greyColor,),
+                                  // CustomInput(controller: cubit.address2Controller, textInputType: TextInputType.text,),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  CustomText(
+                                    text: "postCode".tr(),
+                                    color: AppUI.greyColor,
+                                  ),
+                                  CustomInput(
+                                    controller: cubit.postCodeController,
+                                    textInputType: TextInputType.text,
+                                    hint: "postCode".tr(),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  // CustomText(text: "country".tr(),color: AppUI.greyColor,),
+                                  // CustomInput(controller: cubit.countryController, textInputType: TextInputType.text,),
+                                ],
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              CustomText(
-                                text: "address".tr(),
-                                color: AppUI.greyColor,
-                              ),
-                              CustomInput(
-                                controller: cubit.addressController,
-                                textInputType: TextInputType.text,
-                                hint: "address".tr(),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              // CustomText(text: "${"address".tr()} 2",color: AppUI.greyColor,),
-                              // CustomInput(controller: cubit.address2Controller, textInputType: TextInputType.text,),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              CustomText(
-                                text: "postCode".tr(),
-                                color: AppUI.greyColor,
-                              ),
-                              CustomInput(
-                                controller: cubit.postCodeController,
-                                textInputType: TextInputType.text,
-                                hint: "postCode".tr(),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              // CustomText(text: "country".tr(),color: AppUI.greyColor,),
-                              // CustomInput(controller: cubit.countryController, textInputType: TextInputType.text,),
-                            ],
-                          ),
+                            );
+                          },
                         ),
                         // BlocBuilder<CheckoutCubit,CheckoutState>(
                         //     buildWhen: (context,state) => state is AddressesState,
@@ -416,8 +613,10 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                     context, "inValidEmail".tr());
                                 return;
                               }
-                              if (!AppUtil.isPhoneValidate(
-                                  cubit.phoneController.text)) {
+                              if ((cubit.selectedState ==
+                                      'المملكة العربية السعودية') &&
+                                  !AppUtil.isPhoneValidate(
+                                      cubit.phoneController.text)) {
                                 AppUtil.errorToast(
                                     context, "inValidPhone".tr());
                                 return;
@@ -450,14 +649,15 @@ class _AddNewAddressState extends State<AddNewAddress> {
                               } else {
                                 final response =
                                     await CheckoutCubit.get(context).sendPhone(
-                                        '00966${cubit.phoneController.text}');
+                                  '${cubit.phoneCode}${cubit.phoneController.text}',
+                                );
 
                                 if (response["success"] == 1) {
                                   AppUtil.mainNavigator(
                                       context,
                                       OTPScreen(
                                         phone:
-                                            '00966${cubit.phoneController.text}',
+                                            '${cubit.phoneCode}${cubit.phoneController.text}',
                                         addressId: widget.addressKey,
                                         isQuest: widget.isquest,
                                         selectedCity: selectedCity,

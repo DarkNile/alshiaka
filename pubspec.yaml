@@ -71,6 +71,7 @@ dependencies:
   flutter_app_version_checker: ^0.3.2
   firebase_core: ^2.8.0
   firebase_messaging: ^14.3.0
+  intl_phone_number_input: ^0.7.4
 
 dev_dependencies:
   flutter_test:

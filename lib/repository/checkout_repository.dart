@@ -109,4 +109,21 @@ class CheckoutRepository {
         headers: {"Accept": "application/json"});
     return response.statusCode;
   }
+
+  static Future<Map<String, dynamic>> fetchCountries() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "https://alshiaka.com/wp-json/woocommerce/countries/fetch?consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b"),
+        headers: {"Accept": "application/json"});
+
+    if (response.statusCode != 200) {
+      return {
+        "error": response.body,
+      };
+    }
+
+    var data = jsonDecode(response.body);
+
+    return data[0];
+  }
 }

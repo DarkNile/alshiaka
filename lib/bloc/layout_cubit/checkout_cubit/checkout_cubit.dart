@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_cubit.dart';
 import 'package:ahshiaka/bloc/profile_cubit/profile_cubit.dart';
@@ -195,6 +196,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   var nameController2 = TextEditingController();
   var surNameController2 = TextEditingController();
   var phoneController = TextEditingController();
+  String phoneCode = '';
   var emailController = TextEditingController();
   var emailController2 = TextEditingController();
   var addressController = TextEditingController();
@@ -244,27 +246,25 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       print(db.allProduct());
       print(
           "*******************************************************************************");
-      if (x != null) {
-        loadaddresslocal();
-        AppUtil.successToast(context, "addedSuccessfully".tr());
-        // Navigator.of(context, rootNavigator: true).pop();
-        // Navigator.of(context, rootNavigator: true).pop();
-        AppUtil.mainNavigator(
-            context,
-            AddressesScreen(
-              isquest: isquest,
-            ));
-        nameController2.clear();
-        surNameController2.clear();
-        countryController.clear();
-        addressController.clear();
-        cityController.clear();
-        address2Controller.clear();
-        stateController.clear();
-        postCodeController.clear();
-        phoneController.clear();
-        emailController2.clear();
-      }
+      loadaddresslocal();
+      AppUtil.successToast(context, "addedSuccessfully".tr());
+      // Navigator.of(context, rootNavigator: true).pop();
+      // Navigator.of(context, rootNavigator: true).pop();
+      AppUtil.mainNavigator(
+          context,
+          AddressesScreen(
+            isquest: isquest,
+          ));
+      nameController2.clear();
+      surNameController2.clear();
+      countryController.clear();
+      addressController.clear();
+      cityController.clear();
+      address2Controller.clear();
+      stateController.clear();
+      postCodeController.clear();
+      phoneController.clear();
+      emailController2.clear();
     } else {
       Map<String, dynamic> formData = {
         "shipping_first_name": nameController2.text,
@@ -782,5 +782,26 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     } catch (e) {
       return Future.error(e);
     }
+  }
+
+  // Get Countries
+  String selectedState = "";
+  List<String> countries = [];
+  fetchCountries() async {
+    countries.clear();
+    Map<String, dynamic> response = await CheckoutRepository.fetchCountries();
+    response.values.toList().forEach((c) {
+      countries.add(c);
+    });
+
+    log("Countries" + countries.toString());
+    stateController.text = countries[1];
+    selectedState = countries[1];
+    emit(CheckoutChangeState());
+  }
+
+  // Update
+  updateState() {
+    emit(CheckoutChangeState());
   }
 }
