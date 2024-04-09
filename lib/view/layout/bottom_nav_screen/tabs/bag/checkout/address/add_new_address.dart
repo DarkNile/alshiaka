@@ -1,26 +1,19 @@
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_state.dart';
 import 'package:ahshiaka/models/checkout/shipping_model.dart';
-import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/otp_screen.dart';
-import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/select_address_from_map.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../../../../../../../../shared/components.dart';
 import '../../../../../../../../utilities/app_ui.dart';
 import '../../../../../../../../utilities/app_util.dart';
-import '../../../../../../../models/AddressLocalModel.dart';
 import '../../../../../../../shared/cash_helper.dart';
 import 'package:ahshiaka/shared/CheckNetwork.dart';
 
-import '../../../../../../../utilities/dbHelper.dart';
-
+// ignore: must_be_immutable
 class AddNewAddress extends StatefulWidget {
   bool isquest;
   final Address0? address;
@@ -45,8 +38,6 @@ class _AddNewAddressState extends State<AddNewAddress> {
   @override
   void initState() {
     super.initState();
-    final cubit = CheckoutCubit.get(context);
-    cubit.fetchCountries();
     getData();
   }
 
@@ -175,19 +166,11 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                 text: "phoneNumber".tr(),
                                 color: AppUI.greyColor,
                               ),
-                              // CustomInput(
-                              //   controller: cubit.phoneController,
-                              //   hint: "phoneNumber".tr(),
-                              //   textInputType: TextInputType.phone,
-
-                              //   maxLength: 9,
-                              //   suffixIcon:
                               InternationalPhoneNumberInput(
-                                // maxLength: 9,
-
                                 onInputChanged: (PhoneNumber number) {
                                   log(number.phoneNumber.toString());
                                   cubit.phoneCode = number.dialCode ?? "+966";
+                                  cubit.phoneNumber = number;
                                 },
                                 onInputValidated: (bool value) {
                                   log("Input Validated  " + value.toString());
@@ -207,8 +190,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                 autoValidateMode: AutovalidateMode.disabled,
                                 selectorTextStyle:
                                     TextStyle(color: AppUI.blackColor),
-                                initialValue: PhoneNumber(
-                                    dialCode: "+966", isoCode: "SA"),
+                                initialValue: cubit.phoneNumber,
                                 textFieldController: cubit.phoneController,
                                 // formatInput: true,
                                 keyboardType: TextInputType.numberWithOptions(
@@ -269,10 +251,6 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                   print('On Saved: $number');
                                 },
                               ),
-                              //  Image.asset(
-                              //   "${AppUI.imgPath}sar.png",
-                              //   width: 50,
-                              // ),
                             ],
                           ),
                         ),
@@ -335,25 +313,33 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                                               rootNavigator:
                                                                   true)
                                                           .pop();
+                                                      cubit.selectedCountry =
+                                                          cubit
+                                                              .countries[index];
                                                       cubit.stateController
                                                               .text =
-                                                          cubit
-                                                              .countries[index];
+                                                          cubit.countries[index]
+                                                              .name;
 
                                                       cubit.selectedState =
-                                                          cubit
-                                                              .countries[index];
+                                                          cubit.countries[index]
+                                                              .name;
                                                       selectedStateIndex =
                                                           index;
                                                       print(
                                                           cubit.selectedState);
+                                                      if (cubit.selectedState ==
+                                                          AppUtil.ksa) {
+                                                        getData();
+                                                      }
                                                       cubit.updateState();
                                                     },
                                                     child: Row(
                                                       children: [
                                                         CustomText(
                                                           text: cubit
-                                                              .countries[index],
+                                                              .countries[index]
+                                                              .name,
                                                         ),
                                                       ],
                                                     )),
@@ -377,8 +363,8 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                   //   height: 10,
                                   // ),
 
-                                  (cubit.selectedState ==
-                                          'المملكة العربية السعودية')
+                                  (cubit.selectedState != "" &&
+                                          cubit.selectedState == AppUtil.ksa)
                                       ? Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -452,21 +438,23 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             CustomText(
-                                              text: "address".tr(),
+                                              text: "city".tr(),
                                               color: AppUI.greyColor,
                                             ),
                                             CustomInput(
-                                              controller:
-                                                  cubit.addressController,
+                                              hint: "city".tr(),
+                                              controller: cubit.cityController,
+                                              onChange: (city) {
+                                                selectedCity = city;
+                                              },
                                               textInputType: TextInputType.text,
-                                              hint: "address".tr(),
                                             ),
                                           ],
                                         ),
 
                                   // ? If State Is KSA
-                                  if (cubit.selectedState ==
-                                      'المملكة العربية السعودية') ...[
+                                  if (cubit.selectedState != "" &&
+                                      cubit.selectedState == AppUtil.ksa) ...[
                                     CustomText(
                                       text: "city".tr(),
                                       color: AppUI.greyColor,
@@ -475,6 +463,9 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                       hint: "city".tr(),
                                       controller: cubit.cityController,
                                       textInputType: TextInputType.text,
+                                      onChange: (city) {
+                                        selectedCity = city;
+                                      },
                                       suffixIcon:
                                           const Icon(Icons.keyboard_arrow_down),
                                       readOnly: true,
@@ -613,16 +604,19 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                     context, "inValidEmail".tr());
                                 return;
                               }
-                              if ((cubit.selectedState ==
-                                      'المملكة العربية السعودية') &&
+                              if ((cubit.selectedState != "" &&
+                                      cubit.selectedState != "" &&
+                                      cubit.selectedState == AppUtil.ksa) &&
                                   !AppUtil.isPhoneValidate(
                                       cubit.phoneController.text)) {
                                 AppUtil.errorToast(
                                     context, "inValidPhone".tr());
                                 return;
                               }
-                              if (!AppUtil.isAddressValidate(
-                                  cubit.addressController.text)) {
+                              if ((cubit.selectedState != "" &&
+                                      cubit.selectedState == AppUtil.ksa) &&
+                                  !AppUtil.isAddressValidate(
+                                      cubit.addressController.text)) {
                                 AppUtil.errorToast(
                                     context, "inValidAddress".tr());
                                 return;
@@ -638,7 +632,10 @@ class _AddNewAddressState extends State<AddNewAddress> {
                               // cubit.countryController.text = selectedRegion;
                               // cubit.cityController.text = selectedCity;
 
-                              if (widget.address != null) {
+                              log("selectedRegion $selectedRegion  selectedCity $selectedCity");
+
+                              if (cubit.selectedState == AppUtil.ksa &&
+                                  widget.address != null) {
                                 await CheckoutCubit.get(context).saveAddress(
                                   context,
                                   address_id: widget.addressKey,
@@ -646,7 +643,16 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                   selectedRegion: selectedRegion,
                                   selectedCity: selectedCity,
                                 );
-                              } else {
+                              } else if (cubit.selectedState != '' &&
+                                  cubit.cityController.text != '') {
+                                await CheckoutCubit.get(context).saveAddress(
+                                  context,
+                                  address_id: widget.addressKey,
+                                  isquest: widget.isquest,
+                                  selectedRegion: selectedRegion,
+                                  selectedCity: selectedCity,
+                                );
+                              } else if (cubit.selectedState == AppUtil.ksa) {
                                 final response =
                                     await CheckoutCubit.get(context).sendPhone(
                                   '${cubit.phoneCode}${cubit.phoneController.text}',
@@ -1246,34 +1252,64 @@ class _AddNewAddressState extends State<AddNewAddress> {
     //   cubit.postCodeController.text = "";
     // }
 
-    cubit.stateController.text = "Saudi Arabia";
+    // cubit.stateController.text = "Saudi Arabia";
+    if (cubit.countries == [] || cubit.countries.isEmpty) {
+      cubit.stateController.text = AppUtil.ksa;
+      cubit.selectedState = AppUtil.ksa;
+    }
 
-    if (widget.address != null) {
-      cubit.addressController.text = widget.address!.shippingAddress1!;
-      cubit.postCodeController.text = widget.address!.shippingPostcode!;
-      int indexOfRegion = 0;
-      if (regionsAr.contains(widget.address!.shippingCountry!)) {
-        indexOfRegion = regionsAr.indexOf(widget.address!.shippingCountry!);
+    if (cubit.selectedState == AppUtil.ksa) {
+      if (widget.address != null) {
+        cubit.addressController.text = widget.address!.shippingAddress1!;
+        cubit.postCodeController.text = widget.address!.shippingPostcode!;
+        int indexOfRegion = 0;
+        if (regionsAr.contains(widget.address!.shippingCountry!)) {
+          indexOfRegion = regionsAr.indexOf(widget.address!.shippingCountry!);
+        }
+        selectedRegionIndex = indexOfRegion;
+        selectedRegion = regions[indexOfRegion];
+        print('selectedRegion $selectedRegion');
+        cubit.countryController.text = widget.address!.shippingCountry!;
+        selectedCity = widget.address!.shippingCity!;
+        cubit.cityController.text = widget.address!.shippingCity!;
+        cubit.phoneController.text = widget.address!.shippingPhone!;
+        cubit.nameController2.text = widget.address!.shippingFirstName!;
+        cubit.surNameController2.text = widget.address!.shippingLastName!;
+        cubit.emailController2.text = widget.address!.shippingEmail!;
+      } else {
+        cubit.nameController2.text = user.isEmpty ? "" : user.split('_').first;
+        cubit.surNameController2.text =
+            user.isEmpty ? "" : user.split('_').last;
+        cubit.emailController2.text = email.isEmpty ? "" : email;
+        cubit.phoneController.text = "";
+        cubit.postCodeController.text = "";
+        cubit.addressController.text = "";
+        cubit.cityController.text = "";
+        cubit.countryController.text = "";
       }
-      selectedRegionIndex = indexOfRegion;
-      selectedRegion = regions[indexOfRegion];
-      print('dfvvfd $selectedRegion');
-      cubit.countryController.text = widget.address!.shippingCountry!;
-      selectedCity = widget.address!.shippingCity!;
-      cubit.cityController.text = widget.address!.shippingCity!;
-      cubit.phoneController.text = widget.address!.shippingPhone!;
-      cubit.nameController2.text = widget.address!.shippingFirstName!;
-      cubit.surNameController2.text = widget.address!.shippingLastName!;
-      cubit.emailController2.text = widget.address!.shippingEmail!;
     } else {
-      cubit.nameController2.text = user.isEmpty ? "" : user.split('_').first;
-      cubit.surNameController2.text = user.isEmpty ? "" : user.split('_').last;
-      cubit.emailController2.text = email.isEmpty ? "" : email;
-      cubit.phoneController.text = "";
-      cubit.postCodeController.text = "";
-      cubit.addressController.text = "";
-      cubit.cityController.text = "";
-      cubit.countryController.text = "";
+      if (widget.address != null) {
+        cubit.postCodeController.text = widget.address!.shippingPostcode!;
+        cubit.countryController.text = widget.address!.shippingCountry!;
+        selectedCity = widget.address!.shippingCity!;
+        cubit.cityController.text = widget.address!.shippingCity!;
+        cubit.addressController.text = widget.address!.shippingCity!;
+        cubit.phoneController.text = widget.address!.shippingPhone!;
+        cubit.nameController2.text = widget.address!.shippingFirstName!;
+        cubit.surNameController2.text = widget.address!.shippingLastName!;
+        cubit.emailController2.text = widget.address!.shippingEmail!;
+      } else {
+        cubit.nameController2.text = user.isEmpty ? "" : user.split('_').first;
+        cubit.surNameController2.text =
+            user.isEmpty ? "" : user.split('_').last;
+        cubit.emailController2.text = email.isEmpty ? "" : email;
+        cubit.phoneController.text = "";
+        cubit.postCodeController.text = "";
+        cubit.addressController.text = "";
+        cubit.cityController.text = selectedCity;
+        cubit.addressController.text = selectedCity;
+        cubit.countryController.text = cubit.selectedState;
+      }
     }
 
     setState(() {});

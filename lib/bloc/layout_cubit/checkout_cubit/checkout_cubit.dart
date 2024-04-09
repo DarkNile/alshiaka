@@ -5,6 +5,8 @@ import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_cubit.dar
 import 'package:ahshiaka/bloc/profile_cubit/profile_cubit.dart';
 import 'package:ahshiaka/models/checkout/PaymentGetwayesModel.dart';
 import 'package:ahshiaka/models/checkout/addresses_model.dart';
+import 'package:ahshiaka/models/checkout/amount_aramex_model.dart';
+import 'package:ahshiaka/models/checkout/country_model.dart';
 import 'package:ahshiaka/models/checkout/coupons_model.dart';
 import 'package:ahshiaka/models/checkout/orders_model.dart';
 import 'package:ahshiaka/models/checkout/shipping_methods_model.dart';
@@ -16,7 +18,9 @@ import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/my_orders/my
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 // import 'package:tabby_flutter_sdk/tabby_flutter_sdk.dart' as tabby;
 import '../../../models/AddressLocalModel.dart';
 import '../../../models/categories/products_model.dart';
@@ -197,6 +201,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   var surNameController2 = TextEditingController();
   var phoneController = TextEditingController();
   String phoneCode = '';
+  PhoneNumber phoneNumber = PhoneNumber(dialCode: "+966", isoCode: "SA");
   var emailController = TextEditingController();
   var emailController2 = TextEditingController();
   var addressController = TextEditingController();
@@ -314,6 +319,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           emailController.clear();
         }
       } catch (e) {
+        log("Adressss Error : ${e.toString()}");
         return Future.error(e);
       }
       fetchAddresses();
@@ -406,6 +412,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       print(response);
       return response;
     } catch (e) {
+      log("Send Phone Error : ${e.toString()}");
       return Future.error(e);
     }
   }
@@ -432,17 +439,22 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
 //payment
   List<PaymentGetwayesModel> paymentGetaway = [];
+  List<PaymentGetwayesModel> paymentGetawayNoCash = [];
   PaymentGetwayesModel? selectedPaymentGetaways;
 
   fetchPaymentGetaways() async {
     paymentGetaway.clear();
+    paymentGetawayNoCash.clear();
     try {
       var response = await CheckoutRepository.fetchPaymentGetaways();
+
       response.forEach((element) {
         if (element['enabled']) {
           paymentGetaway.add(PaymentGetwayesModel.fromJson(element));
+          paymentGetawayNoCash.add(PaymentGetwayesModel.fromJson(element));
         }
       });
+      paymentGetawayNoCash.removeAt(0);
       // if (Platform.isIOS) {
       //   paymentGetaway
       //       .add(PaymentGetwayesModel(id: 'apple_pay', title: 'Apple Pay'));
@@ -546,6 +558,40 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       emit(CheckoutErrorState());
       return Future.error(e);
     }
+  }
+
+  //? ========= Total Aramex =========
+  AmountAramexModel? amountAramexModel;
+  Future<AmountAramexModel?> getTotalAramex(
+      {required BuildContext context,
+      required String country,
+      required String city,
+      required String numberOfPieces,
+      required String actualWeight}) async {
+    emit(GetTotalLoadingState());
+    try {
+      log("getTotalAramex");
+      var response = await CheckoutRepository.getTotalAramex(
+          country: country,
+          city: city,
+          actualWeight: actualWeight,
+          numberOfPieces: numberOfPieces);
+      log("response ${response.statusCode}");
+      var data = jsonDecode(response.body);
+      if (response.body.contains('error')) {
+        emit(GetTotalErrorState(response.body));
+        return null;
+      } else {
+        log("response ${data}");
+        amountAramexModel = AmountAramexModel.fromJson(data);
+        emit(GetTotalLoadedState(amountAramexModel!));
+        return amountAramexModel;
+      }
+    } catch (e) {
+      log("error getTotalAramex ${e}");
+      emit(GetTotalErrorState(e.toString()));
+    }
+    return null;
   }
 
   //create order
@@ -786,17 +832,21 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   // Get Countries
   String selectedState = "";
-  List<String> countries = [];
+  CountryModel? selectedCountry;
+  List<CountryModel> countries = [];
+
   fetchCountries() async {
     countries.clear();
     Map<String, dynamic> response = await CheckoutRepository.fetchCountries();
-    response.values.toList().forEach((c) {
-      countries.add(c);
+    response.forEach((key, value) {
+      countries.add(CountryModel(name: value, code: key));
     });
-
     log("Countries" + countries.toString());
-    stateController.text = countries[1];
-    selectedState = countries[1];
+    if (selectedCountry == null) {
+      selectedCountry = countries[1];
+      stateController.text = countries[1].name;
+      selectedState = countries[1].name;
+    }
     emit(CheckoutChangeState());
   }
 
