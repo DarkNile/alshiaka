@@ -63,6 +63,26 @@ class CheckoutRepository {
         formData: formData, headerState: true);
   }
 
+  //? ====== Aramex ======
+  static Future<http.Response> getTotalAramex(
+      {required String country,
+      required String city,
+      required String numberOfPieces,
+      required String actualWeight}) async {
+    return await http.get(
+      false
+          ? Uri.parse(
+              'https://alshiaka.com/wp-json/aramex-shipping-rate/calc/api?consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&country=EG&city=Cairo&numberofpieces=5&actualweight=5')
+          : Uri.parse(
+              "https://alshiaka.com/wp-json/aramex-shipping-rate/calc/api?consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&country=$country&city=$city&numberofpieces=$numberOfPieces&actualweight=$actualWeight",
+            ),
+      headers: {
+        "Accept": "application/json",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+  }
+
   static Future saveAddress(formData, email, {String? address_id}) async {
     return await NetworkHelper.repo(
         address_id == null

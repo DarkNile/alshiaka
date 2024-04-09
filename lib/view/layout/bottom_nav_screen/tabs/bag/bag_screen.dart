@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:ahshiaka/repository/checkout_repository.dart';
 import 'package:flutter_toastr/flutter_toastr.dart';
@@ -91,13 +92,44 @@ class _BagScreenState extends State<BagScreen> {
     refreshPage();
   }
 
+  getTotal(CheckoutCubit cubit) async {
+    if (cubit.selectedCountry?.code != null) {
+      double weight = 0.0;
+      cubit.cartList.forEach((prod) {
+        weight += double.parse(prod.weight.toString());
+      });
+
+      var numberOfPieces =
+          cubit.qty.fold(0, (previousValue, q) => previousValue + q).toString();
+      log("Weight $weight");
+      log("country ${cubit.selectedCountry!.code}");
+      log("city ${cubit.cityController.text}");
+      log("numberOfPieces $numberOfPieces");
+
+      await cubit.getTotalAramex(
+          context: context,
+          country: cubit.selectedCountry!.code,
+          city: cubit.cityController.text,
+          numberOfPieces: numberOfPieces,
+          actualWeight: weight.toString());
+    } else {
+      log("selectedCountry == null ");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print(MediaQuery.of(context).size.width);
     print(
         "widthhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+
     final cubit = CheckoutCubit.get(context);
     final catCubit = CategoriesCubit.get(context);
+    log("cubit.selectedState ${cubit.selectedState}");
+    if (cubit.countries == [] || cubit.countries.isEmpty) {
+      cubit.stateController.text = AppUtil.ksa;
+      cubit.selectedState = AppUtil.ksa;
+    }
     // print('here ${catCubit.selectedCustomizations}');
     CheckoutCubit.get(context).fetchCartList(context);
     return Scaffold(
@@ -479,7 +511,8 @@ class _BagScreenState extends State<BagScreen> {
                                                           Row(
                                                             children: [
                                                               InkWell(
-                                                                onTap: () {
+                                                                onTap:
+                                                                    () async {
                                                                   if (cubit.qty[
                                                                           index] !=
                                                                       1) {
@@ -491,6 +524,13 @@ class _BagScreenState extends State<BagScreen> {
                                                                         --cubit.qty[index],
                                                                         "decrement",
                                                                         context);
+                                                                    if (cubit
+                                                                            .selectedState !=
+                                                                        AppUtil
+                                                                            .ksa) {
+                                                                      await getTotal(
+                                                                          cubit);
+                                                                    }
                                                                   }
                                                                 },
                                                                 child:
@@ -539,7 +579,8 @@ class _BagScreenState extends State<BagScreen> {
                                                                 width: 10,
                                                               ),
                                                               InkWell(
-                                                                onTap: () {
+                                                                onTap:
+                                                                    () async {
                                                                   cubit.changeQuantity(
                                                                       cubit.cartList[index].mainProductId !=
                                                                               null
@@ -556,6 +597,13 @@ class _BagScreenState extends State<BagScreen> {
                                                                           index],
                                                                       "increment",
                                                                       context);
+                                                                  if (cubit
+                                                                          .selectedState !=
+                                                                      AppUtil
+                                                                          .ksa) {
+                                                                    await getTotal(
+                                                                        cubit);
+                                                                  }
                                                                 },
                                                                 child:
                                                                     CircleAvatar(
@@ -815,23 +863,79 @@ class _BagScreenState extends State<BagScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.only(
-                            left: 15, right: 15, top: 10, bottom: 10),
-                        child: Row(
-                          children: [
-                            CustomText(text: "totalPrice".tr().toUpperCase()),
-                            const Spacer(),
-                            CustomText(
-                              text: "${cubit.total} SAR",
-                              color: AppUI.blackColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                      (cubit.selectedState != "" &&
+                              cubit.selectedState == AppUtil.ksa)
+                          ? Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.only(
+                                  left: 15, right: 15, top: 10, bottom: 10),
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                      text: "totalPrice".tr().toUpperCase()),
+                                  const Spacer(),
+                                  CustomText(
+                                    text: "${cubit.total} SAR",
+                                    color: AppUI.blackColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  )
+                                ],
+                              ),
                             )
-                          ],
-                        ),
-                      ),
+                          :
+                          //? ====== Get Total ======
+
+                          Center(
+                              child: BlocBuilder<CheckoutCubit, CheckoutState>(
+                                  buildWhen: (_, getTotalState) =>
+                                      getTotalState is GetTotalLoadingState ||
+                                      getTotalState is GetTotalLoadedState ||
+                                      getTotalState is GetTotalErrorState,
+                                  builder: (context, getTotalState) {
+                                    if (getTotalState is GetTotalErrorState) {
+                                      return Container(
+                                          color: AppUI.whiteColor,
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Text(
+                                            getTotalState.error,
+                                            style: TextStyle(
+                                                color: AppUI.errorColor),
+                                          ));
+                                    } else if (getTotalState
+                                        is GetTotalLoadedState) {
+                                      return Container(
+                                        color: Colors.white,
+                                        padding: EdgeInsets.only(
+                                            left: 15,
+                                            right: 15,
+                                            top: 10,
+                                            bottom: 10),
+                                        child: Row(
+                                          children: [
+                                            CustomText(
+                                                text: "totalPrice"
+                                                    .tr()
+                                                    .toUpperCase()),
+                                            const Spacer(),
+                                            CustomText(
+                                              text:
+                                                  "${getTotalState.amountAramex.amount!.value} ${getTotalState.amountAramex.amount!.currencyCode}",
+                                              color: AppUI.blackColor,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    return Container(
+                                      color: AppUI.whiteColor,
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: const CircularProgressIndicator(),
+                                    );
+                                  }),
+                            ),
                       Container(
                         color: Colors.white,
                         padding: EdgeInsets.only(left: 15, right: 15),
@@ -880,7 +984,7 @@ class _BagScreenState extends State<BagScreen> {
       print(response.body);
       print(response.statusCode);
       print("######################################################3333");
-      if (response.statusCode == 200 && response.body != null) {
+      if (response.statusCode == 200) {
         print(response.body);
         setState(() {
           connection = 200;

@@ -19,6 +19,7 @@ import '../view/layout/bottom_nav_screen/bottom_nav_tabs_screen.dart';
 import 'app_ui.dart';
 
 class AppUtil {
+  static String ksa = 'المملكة العربية السعودية';
   static double responsiveHeight(context) => MediaQuery.of(context).size.height;
   static double responsiveWidth(context) => MediaQuery.of(context).size.width;
   static mainNavigator(context, screen) => Navigator.of(context)
