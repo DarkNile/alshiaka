@@ -234,6 +234,15 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       required bool isquest,
       required String selectedRegion,
       required String selectedCity}) async {
+    log("First Name: ${nameController2.text}");
+    log("Last Name: ${surNameController2.text}");
+    log("phone: ${phoneController.text}");
+    log("state: ${stateController.text}");
+    log("selectedRegion: ${selectedRegion}");
+    log("selectedCity: ${selectedCity}");
+    log("state: ${stateController.text}");
+    log("address: ${addressController.text}");
+    log("code: ${postCodeController.text}");
     if (isquest) {
       AddressMedelLocal c = new AddressMedelLocal({
         "firstname": nameController2.text,
@@ -246,6 +255,8 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         "address": addressController.text,
         "code": postCodeController.text,
       });
+      log("Save Address to Local DB");
+
       int x = await db.addToCart(c, address_id);
       print(x);
       print(db.allProduct());
@@ -284,7 +295,8 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         "shipping_phone": phoneController.text,
         "shipping_email": emailController2.text
       };
-      print(formData.values);
+      log("formData ${formData.values}");
+      // print(formData.values);
       String email = await CashHelper.getSavedString("email", "");
 
       try {
@@ -854,4 +866,12 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   updateState() {
     emit(CheckoutChangeState());
   }
+
+  // ? ======== This Section For Address =========
+  late List address;
+  String user = "", email = "", selectedRegion = "", selectedCity = "";
+  int selectedRegionIndex = 0;
+  int selectedStateIndex = 0;
+  List<String> regions = [], regionsAr = [];
+  List<List<String>> cities = [], citiesAr = [];
 }
