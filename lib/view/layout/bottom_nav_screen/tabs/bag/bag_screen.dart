@@ -92,7 +92,7 @@ class _BagScreenState extends State<BagScreen> {
     refreshPage();
   }
 
-  getTotal(CheckoutCubit cubit) async {
+  getTaxAramex(CheckoutCubit cubit) async {
     if (cubit.selectedCountry?.code != null) {
       double weight = 0.0;
       cubit.cartList.forEach((prod) {
@@ -106,7 +106,7 @@ class _BagScreenState extends State<BagScreen> {
       log("city ${cubit.cityController.text}");
       log("numberOfPieces $numberOfPieces");
 
-      await cubit.getTotalAramex(
+      await cubit.getTaxAramex(
           context: context,
           country: cubit.selectedCountry!.code,
           city: cubit.cityController.text,
@@ -528,7 +528,7 @@ class _BagScreenState extends State<BagScreen> {
                                                                             .selectedState !=
                                                                         AppUtil
                                                                             .ksa) {
-                                                                      await getTotal(
+                                                                      await getTaxAramex(
                                                                           cubit);
                                                                     }
                                                                   }
@@ -601,7 +601,7 @@ class _BagScreenState extends State<BagScreen> {
                                                                           .selectedState !=
                                                                       AppUtil
                                                                           .ksa) {
-                                                                    await getTotal(
+                                                                    await getTaxAramex(
                                                                         cubit);
                                                                   }
                                                                 },

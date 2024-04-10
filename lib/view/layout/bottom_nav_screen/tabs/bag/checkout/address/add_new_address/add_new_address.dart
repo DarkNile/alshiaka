@@ -104,6 +104,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                 log("cubit.selectedCity ${cubit.selectedCity}");
                                 await CheckoutCubit.get(context).saveAddress(
                                   context,
+                                  isKsa: true,
                                   address_id: widget.addressKey,
                                   isquest: widget.isquest,
                                   selectedRegion: cubit.selectedRegion,
@@ -122,6 +123,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                 log("cubit.selectedCity ${cubit.selectedCity}");
                                 await CheckoutCubit.get(context).saveAddress(
                                   context,
+                                  isKsa: false,
                                   address_id: widget.addressKey,
                                   isquest: widget.isquest,
                                   selectedRegion: cubit.selectedState,
