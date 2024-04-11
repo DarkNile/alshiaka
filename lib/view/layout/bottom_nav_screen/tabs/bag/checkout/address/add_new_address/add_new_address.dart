@@ -18,8 +18,13 @@ class AddNewAddress extends StatefulWidget {
   bool isquest;
   final Address0? address;
   final String? addressKey;
+  final bool isFromProfile;
   AddNewAddress(
-      {Key? key, this.address, this.addressKey, required this.isquest})
+      {Key? key,
+      this.address,
+      this.addressKey,
+      required this.isquest,
+      required this.isFromProfile})
       : super(key: key);
 
   @override
@@ -32,7 +37,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
   @override
   void initState() {
     super.initState();
-    getData();
+    getData(widget.isFromProfile);
   }
 
   @override
@@ -167,10 +172,12 @@ class _AddNewAddressState extends State<AddNewAddress> {
     );
   }
 
-  getData() async {
+  getData(bool isFromProfile) async {
     // hint    State == Country == Region
     final cubit = CheckoutCubit.get(context);
-    cubit.fetchCountries();
+    if (isFromProfile) {
+      cubit.fetchCountries();
+    }
 
     cubit.user = await CashHelper.getSavedString("user", "");
     cubit.email = await CashHelper.getSavedString("email", "");

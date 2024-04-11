@@ -52,7 +52,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void initState() {
     super.initState();
     final cubit = CheckoutCubit.get(context);
-    // cubit.fetchCountries();
+    cubit.fetchCountries();
     if (cubit.selectedState != AppUtil.ksa) {
       getTaxAramex(cubit);
     }

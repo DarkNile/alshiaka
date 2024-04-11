@@ -26,8 +26,30 @@ class AddressInformationWidget extends StatelessWidget {
         ),
       ),
       BlocBuilder<CheckoutCubit, CheckoutState>(
-        buildWhen: (context, state) => state is CheckoutChangeState,
+        buildWhen: (context, state) =>
+            state is CheckoutChangeState ||
+            state is GetCountriesLoadingState ||
+            state is GetCountriesLoadedState ||
+            state is GetCountriesErrorState,
         builder: (context, state) {
+          if (state is GetCountriesErrorState) {
+            return Container(
+              color: AppUI.whiteColor,
+              padding: const EdgeInsets.all(16),
+              child: CustomText(
+                text: state.error,
+                color: AppUI.errorColor,
+              ),
+            );
+          }
+          if (state is GetCountriesLoadingState) {
+            return Container(
+              color: AppUI.whiteColor,
+              padding: const EdgeInsets.all(16),
+              child: const CircularProgressIndicator(),
+            );
+          }
+
           return Container(
             color: AppUI.whiteColor,
             padding: const EdgeInsets.all(16),

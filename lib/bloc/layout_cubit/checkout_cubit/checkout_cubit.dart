@@ -855,22 +855,31 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   List<CountryModel> countries = [];
 
   fetchCountries() async {
+    emit(GetCountriesLoadingState());
     countries.clear();
-    Map<String, dynamic> response = await CheckoutRepository.fetchCountries();
-    response.forEach((key, value) {
-      countries.add(CountryModel(name: value, code: key));
-    });
-    log("Countries" + countries.toString());
-    if (selectedCountry == null) {
-      selectedCountry = countries[1];
-      stateController.text = countries[1].name;
-      selectedState = countries[1].name;
+    try {
+      Map<String, dynamic> response = await CheckoutRepository.fetchCountries();
+      response.forEach((key, value) {
+        countries.add(CountryModel(name: value, code: key));
+      });
+      log("Countries" + countries.toString());
+      if (selectedAddress != null) {
+        stateController.text = selectedAddress?.state ?? "";
+        selectedState = selectedAddress?.state ?? "";
+        var phoneNumber = await PhoneNumber.getRegionInfoFromPhoneNumber(
+            selectedAddress?.phoneNumber ?? "");
+        log("Phone Number $phoneNumber");
+      } else {
+        if (selectedCountry == null) {
+          selectedCountry = countries[1];
+          stateController.text = countries[1].name;
+          selectedState = countries[1].name;
+        }
+      }
+      emit(GetCountriesLoadedState());
+    } catch (e) {
+      emit(GetCountriesErrorState(e.toString()));
     }
-    // else {
-    //   stateController.text = selectedCountry!.name;
-    //   selectedState = selectedCountry!.name;
-    // }
-    emit(CheckoutChangeState());
   }
 
   // Update
