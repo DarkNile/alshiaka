@@ -54,7 +54,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final cubit = CheckoutCubit.get(context);
 
     cubit.fetchCountries();
-    getTotal(cubit);
+    getTaxAramex(cubit);
 
     ProfileCubit.get(context).fetchCustomer();
     getEmail();
@@ -74,7 +74,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     print('test $selectedCustomizations}');
   }
 
-  getTotal(CheckoutCubit cubit) async {
+  getTaxAramex(CheckoutCubit cubit) async {
     if (cubit.selectedCountry?.code != null) {
       double weight = 0.0;
       cubit.cartList.forEach((prod) {
@@ -88,7 +88,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       log("city ${cubit.cityController.text}");
       log("numberOfPieces $numberOfPieces");
 
-      await cubit.getTotalAramex(
+      await cubit.getTaxAramex(
           context: context,
           country: cubit.selectedCountry!.code,
           city: cubit.cityController.text,
@@ -439,7 +439,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                               .selectedState !=
                                                                           AppUtil
                                                                               .ksa) {
-                                                                        await getTotal(
+                                                                        await getTaxAramex(
                                                                             cubit);
                                                                       }
                                                                     }
@@ -487,7 +487,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                             .selectedState !=
                                                                         AppUtil
                                                                             .ksa) {
-                                                                      await getTotal(
+                                                                      await getTaxAramex(
                                                                           cubit);
                                                                     }
                                                                   },

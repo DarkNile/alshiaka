@@ -45,6 +45,7 @@ class _OTPScreenState extends State<OTPScreen> {
         });
         await CheckoutCubit.get(context).saveAddress(
           context,
+          isKsa: true,
           address_id: widget.addressId,
           isquest: widget.isQuest,
           selectedCity: widget.selectedCity,
