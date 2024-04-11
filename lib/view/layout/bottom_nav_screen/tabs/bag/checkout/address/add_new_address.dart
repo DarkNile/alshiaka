@@ -167,6 +167,10 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                 color: AppUI.greyColor,
                               ),
                               InternationalPhoneNumberInput(
+                                countries: [
+                                  'SA',
+                                  'EG',
+                                ],
                                 onInputChanged: (PhoneNumber number) {
                                   log(number.phoneNumber.toString());
                                   cubit.phoneCode = number.dialCode ?? "+966";
@@ -604,15 +608,15 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                     context, "inValidEmail".tr());
                                 return;
                               }
-                              if ((cubit.selectedState != "" &&
-                                      cubit.selectedState != "" &&
-                                      cubit.selectedState == AppUtil.ksa) &&
-                                  !AppUtil.isPhoneValidate(
-                                      cubit.phoneController.text)) {
-                                AppUtil.errorToast(
-                                    context, "inValidPhone".tr());
-                                return;
-                              }
+                              // if ((cubit.selectedState != "" &&
+                              //         cubit.selectedState != "" &&
+                              //         cubit.selectedState == AppUtil.ksa) &&
+                              //     !AppUtil.isPhoneValidate(
+                              //         cubit.phoneController.text)) {
+                              //   AppUtil.errorToast(
+                              //       context, "inValidPhone".tr());
+                              //   return;
+                              // }
                               if ((cubit.selectedState != "" &&
                                       cubit.selectedState == AppUtil.ksa) &&
                                   !AppUtil.isAddressValidate(
