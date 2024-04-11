@@ -61,6 +61,10 @@ class AccountInformationWidget extends StatelessWidget {
               color: AppUI.greyColor,
             ),
             InternationalPhoneNumberInput(
+              countries: [
+                'SA',
+                'EG',
+              ],
               onInputChanged: (PhoneNumber number) {
                 log(number.phoneNumber.toString());
                 cubit.phoneCode = number.dialCode ?? "+966";
