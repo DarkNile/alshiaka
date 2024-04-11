@@ -105,6 +105,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                           AppUtil.mainNavigator(
                                               context,
                                               AddNewAddress(
+                                                isFromProfile:
+                                                    widget.isFromProfile,
                                                 isquest: widget.isquest,
                                               ));
                                         },
@@ -225,6 +227,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                             AddNewAddress(
                                                               isquest: widget
                                                                   .isquest,
+                                                              isFromProfile: widget
+                                                                  .isFromProfile,
                                                               address: Address0(
                                                                 shippingFirstName:
                                                                     c.firstname,
@@ -313,6 +317,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                         AppUtil.mainNavigator(
                                                             context,
                                                             AddNewAddress(
+                                                              isFromProfile: widget
+                                                                  .isFromProfile,
                                                               isquest: widget
                                                                   .isquest,
                                                             ));
@@ -383,6 +389,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                           AppUtil.mainNavigator(
                                               context,
                                               AddNewAddress(
+                                                isFromProfile:
+                                                    widget.isFromProfile,
                                                 isquest: widget.isquest,
                                               ));
                                         },
@@ -545,6 +553,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                           AppUtil.mainNavigator(
                                                               context,
                                                               AddNewAddress(
+                                                                isFromProfile:
+                                                                    widget
+                                                                        .isFromProfile,
                                                                 address: cubit
                                                                     .addresses!
                                                                     .shipping!
@@ -610,6 +621,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                         AppUtil.mainNavigator(
                                                             context,
                                                             AddNewAddress(
+                                                              isFromProfile: widget
+                                                                  .isFromProfile,
                                                               isquest: widget
                                                                   .isquest,
                                                             ));

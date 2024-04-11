@@ -36,3 +36,14 @@ class GetTotalErrorState extends CheckoutState {
 
   GetTotalErrorState(this.error);
 }
+
+// Countries
+class GetCountriesLoadingState extends CheckoutState {}
+
+class GetCountriesLoadedState extends CheckoutState {}
+
+class GetCountriesErrorState extends CheckoutState {
+  final String error;
+
+  GetCountriesErrorState(this.error);
+}
