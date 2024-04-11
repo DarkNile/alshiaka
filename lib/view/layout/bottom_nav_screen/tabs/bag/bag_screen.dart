@@ -863,79 +863,29 @@ class _BagScreenState extends State<BagScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      (cubit.selectedState != "" &&
-                              cubit.selectedState == AppUtil.ksa)
-                          ? Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.only(
-                                  left: 15, right: 15, top: 10, bottom: 10),
-                              child: Row(
-                                children: [
-                                  CustomText(
-                                      text: "totalPrice".tr().toUpperCase()),
-                                  const Spacer(),
-                                  CustomText(
-                                    text: "${cubit.total} SAR",
-                                    color: AppUI.blackColor,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                  )
-                                ],
-                              ),
-                            )
-                          :
-                          //? ====== Get Total ======
-
-                          Center(
-                              child: BlocBuilder<CheckoutCubit, CheckoutState>(
-                                  buildWhen: (_, getTotalState) =>
-                                      getTotalState is GetTotalLoadingState ||
-                                      getTotalState is GetTotalLoadedState ||
-                                      getTotalState is GetTotalErrorState,
-                                  builder: (context, getTotalState) {
-                                    if (getTotalState is GetTotalErrorState) {
-                                      return Container(
-                                          color: AppUI.whiteColor,
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Text(
-                                            getTotalState.error,
-                                            style: TextStyle(
-                                                color: AppUI.errorColor),
-                                          ));
-                                    } else if (getTotalState
-                                        is GetTotalLoadedState) {
-                                      return Container(
-                                        color: Colors.white,
-                                        padding: EdgeInsets.only(
-                                            left: 15,
-                                            right: 15,
-                                            top: 10,
-                                            bottom: 10),
-                                        child: Row(
-                                          children: [
-                                            CustomText(
-                                                text: "totalPrice"
-                                                    .tr()
-                                                    .toUpperCase()),
-                                            const Spacer(),
-                                            CustomText(
-                                              text:
-                                                  "${getTotalState.amountAramex.amount!.value} ${getTotalState.amountAramex.amount!.currencyCode}",
-                                              color: AppUI.blackColor,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600,
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                    return Container(
-                                      color: AppUI.whiteColor,
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: const CircularProgressIndicator(),
-                                    );
-                                  }),
+                      Container(
+                        color: Colors.white,
+                        padding: EdgeInsets.only(
+                          left: 15,
+                          right: 15,
+                          top: 10,
+                          bottom: 10,
+                        ),
+                        child: Row(
+                          children: [
+                            CustomText(
+                              text: "totalPrice".tr().toUpperCase(),
                             ),
+                            const Spacer(),
+                            CustomText(
+                              text: "${cubit.total} SAR",
+                              color: AppUI.blackColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            )
+                          ],
+                        ),
+                      ),
                       Container(
                         color: Colors.white,
                         padding: EdgeInsets.only(left: 15, right: 15),

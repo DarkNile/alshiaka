@@ -52,9 +52,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void initState() {
     super.initState();
     final cubit = CheckoutCubit.get(context);
-
-    cubit.fetchCountries();
-    getTaxAramex(cubit);
+    // cubit.fetchCountries();
+    if (cubit.selectedState != AppUtil.ksa) {
+      getTaxAramex(cubit);
+    }
 
     ProfileCubit.get(context).fetchCustomer();
     getEmail();
@@ -714,9 +715,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 builder: (context, snapshot) {
                                   return SizedBox(
                                       height: 50,
-                                      child: (cubit.selectedState != "" &&
-                                              cubit.selectedState ==
-                                                  AppUtil.ksa)
+                                      child: cubit.selectedState == AppUtil.ksa
                                           ? ListView(
                                               shrinkWrap: true,
                                               scrollDirection: Axis.horizontal,
@@ -772,7 +771,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         // child: Image.asset(
                                                         //     "${AppUI.imgPath}${index == 0 ? "cash.png" : index == 1 ? "master_card.png" : index == 2 ? "tabby.png" : "apple.png"}"),
                                                         child: Image.asset(
-                                                            "${AppUI.imgPath}${index == 0 ? "cash.png" : index == 1 ? "master_card.png" : "tabby.png"}"),
+                                                            "${AppUI.imgPath}${index == 0 ? "cash.png" : index == 1 ? "tabby.png" : "master_card.png"}"),
                                                       ),
                                                     ),
                                                     const SizedBox(
@@ -804,19 +803,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                             .title);
                                                         print(
                                                             "***********************************************");
-                                                        if (cubit
-                                                                .selectedPaymentGetaways !=
+                                                        cubit.selectedPaymentGetaways =
                                                             cubit.paymentGetawayNoCash[
-                                                                index]) {
-                                                          cubit.selectedPaymentGetaways =
-                                                              cubit.paymentGetawayNoCash[
-                                                                  index];
-                                                        } else {
-                                                          cubit.selectedPaymentGetaways =
-                                                              null;
-                                                        }
-                                                        cubit.emit(
-                                                            SelectedPaymentState());
+                                                                index];
+                                                        // if (cubit
+                                                        //         .selectedPaymentGetaways !=
+                                                        //     cubit.paymentGetawayNoCash[
+                                                        //         index]) {
+                                                        //   cubit.selectedPaymentGetaways =
+                                                        //       cubit.paymentGetawayNoCash[
+                                                        //           index];
+                                                        // } else {
+                                                        //   cubit.selectedPaymentGetaways =
+                                                        //       null;
+                                                        // }
+                                                        // cubit.emit(
+                                                        //     SelectedPaymentState());
                                                       },
                                                       child: Container(
                                                         height: 46,
@@ -838,8 +840,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                             Alignment.center,
                                                         // child: Image.asset(
                                                         //     "${AppUI.imgPath}${index == 0 ? "cash.png" : index == 1 ? "master_card.png" : index == 2 ? "tabby.png" : "apple.png"}"),
+                                                        // child: Image.asset(
+                                                        //     "${AppUI.imgPath}${index == 0 ? "master_card.png" : "tabby.png"}"),
                                                         child: Image.asset(
-                                                            "${AppUI.imgPath}${index == 0 ? "master_card.png" : "tabby.png"}"),
+                                                            "${AppUI.imgPath}${"master_card.png"}"),
                                                       ),
                                                     ),
                                                     const SizedBox(
@@ -892,8 +896,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               child: BlocBuilder<CheckoutCubit, CheckoutState>(
                                   buildWhen: (_, state) =>
                                       state is SelectedShippingState ||
-                                      state is CheckoutChangeState,
+                                      state is CheckoutChangeState ||
+                                      state is GetTotalLoadingState ||
+                                      state is GetTotalLoadedState ||
+                                      state is GetTotalErrorState,
                                   builder: (context, state) {
+                                    if (state is GetTotalLoadingState) {
+                                      return Container(
+                                        color: AppUI.whiteColor,
+                                        padding: const EdgeInsets.all(16.0),
+                                        child:
+                                            const CircularProgressIndicator(),
+                                      );
+                                    }
                                     return ListView(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
@@ -947,8 +962,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 // }else{
                                                 //   cubit.selectedShippingMethods = null;
                                                 // }
-                                                cubit.emit(
-                                                    SelectedShippingState());
+                                                // cubit.emit(
+                                                //     SelectedShippingState());
                                               },
                                               child: Container(
                                                 height: 70,
@@ -983,9 +998,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       height: 5,
                                                     ),
                                                     CustomText(
-                                                      text: index == 0
-                                                          ? "${cubit.shippingMethods[index].settings!.cost!.value} SAR"
-                                                          : "0.0 SAR",
+                                                      text: state is GetTotalLoadedState &&
+                                                              cubit.selectedState !=
+                                                                  AppUtil.ksa
+                                                          ? "${state.amountAramex.amount!.value!} ${state.amountAramex.amount!.currencyCode!} "
+                                                          : index == 0
+                                                              ? "${cubit.shippingMethods[index].settings!.cost!.value} SAR"
+                                                              : "0.0 SAR",
                                                       fontSize: 11,
                                                       color: AppUI.greyColor,
                                                     ),
@@ -1009,171 +1028,197 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         height: 30,
                       ),
                       // Get Total
-
-                      (cubit.selectedState != "" &&
-                              cubit.selectedState == AppUtil.ksa)
-                          ? BlocBuilder<CheckoutCubit, CheckoutState>(
-                              buildWhen: (_, state) =>
-                                  state is SelectedShippingState ||
-                                  state is CheckoutChangeState ||
-                                  state is SelectedPaymentState,
-                              builder: (context, state) {
-                                return Container(
-                                  color: AppUI.whiteColor,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
+                      // (cubit.selectedState != "" &&
+                      //         cubit.selectedState == AppUtil.ksa)
+                      //     ?
+                      BlocBuilder<CheckoutCubit, CheckoutState>(
+                        buildWhen: (_, state) =>
+                            state is SelectedShippingState ||
+                            state is CheckoutChangeState ||
+                            state is SelectedPaymentState ||
+                            state is GetTotalLoadingState ||
+                            state is GetTotalLoadedState ||
+                            state is GetTotalErrorState,
+                        builder: (context, state) {
+                          if (state is GetTotalLoadingState) {
+                            return Container(
+                              color: AppUI.whiteColor,
+                              padding: const EdgeInsets.all(16.0),
+                              child: const CircularProgressIndicator(),
+                            );
+                          } else if (state is GetTotalErrorState) {
+                            return Container(
+                              color: AppUI.whiteColor,
+                              padding: const EdgeInsets.all(16.0),
+                              child: CustomText(
+                                text: state.error,
+                                color: AppUI.errorColor,
+                              ),
+                            );
+                          }
+                          return Container(
+                            color: AppUI.whiteColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      CustomText(text: "subTotal".tr()),
+                                      const Spacer(),
+                                      CustomText(
+                                          text:
+                                              "${(cubit.total - AppUtil.calculateTax(cubit.total)[0]).toStringAsFixed(2)} SAR"),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    children: [
+                                      CustomText(text: "shipping".tr()),
+                                      const Spacer(),
+                                      CustomText(
+                                          text: state is GetTotalLoadedState &&
+                                                  cubit.selectedState !=
+                                                      AppUtil.ksa
+                                              ? "${state.amountAramex.amount!.value!} ${state.amountAramex.amount!.currencyCode!} "
+                                              : cubit.selectedShippingMethods !=
+                                                      null
+                                                  ? cubit.selectedShippingMethods!
+                                                              .methodId ==
+                                                          "flat_rate"
+                                                      ? "${cubit.selectedShippingMethods!.settings!.cost!.value} SAR"
+                                                      : "0 SAR"
+                                                  : ''),
+                                    ],
+                                  ),
+                                  if (cubit.selectedPaymentGetaways != null &&
+                                      cubit.selectedPaymentGetaways!.id ==
+                                          "cod")
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  if (cubit.selectedPaymentGetaways != null &&
+                                      cubit.selectedPaymentGetaways!.id ==
+                                          "cod")
+                                    Row(
                                       children: [
-                                        Row(
-                                          children: [
-                                            CustomText(text: "subTotal".tr()),
-                                            const Spacer(),
-                                            CustomText(
-                                                text:
-                                                    "${(cubit.total - AppUtil.calculateTax(cubit.total)[0]).toStringAsFixed(2)} SAR"),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          children: [
-                                            CustomText(text: "shipping".tr()),
-                                            const Spacer(),
-                                            CustomText(
-                                                text: cubit.selectedShippingMethods !=
-                                                        null
-                                                    ? cubit.selectedShippingMethods!
-                                                                .methodId ==
-                                                            "flat_rate"
-                                                        ? "${cubit.selectedShippingMethods!.settings!.cost!.value} SAR"
-                                                        : "0 SAR"
-                                                    : ''),
-                                          ],
-                                        ),
-                                        if (cubit.selectedPaymentGetaways !=
-                                                null &&
-                                            cubit.selectedPaymentGetaways!.id ==
-                                                "cod")
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                        if (cubit.selectedPaymentGetaways !=
-                                                null &&
-                                            cubit.selectedPaymentGetaways!.id ==
-                                                "cod")
-                                          Row(
-                                            children: [
-                                              CustomText(
-                                                  text: "paymentFees".tr()),
-                                              const Spacer(),
-                                              CustomText(
-                                                  text: cubit.selectedPaymentGetaways !=
-                                                              null &&
-                                                          cubit.selectedPaymentGetaways!
-                                                                  .id ==
-                                                              "cod"
-                                                      ? "5.0 SAR"
-                                                      : "0 SAR"),
-                                            ],
-                                          ),
-                                        if (cubit.couponApplied)
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                        if (cubit.couponApplied)
-                                          Row(
-                                            children: [
-                                              CustomText(
-                                                  text: "couponValue".tr()),
-                                              const Spacer(),
-                                              CustomText(
-                                                  text:
-                                                      "${cubit.couponValue} SAR"),
-                                            ],
-                                          ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          children: [
-                                            CustomText(text: "TAX".tr()),
-                                            const Spacer(),
-                                            CustomText(
-                                                text:
-                                                    "${AppUtil.calculateTax(cubit.total + (cubit.selectedPaymentGetaways != null && cubit.selectedPaymentGetaways!.id == "cod" ? 5.75 : 0) + ((cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : 0 : 0)))[0]} SAR"),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          children: [
-                                            CustomText(text: "total".tr()),
-                                            const Spacer(),
-                                            CustomText(
-                                                text:
-                                                    "${cubit.selectedPaymentGetaways != null && cubit.selectedPaymentGetaways!.id == "cod" ? (cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : cubit.total : cubit.total) + 5.75 : (cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : cubit.total : cubit.total)} SAR"),
-                                          ],
-                                        ),
+                                        CustomText(text: "paymentFees".tr()),
+                                        const Spacer(),
+                                        CustomText(
+                                            text: cubit.selectedPaymentGetaways !=
+                                                        null &&
+                                                    cubit.selectedPaymentGetaways!
+                                                            .id ==
+                                                        "cod"
+                                                ? "5.0 SAR"
+                                                : "0 SAR"),
                                       ],
                                     ),
+                                  if (cubit.couponApplied)
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  if (cubit.couponApplied)
+                                    Row(
+                                      children: [
+                                        CustomText(text: "couponValue".tr()),
+                                        const Spacer(),
+                                        CustomText(
+                                            text: "${cubit.couponValue} SAR"),
+                                      ],
+                                    ),
+                                  const SizedBox(
+                                    height: 20,
                                   ),
-                                );
-                              })
-                          :
-                          //? ====== Get Total ======
-                          BlocConsumer<CheckoutCubit, CheckoutState>(
-                              buildWhen: (_, getTotalState) =>
-                                  getTotalState is GetTotalLoadingState ||
-                                  getTotalState is GetTotalLoadedState ||
-                                  getTotalState is GetTotalErrorState,
-                              builder: (context, getTotalState) {
-                                if (getTotalState is GetTotalErrorState) {
-                                  return Container(
-                                      color: AppUI.whiteColor,
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(
-                                        getTotalState.error,
-                                        style:
-                                            TextStyle(color: AppUI.errorColor),
-                                      ));
-                                } else if (getTotalState
-                                    is GetTotalLoadedState) {
-                                  return Container(
-                                    color: AppUI.whiteColor,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Row(
-                                        children: [
-                                          CustomText(text: "total".tr()),
-                                          const Spacer(),
-                                          CustomText(
-                                              text:
-                                                  "${getTotalState.amountAramex.amount!.value!} ${getTotalState.amountAramex.amount!.currencyCode!} "),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return Container(
-                                  color: AppUI.whiteColor,
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: const CircularProgressIndicator(),
-                                );
-                              },
-                              listener:
-                                  (BuildContext context, CheckoutState state) {
-                                if (state is GetTotalErrorState) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      backgroundColor: AppUI.errorColor,
-                                      content: Text(state.error),
-                                    ),
-                                  );
-                                }
-                              },
+                                  Row(
+                                    children: [
+                                      CustomText(text: "TAX".tr()),
+                                      const Spacer(),
+                                      CustomText(
+                                          text: state is GetTotalLoadedState &&
+                                                  cubit.selectedState !=
+                                                      AppUtil.ksa
+                                              ? "${AppUtil.calculateTax(cubit.total + state.amountAramex.amount!.value!)[0]} ${state.amountAramex.amount!.currencyCode!} "
+                                              : "${AppUtil.calculateTax(cubit.total + (cubit.selectedPaymentGetaways != null && cubit.selectedPaymentGetaways!.id == "cod" ? 5.75 : 0) + ((cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : 0 : 0)))[0]} SAR"),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    children: [
+                                      CustomText(text: "total".tr()),
+                                      const Spacer(),
+                                      CustomText(
+                                          text: state is GetTotalLoadedState &&
+                                                  cubit.selectedState !=
+                                                      AppUtil.ksa
+                                              ? "${cubit.total + state.amountAramex.amount!.value!} ${state.amountAramex.amount!.currencyCode!} "
+                                              : "${cubit.selectedPaymentGetaways != null && cubit.selectedPaymentGetaways!.id == "cod" ? (cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : cubit.total : cubit.total) + 5.75 : (cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : cubit.total : cubit.total)} SAR"),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
+                          );
+                        },
+                      ),
+
+                      // :
+                      //? ====== Get Total ======
+                      // BlocConsumer<CheckoutCubit, CheckoutState>(
+                      //     buildWhen: (_, getTotalState) =>
+                      //         getTotalState is GetTotalLoadingState ||
+                      //         getTotalState is GetTotalLoadedState ||
+                      //         getTotalState is GetTotalErrorState,
+                      //     builder: (context, getTotalState) {
+                      //       if (getTotalState is GetTotalErrorState) {
+                      //         return Container(
+                      //             color: AppUI.whiteColor,
+                      //             padding: const EdgeInsets.all(16.0),
+                      //             child: Text(
+                      //               getTotalState.error,
+                      //               style:
+                      //                   TextStyle(color: AppUI.errorColor),
+                      //             ));
+                      //       } else if (getTotalState
+                      //           is GetTotalLoadedState) {
+                      //         return Container(
+                      //           color: AppUI.whiteColor,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.all(16.0),
+                      //             child: Row(
+                      //               children: [
+                      //                 CustomText(text: "total".tr()),
+                      //                 const Spacer(),
+                      //                 CustomText(
+                      //                     text:
+                      //                         "${getTotalState.amountAramex.amount!.value!} ${getTotalState.amountAramex.amount!.currencyCode!} "),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         );
+                      //       }
+                      // return Container(
+                      //   color: AppUI.whiteColor,
+                      //   padding: const EdgeInsets.all(16.0),
+                      //   child: const CircularProgressIndicator(),
+                      // );
+                      //     },
+                      //   listener:
+                      //       (BuildContext context, CheckoutState state) {
+                      //     if (state is GetTotalErrorState) {
+                      //       ScaffoldMessenger.of(context).showSnackBar(
+                      //         SnackBar(
+                      //           backgroundColor: AppUI.errorColor,
+                      //           content: Text(state.error),
+                      //         ),
+                      //       );
+                      //     }
+                      //   },
+                      // ),
 
                       const SizedBox(
                         height: 30,
@@ -1187,111 +1232,121 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       buildWhen: (_, state) =>
                           state is CheckoutLoadingState ||
                           state is CheckoutLoadedState ||
-                          state is CheckoutErrorState,
+                          state is CheckoutErrorState ||
+                          state is GetTotalLoadingState ||
+                          state is GetTotalLoadedState ||
+                          state is GetTotalErrorState,
                       builder: (context, state) {
-                        if (state is CheckoutLoadingState) {
+                        if (state is CheckoutLoadingState ||
+                            state is GetTotalLoadingState) {
                           return const SizedBox(
                               height: 80, child: LoadingWidget());
                         }
                         return CustomButton(
                           text: "completeOrder".tr(),
-                          onPressed: () async {
-                            if (cubit.selectedAddress == null) {
-                              AppUtil.errorToast(
-                                  context, "pleaseSelectShippingAddress".tr());
-                              return;
-                            }
-                            if (cubit.selectedPaymentGetaways == null) {
-                              AppUtil.errorToast(
-                                  context, "pleaseSelectPaymentMethod".tr());
-                              return;
-                            }
-                            if (cubit.selectedShippingMethods == null) {
-                              AppUtil.errorToast(
-                                  context, "pleaseSelectShippingMethod".tr());
-                              return;
-                            }
-                            //? ========   Cash   ========
-                            if (cubit.selectedPaymentGetaways!.id == "cod") {
-                              await cubit.fetchOrders(context);
-                              cubit.emit(CheckoutLoadedState());
-                              if (!mounted) return;
-                              AppUtil.mainNavigator(
-                                  context, const MyOrdersScreen());
-                            }
+                          color: state is GetTotalErrorState
+                              ? AppUI.greyColor
+                              : AppUI.mainColor,
+                          onPressed: state is GetTotalErrorState
+                              ? null
+                              : () async {
+                                  if (cubit.selectedAddress == null) {
+                                    AppUtil.errorToast(context,
+                                        "pleaseSelectShippingAddress".tr());
+                                    return;
+                                  }
+                                  if (cubit.selectedPaymentGetaways == null) {
+                                    AppUtil.errorToast(context,
+                                        "pleaseSelectPaymentMethod".tr());
+                                    return;
+                                  }
+                                  if (cubit.selectedShippingMethods == null) {
+                                    AppUtil.errorToast(context,
+                                        "pleaseSelectShippingMethod".tr());
+                                    return;
+                                  }
+                                  //? ========   Cash   ========
+                                  if (cubit.selectedPaymentGetaways!.id ==
+                                      "cod") {
+                                    await cubit.fetchOrders(context);
+                                    cubit.emit(CheckoutLoadedState());
+                                    if (!mounted) return;
+                                    AppUtil.mainNavigator(
+                                        context, const MyOrdersScreen());
+                                  }
 
-                            //? ========   Tabby   ========
-                            if (cubit.selectedPaymentGetaways!.id ==
-                                "tabby_installments") {
-                              String url =
-                                  "https://alshiaka.com/wp-json/payment/mobileapp/tabbyintegrate?consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en&";
-                              url +=
-                                  "billing[first_name]=${cubit.selectedAddress!.fullName}&billing[last_name]=${cubit.selectedAddress!.fullName}&";
-                              url +=
-                                  "billing[address_1]=${cubit.selectedAddress!.country}&billing[address_2]=${cubit.selectedAddress!.address ?? ""}&";
-                              url +=
-                                  "billing[state]=${cubit.selectedAddress!.state}&billing[city]=${cubit.selectedAddress!.city}&billing[email]=${cubit.selectedAddress!.email}&billing[phone]=${cubit.selectedAddress!.phoneNumber}";
-                              int i = 0;
-                              for (var element in cubit.cartList) {
-                                // url +=
-                                //     "&line_items[$i][product_id]=${element.id}&line_items[$i][quantity]=${element.qty}";
-                                url +=
-                                    "&line_items[$i][product_id]=${element.mainProductId != null ? element.mainProductId! : element.id!}&line_items[$i][quantity]=${element.qty}";
-                              }
-                              AppUtil.mainNavigator(
-                                  context,
-                                  CustomWebview(
-                                    url: url,
-                                    type: "taby",
-                                    orderId: '',
-                                  ));
-                            }
-                            // else if (cubit.selectedPaymentGetaways!.id ==
-                            //     "apple_pay") {
-                            //   Map<String, dynamic> response = await cubit
-                            //       .applePayCreateOrder(context, "pending");
-                            //   print(cubit.selectedPaymentGetaways!.id);
-                            //   print('lol $response');
-                            //   print(response['id']);
-                            //   print(
-                            //       "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-                            //   if (response['id'] != null) {
-                            //     applePay(double.parse(response['total']));
-                            //     cubit.emit(CheckoutLoadedState());
-                            //   }
-                            // }
-                            else {
-                              //? ========   Visa   ========
+                                  //? ========   Tabby   ========
+                                  if (cubit.selectedPaymentGetaways!.id ==
+                                      "tabby_installments") {
+                                    String url =
+                                        "https://alshiaka.com/wp-json/payment/mobileapp/tabbyintegrate?consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en&";
+                                    url +=
+                                        "billing[first_name]=${cubit.selectedAddress!.fullName}&billing[last_name]=${cubit.selectedAddress!.fullName}&";
+                                    url +=
+                                        "billing[address_1]=${cubit.selectedAddress!.country}&billing[address_2]=${cubit.selectedAddress!.address ?? ""}&";
+                                    url +=
+                                        "billing[state]=${cubit.selectedAddress!.state}&billing[city]=${cubit.selectedAddress!.city}&billing[email]=${cubit.selectedAddress!.email}&billing[phone]=${cubit.selectedAddress!.phoneNumber}";
+                                    int i = 0;
+                                    for (var element in cubit.cartList) {
+                                      // url +=
+                                      //     "&line_items[$i][product_id]=${element.id}&line_items[$i][quantity]=${element.qty}";
+                                      url +=
+                                          "&line_items[$i][product_id]=${element.mainProductId != null ? element.mainProductId! : element.id!}&line_items[$i][quantity]=${element.qty}";
+                                    }
+                                    AppUtil.mainNavigator(
+                                        context,
+                                        CustomWebview(
+                                          url: url,
+                                          type: "taby",
+                                          orderId: '',
+                                        ));
+                                  }
+                                  // else if (cubit.selectedPaymentGetaways!.id ==
+                                  //     "apple_pay") {
+                                  //   Map<String, dynamic> response = await cubit
+                                  //       .applePayCreateOrder(context, "pending");
+                                  //   print(cubit.selectedPaymentGetaways!.id);
+                                  //   print('lol $response');
+                                  //   print(response['id']);
+                                  //   print(
+                                  //       "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+                                  //   if (response['id'] != null) {
+                                  //     applePay(double.parse(response['total']));
+                                  //     cubit.emit(CheckoutLoadedState());
+                                  //   }
+                                  // }
+                                  else {
+                                    //? ========   Visa   ========
 
-                              Map<String, dynamic> response =
-                                  await cubit.createOrder(context);
-                              print(cubit.selectedPaymentGetaways!.id);
-                              print('lol $response');
-                              print(response['id']);
-                              print(
-                                  "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-                              if (response['id'] != null) {
-                                var responseId = response['id'];
-                                var total = response['total'];
-                                if (cubit.selectedPaymentGetaways!.id ==
-                                    "aps_cc") {
-                                  // if (!mounted) return;
-                                  // AppUtil.mainNavigator(
-                                  //     context,
-                                  //     CustomWebview(
-                                  //       url:
-                                  //           'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
-                                  //       type: "",
-                                  //       orderId: response['id'].toString(),
-                                  //     ));
-                                  payWithVisa(
-                                    double.parse(total),
-                                    responseId.toString(),
-                                  );
-                                }
-                              }
-                            }
-                          },
+                                    Map<String, dynamic> response =
+                                        await cubit.createOrder(context);
+                                    print(cubit.selectedPaymentGetaways!.id);
+                                    print('lol $response');
+                                    print(response['id']);
+                                    print(
+                                        "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+                                    if (response['id'] != null) {
+                                      var responseId = response['id'];
+                                      var total = response['total'];
+                                      if (cubit.selectedPaymentGetaways!.id ==
+                                          "aps_cc") {
+                                        // if (!mounted) return;
+                                        // AppUtil.mainNavigator(
+                                        //     context,
+                                        //     CustomWebview(
+                                        //       url:
+                                        //           'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
+                                        //       type: "",
+                                        //       orderId: response['id'].toString(),
+                                        //     ));
+                                        payWithVisa(
+                                          double.parse(total),
+                                          responseId.toString(),
+                                        );
+                                      }
+                                    }
+                                  }
+                                },
                         );
                       }),
                 ),

@@ -291,7 +291,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
             isKsa ? addressController.text : stateController.text,
         "shipping_city": selectedCity,
         "shipping_company": "test any value",
-        "shipping_address_2": isKsa ? address2Controller.text : selectedCity,
+        "shipping_address_2": isKsa ? addressController.text : selectedCity,
         "shipping_state": stateController.text,
         "shipping_postcode": postCodeController.text,
         "shipping_phone": phoneController.text,
@@ -462,14 +462,18 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     paymentGetawayNoCash.clear();
     try {
       var response = await CheckoutRepository.fetchPaymentGetaways();
-
       response.forEach((element) {
         if (element['enabled']) {
-          paymentGetaway.add(PaymentGetwayesModel.fromJson(element));
-          paymentGetawayNoCash.add(PaymentGetwayesModel.fromJson(element));
+          if (element['id'] == 'cod' ||
+              element['id'] == 'paytabs_all' ||
+              element['id'] == 'tabby_installments') {
+            paymentGetaway.add(PaymentGetwayesModel.fromJson(element));
+          }
+          if (element['id'] == 'paytabs_all') {
+            paymentGetawayNoCash.add(PaymentGetwayesModel.fromJson(element));
+          }
         }
       });
-      paymentGetawayNoCash.removeAt(0);
       // if (Platform.isIOS) {
       //   paymentGetaway
       //       .add(PaymentGetwayesModel(id: 'apple_pay', title: 'Apple Pay'));
@@ -862,6 +866,10 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       stateController.text = countries[1].name;
       selectedState = countries[1].name;
     }
+    // else {
+    //   stateController.text = selectedCountry!.name;
+    //   selectedState = selectedCountry!.name;
+    // }
     emit(CheckoutChangeState());
   }
 

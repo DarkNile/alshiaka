@@ -70,14 +70,14 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                     context, "inValidEmail".tr());
                                 return;
                               }
-                              if ((cubit.selectedState != "" &&
-                                      cubit.selectedState == AppUtil.ksa) &&
-                                  !AppUtil.isPhoneValidate(
-                                      cubit.phoneController.text)) {
-                                AppUtil.errorToast(
-                                    context, "inValidPhone".tr());
-                                return;
-                              }
+                              // if ((cubit.selectedState != "" &&
+                              //         cubit.selectedState == AppUtil.ksa) &&
+                              //     !AppUtil.isPhoneValidate(
+                              //         cubit.phoneController.text)) {
+                              //   AppUtil.errorToast(
+                              //       context, "inValidPhone".tr());
+                              //   return;
+                              // }
                               if ((cubit.selectedState != "" &&
                                       cubit.selectedState == AppUtil.ksa) &&
                                   !AppUtil.isAddressValidate(
@@ -170,6 +170,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
   getData() async {
     // hint    State == Country == Region
     final cubit = CheckoutCubit.get(context);
+    cubit.fetchCountries();
 
     cubit.user = await CashHelper.getSavedString("user", "");
     cubit.email = await CashHelper.getSavedString("email", "");
