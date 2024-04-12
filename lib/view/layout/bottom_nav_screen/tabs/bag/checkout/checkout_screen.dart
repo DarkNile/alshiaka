@@ -653,7 +653,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     height: 16,
                                   ),
                                   CustomText(
-                                    text: cubit.selectedAddress!.address,
+                                    text: cubit.selectedAddress!.city,
                                     color: AppUI.blackColor,
                                     fontSize: 12,
                                   ),
@@ -661,7 +661,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     height: 6,
                                   ),
                                   CustomText(
-                                    text: cubit.selectedAddress!.address2,
+                                    text: cubit.selectedAddress!.address,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w100,
                                   ),

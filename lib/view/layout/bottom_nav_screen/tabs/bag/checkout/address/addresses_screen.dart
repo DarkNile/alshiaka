@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_state.dart';
 import 'package:ahshiaka/models/AddressLocalModel.dart';
@@ -53,6 +55,44 @@ class _AddressesScreenState extends State<AddressesScreen> {
     }
   }
 
+  getTaxAramex(CheckoutCubit cubit) async {
+    if (cubit.selectedCountry?.code != null) {
+      double weight = 0.0;
+      cubit.cartList.forEach((prod) {
+        weight += double.parse(prod.weight.toString());
+      });
+
+      var numberOfPieces =
+          cubit.qty.fold(0, (previousValue, q) => previousValue + q).toString();
+      log("Weight $weight");
+      log("country ${cubit.selectedCountry!.code}");
+      log("city ${cubit.cityController.text}");
+      log("numberOfPieces $numberOfPieces");
+
+      await cubit.getTaxAramex(
+          context: context,
+          country: cubit.selectedCountry!.code,
+          city: cubit.cityController.text,
+          numberOfPieces: numberOfPieces,
+          actualWeight: weight.toString());
+    } else {
+      log("selectedCountry == null ");
+    }
+  }
+
+  setSelectedCountry(CheckoutCubit cubit) async {
+    if (cubit.selectedState != AppUtil.ksa) {
+      if (cubit.countries.isEmpty || cubit.countries == []) {
+        cubit.selectedCountry =
+            cubit.countries.firstWhere((c) => c.name == cubit.selectedState);
+      } else {
+        await cubit.fetchCountries();
+        cubit.selectedCountry =
+            cubit.countries.firstWhere((c) => c.name == cubit.selectedState);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cubit = CheckoutCubit.get(context);
@@ -72,8 +112,33 @@ class _AddressesScreenState extends State<AddressesScreen> {
               },
             ),
             BlocBuilder<CheckoutCubit, CheckoutState>(
-                buildWhen: (_, state) => state is AddressesState,
+                buildWhen: (_, state) =>
+                    state is AddressesState ||
+                    state is GetCountriesLoadingState ||
+                    state is GetCountriesErrorState,
                 builder: (context, state) {
+                  if (state is GetCountriesLoadingState) {
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: AppUtil.responsiveHeight(context) * .3),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  if (state is GetCountriesErrorState) {
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: AppUtil.responsiveHeight(context) * .3),
+                        child: CustomText(
+                          text: state.error,
+                          color: AppUI.errorColor,
+                        ),
+                      ),
+                    );
+                  }
+
                   return widget.isquest
                       ? Expanded(
                           child: cubit.dataLocal.length == 0
@@ -144,7 +209,19 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         InkWell(
-                                          onTap: () {
+                                          onTap: () async {
+                                            cubit.selectedState = c.state;
+                                            cubit.selectedCity = c.city;
+                                            cubit.cityController.text = c.city;
+                                            cubit.stateController.text =
+                                                cubit.selectedState;
+                                            log("OnTap Local cubit.selectedState ========> ${cubit.selectedState}");
+                                            await setSelectedCountry(cubit);
+                                            cubit.updateState();
+                                            if (cubit.selectedState !=
+                                                AppUtil.ksa) {
+                                              await getTaxAramex(cubit);
+                                            }
                                             if (widget.isFromProfile) {
                                               print('from profile');
                                             } else {
@@ -219,8 +296,20 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.end,
                                                   children: [
+                                                    // Edit
                                                     InkWell(
                                                         onTap: () {
+                                                          cubit.selectedState =
+                                                              c.state;
+                                                          cubit.stateController
+                                                                  .text =
+                                                              cubit
+                                                                  .selectedState;
+                                                          log("Edit Local cubit.selectedState ========> ${cubit.selectedState}");
+                                                          setSelectedCountry(
+                                                              cubit);
+                                                          cubit.updateState();
+
                                                           print(c.city);
                                                           AppUtil.mainNavigator(
                                                             context,
@@ -426,7 +515,31 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         InkWell(
-                                          onTap: () {
+                                          onTap: () async {
+                                            cubit.selectedState = cubit
+                                                .addresses!
+                                                .shipping!
+                                                .address0![index]
+                                                .shippingState!;
+                                            cubit.selectedCity = cubit
+                                                .addresses!
+                                                .shipping!
+                                                .address0![index]
+                                                .shippingCity!;
+                                            cubit.cityController.text = cubit
+                                                .addresses!
+                                                .shipping!
+                                                .address0![index]
+                                                .shippingCity!;
+                                            cubit.stateController.text =
+                                                cubit.selectedState;
+                                            log("OnTap Fetch cubit.selectedState ========> ${cubit.selectedState}");
+                                            await setSelectedCountry(cubit);
+                                            cubit.updateState();
+                                            if (cubit.selectedState !=
+                                                AppUtil.ksa) {
+                                              await getTaxAramex(cubit);
+                                            }
                                             if (widget.isFromProfile) {
                                               print('from profile');
                                             } else {
@@ -548,8 +661,24 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.end,
                                                   children: [
+                                                    // Edit
                                                     InkWell(
                                                         onTap: () {
+                                                          cubit.selectedState =
+                                                              cubit
+                                                                  .addresses!
+                                                                  .shipping!
+                                                                  .address0![
+                                                                      index]
+                                                                  .shippingState!;
+                                                          cubit.stateController
+                                                                  .text =
+                                                              cubit
+                                                                  .selectedState;
+                                                          log("Edit Fetch cubit.selectedState ========> ${cubit.selectedState}");
+                                                          setSelectedCountry(
+                                                              cubit);
+                                                          cubit.updateState();
                                                           AppUtil.mainNavigator(
                                                               context,
                                                               AddNewAddress(

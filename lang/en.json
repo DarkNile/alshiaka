@@ -261,5 +261,6 @@
   "updateNow": "Update Now",
   "newDiscount": "Buy 2 & Get 50% on Third",
 
-  "phoneNumberRequired":"Phone Number Required"
+  "phoneNumberRequired":"Phone Number Required",
+  "Loading...":"Loading..."
 }
