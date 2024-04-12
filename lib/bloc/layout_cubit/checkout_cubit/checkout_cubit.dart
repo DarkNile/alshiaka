@@ -224,17 +224,18 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     /*   for(int i=0;i<dataLocal.length;i++){
       mainProvider.ChangeCounter("+");
     }*/
-    print(dataLocal.length);
+    log("Load Address Local\n" + dataLocal.toString());
     print("adress local local local local local local");
     emit(AddressesState());
   }
 
   saveAddress(context,
       {String? address_id,
-      required bool isKsa,
       required bool isquest,
       required String selectedRegion,
       required String selectedCity}) async {
+    final bool isKsa = (selectedState == AppUtil.ksa);
+    log("isKsa : ${isKsa}");
     log("First Name: ${nameController2.text}");
     log("Last Name: ${surNameController2.text}");
     log("phone: ${phoneController.text}");
@@ -307,7 +308,6 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         if (response is String) {
           saveAddress(context,
               isquest: false,
-              isKsa: isKsa,
               selectedCity: selectedCity,
               selectedRegion: selectedRegion);
           return;
@@ -355,6 +355,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         addresses = ShippingModel.fromJson(response);
         if (addresses!.shipping != null &&
             addresses!.shipping!.address0!.isNotEmpty) {
+          log("Fetch Addresses \n" + response.toString());
           print(
               "address not emptyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
           selectedAddress = AddressesModel(
@@ -597,11 +598,11 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           numberOfPieces: numberOfPieces);
       log("response ${response.statusCode}");
       var data = jsonDecode(response.body);
+      log("response ${data}");
       if (response.body.contains('error')) {
         emit(GetTotalErrorState(response.body));
         return null;
       } else {
-        log("response ${data}");
         amountAramexModel = AmountAramexModel.fromJson(data);
         emit(GetTotalLoadedState(amountAramexModel!));
         return amountAramexModel;
@@ -856,14 +857,14 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   fetchCountries() async {
     emit(GetCountriesLoadingState());
-    countries.clear();
     try {
       Map<String, dynamic> response = await CheckoutRepository.fetchCountries();
+      countries.clear();
       response.forEach((key, value) {
         countries.add(CountryModel(name: value, code: key));
       });
-      log("Countries" + countries.toString());
-      if (selectedAddress != null) {
+      log("Countries" + response.toString());
+      if (selectedAddress != null && selectedState == '') {
         stateController.text = selectedAddress?.state ?? "";
         selectedState = selectedAddress?.state ?? "";
         var phoneNumber = await PhoneNumber.getRegionInfoFromPhoneNumber(
