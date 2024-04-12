@@ -358,18 +358,21 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           log("Fetch Addresses \n" + response.toString());
           print(
               "address not emptyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+          var address0 = addresses!.shipping!.address0!.firstWhere(
+              (myAdress) => myAdress.shippingState == selectedState);
           selectedAddress = AddressesModel(
-              fullName: addresses!.shipping!.address0![0].shippingFirstName,
-              surName: addresses!.shipping!.address0![0].shippingLastName,
-              phoneNumber: addresses!.shipping!.address0![0].shippingPhone,
-              email: addresses!.shipping!.address0![0].shippingEmail,
-              address: addresses!.shipping!.address0![0].shippingAddress1,
-              state: addresses!.shipping!.address0![0].shippingState,
-              address2: addresses!.shipping!.address0![0].shippingAddress2,
-              city: addresses!.shipping!.address0![0].shippingCity,
-              postCode: addresses!.shipping!.address0![0].shippingPostcode,
-              country: addresses!.shipping!.address0![0].shippingCountry,
+              fullName: address0.shippingFirstName,
+              surName: address0.shippingLastName,
+              phoneNumber: address0.shippingPhone,
+              email: address0.shippingEmail,
+              address: address0.shippingAddress1,
+              state: address0.shippingState,
+              address2: address0.shippingAddress2,
+              city: address0.shippingCity,
+              postCode: address0.shippingPostcode,
+              country: address0.shippingCountry,
               defaultAddress: 0 == 0 ? true : false);
+          log("selectedAddress ${selectedAddress!.state!}");
         }
       } else {
         selectedAddress = null;
