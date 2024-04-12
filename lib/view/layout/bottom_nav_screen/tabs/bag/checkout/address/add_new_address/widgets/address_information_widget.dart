@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_state.dart';
@@ -99,7 +100,9 @@ class AddressInformationWidget extends StatelessWidget {
                                         cubit.countries[index].name;
                                     cubit.selectedStateIndex = index;
                                     print(cubit.selectedState);
-                                    if (cubit.selectedState != AppUtil.ksa) {
+                                    log(" cubit.selectedState ${cubit.selectedState}");
+                                    if (cubit.selectedState != AppUtil.ksa &&
+                                        cubit.selectedState != "") {
                                       cubit.countryController.text =
                                           cubit.countries[index].name;
                                       cubit.selectedRegion =
