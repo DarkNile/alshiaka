@@ -9,6 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../../../../../../../../shared/components.dart';
 import '../../../../../../../../utilities/app_ui.dart';
 import '../../../../../../../../utilities/app_util.dart';
@@ -298,7 +299,14 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                   children: [
                                                     // Edit
                                                     InkWell(
-                                                        onTap: () {
+                                                        onTap: () async {
+                                                          var phoneNumber =
+                                                              await PhoneNumber
+                                                                  .getRegionInfoFromPhoneNumber(
+                                                                      c.phone);
+                                                          log("phoneNumber \n $phoneNumber \n");
+                                                          cubit.phoneNumber =
+                                                              phoneNumber;
                                                           cubit.selectedState =
                                                               c.state;
                                                           cubit.stateController
@@ -306,6 +314,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                               cubit
                                                                   .selectedState;
                                                           log("Edit Local cubit.selectedState ========> ${cubit.selectedState}");
+
                                                           setSelectedCountry(
                                                               cubit);
                                                           cubit.updateState();
@@ -663,7 +672,18 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                                   children: [
                                                     // Edit
                                                     InkWell(
-                                                        onTap: () {
+                                                        onTap: () async {
+                                                          var phoneNumber =
+                                                              await PhoneNumber
+                                                                  .getRegionInfoFromPhoneNumber(cubit
+                                                                      .addresses!
+                                                                      .shipping!
+                                                                      .address0![
+                                                                          index]
+                                                                      .shippingPhone!);
+                                                          log("phoneNumber \n $phoneNumber \n");
+                                                          cubit.phoneNumber =
+                                                              phoneNumber;
                                                           cubit.selectedState =
                                                               cubit
                                                                   .addresses!
