@@ -493,7 +493,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(product.categoriesIds);
+    // print(product.categoriesIds);
     return InkWell(
       onTap: onTap ??
           () {

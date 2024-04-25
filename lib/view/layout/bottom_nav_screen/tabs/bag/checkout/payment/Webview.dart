@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -40,6 +41,7 @@ class _state extends State<CustomWebview> {
 
   @override
   Widget build(BuildContext context) {
+    log("CustomWebview");
     final cubit = CheckoutCubit.get(context);
     // TODO: implement build
     return WillPopScope(

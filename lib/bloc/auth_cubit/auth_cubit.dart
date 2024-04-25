@@ -7,6 +7,7 @@ import 'package:ahshiaka/view/layout/bottom_nav_screen/bottom_nav_tabs_screen.da
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../../models/auth_models/register/user_model.dart';
 import '../../repository/auth_repository.dart';
 import '../../shared/cash_helper.dart';
@@ -35,6 +36,9 @@ class AuthCubit extends Cubit<AuthState> {
   final TextEditingController registerLastName = TextEditingController();
   final TextEditingController registerUserName = TextEditingController();
   final TextEditingController registerPhone = TextEditingController();
+  PhoneNumber phoneNumber = PhoneNumber(isoCode: 'SA');
+  String phoneCode = "+966";
+
   final TextEditingController nationalNum = TextEditingController();
   final TextEditingController registerPassword = TextEditingController();
   final TextEditingController registerConfirmPassword = TextEditingController();
@@ -87,9 +91,8 @@ class AuthCubit extends Cubit<AuthState> {
   void registerConfirmChangeVisibility() {
     registerConfirmVisibility = !registerConfirmVisibility;
     registerConfirmVisibilityIcon = registerConfirmVisibility
-
-        ? Icons.visibility_outlined:
-        Icons.visibility_off_outlined;
+        ? Icons.visibility_outlined
+        : Icons.visibility_off_outlined;
     emit(RegisterVisibilityChangeState());
   }
 
