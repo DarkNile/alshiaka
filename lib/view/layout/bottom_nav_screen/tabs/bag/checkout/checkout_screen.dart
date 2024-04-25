@@ -108,6 +108,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: BlocBuilder<CheckoutCubit, CheckoutState>(
           buildWhen: (_, state) => state is CheckoutChangeState,
           builder: (context, state) {
+            log("TOTALLL ${cubit.total}");
+
             if (cubit.cartList.isEmpty) {
               return Scaffold(
                 backgroundColor: AppUI.backgroundColor,
@@ -527,6 +529,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                               index]
                                                                           .mainProductId
                                                                           .toString());
+                                                                      if (cubit
+                                                                              .selectedState !=
+                                                                          AppUtil
+                                                                              .ksa) {
+                                                                        await getTaxAramex(
+                                                                            cubit);
+                                                                      }
                                                                       //
                                                                       await CashHelper.setSavedString(
                                                                           "selectedCustomizations",
@@ -1067,8 +1076,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       CustomText(text: "subTotal".tr()),
                                       const Spacer(),
                                       CustomText(
-                                          text:
-                                              "${(cubit.total - AppUtil.calculateTax(cubit.total)[0]).toStringAsFixed(2)} SAR"),
+                                          text: cubit.selectedState !=
+                                                  AppUtil.ksa
+                                              ? "${cubit.total} SAR"
+                                              :
+                                              //(cubit.total - AppUtil.calculateTax(cubit.total)[0])
+                                              "${(cubit.total - AppUtil.calculateTax(cubit.total, "subTotal KSA")).toStringAsFixed(2)} SAR"),
                                     ],
                                   ),
                                   const SizedBox(
@@ -1129,21 +1142,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             text: "${cubit.couponValue} SAR"),
                                       ],
                                     ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    children: [
-                                      CustomText(text: "TAX".tr()),
-                                      const Spacer(),
-                                      CustomText(
-                                          text: state is GetTotalLoadedState &&
-                                                  cubit.selectedState !=
-                                                      AppUtil.ksa
-                                              ? "${AppUtil.calculateTax(cubit.total + state.amountAramex.amount!.value!)[0]} ${state.amountAramex.amount!.currencyCode!} "
-                                              : "${AppUtil.calculateTax(cubit.total + (cubit.selectedPaymentGetaways != null && cubit.selectedPaymentGetaways!.id == "cod" ? 5.75 : 0) + ((cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : 0 : 0)))[0]} SAR"),
-                                    ],
-                                  ),
+                                  if (cubit.selectedState == AppUtil.ksa) ...[
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      children: [
+                                        CustomText(text: "TAX".tr()),
+                                        const Spacer(),
+                                        CustomText(
+                                            text: state is GetTotalLoadedState &&
+                                                    cubit.selectedState !=
+                                                        AppUtil.ksa
+                                                //AppUtil.calculateTax(cubit.total + state.amountAramex.amount!.value!)[0]
+                                                ? "${AppUtil.calculateTax(cubit.total + state.amountAramex.amount!.value!, "TAX EGY").toStringAsFixed(2)} ${state.amountAramex.amount!.currencyCode!} "
+                                                //value!) : 0 : 0)))[0]
+                                                // : "${AppUtil.calculateTax(cubit.total + (cubit.selectedPaymentGetaways != null && cubit.selectedPaymentGetaways!.id == "cod" ? 5.75 : 0) + ((cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : 0 : 0)), "TAX KSA").toStringAsFixed(2)} SAR"),
+                                                : "${AppUtil.calculateTax(cubit.total, "TAX KSA").toStringAsFixed(2)} SAR"),
+                                      ],
+                                    ),
+                                  ],
                                   const SizedBox(
                                     height: 20,
                                   ),
@@ -1321,29 +1339,35 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     Map<String, dynamic> response =
                                         await cubit.createOrder(context);
                                     print(cubit.selectedPaymentGetaways!.id);
-                                    print('lol $response');
-                                    print(response['id']);
+                                    print('response :: $response');
+                                    print("response['id']  :: " +
+                                        response['id'].toString());
                                     print(
                                         "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
                                     if (response['id'] != null) {
+                                      print("response['id'] != null");
                                       var responseId = response['id'];
                                       var total = response['total'];
-                                      if (cubit.selectedPaymentGetaways!.id ==
-                                          "aps_cc") {
-                                        // if (!mounted) return;
-                                        // AppUtil.mainNavigator(
-                                        //     context,
-                                        //     CustomWebview(
-                                        //       url:
-                                        //           'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
-                                        //       type: "",
-                                        //       orderId: response['id'].toString(),
-                                        //     ));
-                                        payWithVisa(
-                                          double.parse(total),
-                                          responseId.toString(),
-                                        );
-                                      }
+
+                                      print("responseId ${responseId}");
+                                      print("response total ${total}");
+                                      // if (cubit.selectedPaymentGetaways!.id ==
+                                      //     "aps_cc") {
+                                      // if (!mounted) return;
+                                      // AppUtil.mainNavigator(
+                                      //     context,
+                                      //     CustomWebview(
+                                      //       url:
+                                      //           'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
+                                      //       type: "",
+                                      //       orderId: response['id'].toString(),
+                                      //     ));
+                                      print("payWithVisa");
+                                      payWithVisa(
+                                        double.parse(total),
+                                        responseId.toString(),
+                                      );
+                                      // }
                                     }
                                   }
                                 },

@@ -409,10 +409,18 @@ class AppUtil {
     // return fcm;
   }
 
-  static calculateTax(total) {
-    double tax = total - (total / 1.15);
-    tax = roundDouble(tax, 2);
-    return [tax, roundDouble(total + tax, 2)];
+  // static calculateTax(total) {
+  //   double tax = total - (total / 1.15);
+  //   tax = roundDouble(tax, 2);
+  //   return [tax, roundDouble(total + tax, 2)];
+  // }
+  //new
+  static double calculateTax(total, String from) {
+    debugPrint("from  =========== $from");
+    double taxRate = 0.15; // 15% tax rate
+    double taxAmount = total * taxRate;
+    debugPrint("calculateTax  total $total === $taxRate === $taxAmount");
+    return taxAmount;
   }
 
   static double roundDouble(double value, int places) {
