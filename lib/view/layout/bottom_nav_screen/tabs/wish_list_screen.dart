@@ -1,14 +1,13 @@
 import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_cubit.dart';
 import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_states.dart';
+import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products/product_details_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../../bloc/layout_cubit/bottom_nav_cubit.dart';
 import '../../../../shared/components.dart';
 import '../../../../utilities/app_ui.dart';
 import '../../../../utilities/app_util.dart';
-import '../bottom_nav_tabs_screen.dart';
 import 'home/shimmer/home_shimmer.dart';
 import 'package:ahshiaka/shared/CheckNetwork.dart';
 
@@ -118,45 +117,54 @@ class _WishListScreenState extends State<WishListScreen> {
                     child: Column(
                       children: [
                         ProductCard(
-                          type: "list",
-                          product: cubit.favProducts[index],
-                          onDelete: () {
-                            cubit.removeFromFav(
-                                cubit.favProducts[index], context);
-                          },
-                          addToCart: () async {
-                            List variant = await cubit.getVariationId(
-                                cubit.variations, context,
-                                fromFav: true);
-                            if (variant[0] == -1) {
-                              cubit.favProducts[index].qty = 1;
+                            type: "list",
+                            isAddToCartShow: false,
+                            product: cubit.favProducts[index],
+                            onDelete: () {
+                              cubit.removeFromFav(
+                                  cubit.favProducts[index], context);
+                            },
+                            addToCart: () {
+                              AppUtil.mainNavigator(
+                                  context,
+                                  ProductDetailsScreen(
+                                      product: cubit.favProducts[index]));
                             }
-                            if (variant[0] != 0) {
-                              for (var element in cubit.variations) {
-                                if (element.id == variant[0]) {
-                                  element.name = cubit.favProducts[index].name;
-                                  element.mainProductId =
-                                      cubit.favProducts[index].id.toString();
-                                  if (!mounted) return;
-                                  cubit.addToCart(context, element);
-                                }
-                              }
-                            } else {
-                              bool exists = await cubit.fetchItemInCart(
-                                  id: cubit.favProducts[index].id.toString());
-                              if (!exists) {
-                                cubit.favProducts[index].qty = 1;
-                              }
-                              cubit.favProducts[index].mainProductId =
-                                  cubit.favProducts[index].id.toString();
-                              if (!mounted) return;
-                              cubit.addToCart(
-                                  context, cubit.favProducts[index]);
-                            }
-                            cubit.removeFromFav(
-                                cubit.favProducts[index], context);
-                          },
-                        ),
+
+                            //  () async {
+
+                            //   List variant = await cubit.getVariationId(
+                            //       cubit.variations, context,
+                            //       fromFav: true);
+                            //   if (variant[0] == -1) {
+                            //     cubit.favProducts[index].qty = 1;
+                            //   }
+                            //   if (variant[0] != 0) {
+                            //     for (var element in cubit.variations) {
+                            //       if (element.id == variant[0]) {
+                            //         element.name = cubit.favProducts[index].name;
+                            //         element.mainProductId =
+                            //             cubit.favProducts[index].id.toString();
+                            //         if (!mounted) return;
+                            //         cubit.addToCart(context, element);
+                            //       }
+                            //     }
+                            //   } else {
+                            //     bool exists = await cubit.fetchItemInCart(
+                            //         id: cubit.favProducts[index].id.toString());
+                            //     if (!exists) {
+                            //       cubit.favProducts[index].qty = 1;
+                            //     }
+                            //     cubit.favProducts[index].mainProductId =
+                            //         cubit.favProducts[index].id.toString();
+                            //     if (!mounted) return;
+                            //     cubit.addToCart(
+                            //         context, cubit.favProducts[index]);
+                            //   }
+                            //   cubit.removeFromFav(
+                            //       cubit.favProducts[index], context);
+                            // },
+                            ),
                         // Padding(
                         //   padding: const EdgeInsets.all(8.0),
                         //   child: Row(

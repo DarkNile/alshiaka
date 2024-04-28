@@ -23,61 +23,91 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     ProfileCubit.get(context).fetchCustomer();
   }
+
   @override
   Widget build(BuildContext context) {
     return CheckNetwork(
       child: Scaffold(
-        body: BlocBuilder<ProfileCubit,ProfileState>(
-          buildWhen: (_,state) => state is LoadingProfileState || state is LoadedProfileState || state is ErrorProfileState,
-          builder: (context, ProfileState state) {
-            final cubit = ProfileCubit.get(context);
-            if(state is LoadingProfileState){
-              return const LoadingWidget();
-            }
-            if(state is ErrorProfileState){
-              return CustomText(text: "error".tr(),fontSize: 18,);
-            }
+        body: BlocBuilder<ProfileCubit, ProfileState>(
+            buildWhen: (_, state) =>
+                state is LoadingProfileState ||
+                state is LoadedProfileState ||
+                state is ErrorProfileState,
+            builder: (context, ProfileState state) {
+              final cubit = ProfileCubit.get(context);
+              if (state is LoadingProfileState) {
+                return const LoadingWidget();
+              }
+              if (state is ErrorProfileState) {
+                return CustomText(
+                  text: "error".tr(),
+                  fontSize: 18,
+                );
+              }
 
-            return Column(
-              children: [
-                CustomAppBar(title: "profile".tr()),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        CustomInput(controller: cubit.firstName, hint: "firstName".tr(), textInputType: TextInputType.text),
-                        const SizedBox(height: 25,),
-                        CustomInput(controller: cubit.lastName, hint: "lastName".tr(), textInputType: TextInputType.text),
-                        const SizedBox(height: 25,),
-                        CustomInput(controller: cubit.email, hint: "email".tr(), textInputType: TextInputType.emailAddress),
-                        const SizedBox(height: 25,),
-                        CustomInput(controller: cubit.phoneN, hint: "phoneNumber".tr(), textInputType: TextInputType.phone),
-                        const Spacer(),
-                        BlocBuilder<ProfileCubit,ProfileState>(
-                            buildWhen: (_,state) => state is AddLoadingProfileState || state is AddLoadedProfileState || state is AddErrorProfileState,
-                            builder: (context, ProfileState state) {
-                              if(state is AddLoadingProfileState){
-                                return const LoadingWidget();
-                              }
-                            return CustomButton(text: "saveChanges".tr(),onPressed: () async {
-                              await cubit.editCustomer();
-                              AppUtil.successToast(context, "profileEditedSuccessfully".tr());
-                            },);
-                          }
-                        ),
-                        // const SizedBox(height: 10,),
-                        // CustomButton(text: "addFamilyNumber".tr(),borderColor: AppUI.mainColor,color: AppUI.whiteColor,textColor: AppUI.mainColor,onPressed: (){
-                        //   AppUtil.mainNavigator(context, AddFamilyNumber());
-                        // },)
-                      ],
+              return Column(
+                children: [
+                  CustomAppBar(title: "profile".tr()),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          CustomInput(
+                              controller: cubit.firstName,
+                              hint: "firstName".tr(),
+                              textInputType: TextInputType.text),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          CustomInput(
+                              controller: cubit.lastName,
+                              hint: "lastName".tr(),
+                              textInputType: TextInputType.text),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          CustomInput(
+                              controller: cubit.email,
+                              hint: "email".tr(),
+                              textInputType: TextInputType.emailAddress),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          CustomInput(
+                              controller: cubit.phoneN,
+                              hint: "phoneNumber".tr(),
+                              textInputType: TextInputType.phone),
+                          const Spacer(),
+                          BlocBuilder<ProfileCubit, ProfileState>(
+                              buildWhen: (_, state) =>
+                                  state is AddLoadingProfileState ||
+                                  state is AddLoadedProfileState ||
+                                  state is AddErrorProfileState,
+                              builder: (context, ProfileState state) {
+                                if (state is AddLoadingProfileState) {
+                                  return const LoadingWidget();
+                                }
+                                return CustomButton(
+                                  text: "saveChanges".tr(),
+                                  onPressed: () async {
+                                    await cubit.editCustomer();
+                                    AppUtil.newSuccessToastTOP(context,
+                                        "profileEditedSuccessfully".tr());
+                                  },
+                                );
+                              }),
+                          // const SizedBox(height: 10,),
+                          // CustomButton(text: "addFamilyNumber".tr(),borderColor: AppUI.mainColor,color: AppUI.whiteColor,textColor: AppUI.mainColor,onPressed: (){
+                          //   AppUtil.mainNavigator(context, AddFamilyNumber());
+                          // },)
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
-            );
-          }
-        ),
+                  )
+                ],
+              );
+            }),
       ),
     );
   }

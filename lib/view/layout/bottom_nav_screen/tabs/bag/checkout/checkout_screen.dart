@@ -1269,17 +1269,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ? null
                               : () async {
                                   if (cubit.selectedAddress == null) {
-                                    AppUtil.errorToast(context,
+                                    AppUtil.newErrorToastTOP(context,
                                         "pleaseSelectShippingAddress".tr());
                                     return;
                                   }
                                   if (cubit.selectedPaymentGetaways == null) {
-                                    AppUtil.errorToast(context,
+                                    AppUtil.newErrorToastTOP(context,
                                         "pleaseSelectPaymentMethod".tr());
                                     return;
                                   }
                                   if (cubit.selectedShippingMethods == null) {
-                                    AppUtil.errorToast(context,
+                                    AppUtil.newErrorToastTOP(context,
                                         "pleaseSelectShippingMethod".tr());
                                     return;
                                   }
@@ -1430,7 +1430,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               cubit.sendEmail(orderId);
             } else {
               print("failed transaction");
-              AppUtil.errorToast(context, 'paymentFailed'.tr);
+              AppUtil.newErrorToastTOP(context, 'paymentFailed'.tr());
             }
           } else if (event["status"] == "error") {
             // Handle error here.

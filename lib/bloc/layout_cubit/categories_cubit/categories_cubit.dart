@@ -55,7 +55,15 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         // } else {
         //   allSubCategoriesModel.add(CategoriesModel.fromJson(element));
         // }
-        categoriesModel.add(CategoriesModel.fromJson(element));
+        // =======` To Remove Duplicates `=======
+        // =======` To Remove Duplicates `=======
+        var data = categoriesModel.any(
+            (myCategory) => int.parse(element['object_id']) == myCategory.id);
+        if (!data) {
+          categoriesModel.add(CategoriesModel.fromJson(element));
+        }
+
+        // categoriesModel.add(CategoriesModel.fromJson(element));
       }
       print(categoriesModel.length);
       print(allSubCategoriesModel.length);
@@ -846,7 +854,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
     if (!fromFav) {
       if (variations.isNotEmpty && variantId == 0) {
-        AppUtil.errorToast(context, "noVariationFound".tr());
+        AppUtil.newErrorToastTOP(context, "noVariationFound".tr());
         return null;
       }
     }
@@ -1093,7 +1101,6 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   fetchAttributeTerms(categoryId, attributeId) async {
     attributeTerms.clear();
     try {
-      // emit(SizeGuideLoadingState());
       List response = await CategoriesRepository.fetchAttributeTerms(
           categoryId, attributeId);
       for (var element in response) {

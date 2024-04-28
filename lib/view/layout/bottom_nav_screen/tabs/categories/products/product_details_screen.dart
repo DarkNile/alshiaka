@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ahshiaka/models/categories/products_model.dart';
 import 'package:ahshiaka/utilities/app_ui.dart';
 import 'package:ahshiaka/utilities/app_util.dart';
@@ -8,6 +10,7 @@ import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/categories/products/
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ahshiaka/shared/CheckNetwork.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -127,8 +130,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     if (widget.product.images != null &&
                         widget.product.images!.isNotEmpty)
                       SizedBox(
-                        height: AppUtil.responsiveHeight(context) * 0.6,
-                        width: double.infinity,
+                        // height: AppUtil.responsiveHeight(context) * 0.6,
+                        // width: double.infinity,
                         // child: LightCarousel(
                         //   images: List.generate(widget.product.images!.length,
                         //       (index) {
@@ -179,9 +182,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           widget.product.images!.isNotEmpty
                                       ? widget.product.images![index].src
                                       : "",
-                              height: AppUtil.responsiveHeight(context) * 0.8,
-                              fit: BoxFit.cover,
-                              alignment: Alignment.topCenter,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                width: AppUtil.responsiveWidth(context),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              // alignment: Alignment.center,
                               // placeholder: (context, url) =>
                               //     const LoadingWidget(),
                               // placeholder: (context, url) => Image.asset(
@@ -197,7 +208,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               ),
                             );
                           }),
-                          options: CarouselOptions(),
+                          options: CarouselOptions(
+                            viewportFraction: 1,
+                            height: AppUtil.responsiveHeight(context) * 0.6,
+                          ),
                         ),
                       ),
                     Positioned(
@@ -1359,19 +1373,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               return CustomCard(
                 height: 75,
                 child: CustomButton(
-                  text: "addToBag".tr(),
+                  text: (isOutOfStock && !cubit.isLoading)
+                      ? "notAvailable".tr()
+                      : "addToBag".tr(),
                   color: ((isSizeSelectedMap.isEmpty ||
                                   isTallSelectedMap.isEmpty) &&
                               length > 1) ||
                           (isTallSelectedMap.isEmpty && length == 1) ||
-                          cubit!.isLoading
+                          cubit.isLoading
                       ? AppUI.greyColor
                       : AppUI.mainColor,
                   onPressed: ((isSizeSelectedMap.isEmpty ||
                                   isTallSelectedMap.isEmpty) &&
                               length > 1) ||
                           (isTallSelectedMap.isEmpty && length == 1) ||
-                          cubit!.isLoading
+                          cubit.isLoading
                       ? null
                       : () async {
                           bool exists = await cubit.fetchItemInCart(
@@ -1403,6 +1419,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Map isSizeSelectedMap = {};
   Map isTallSelectedMap = {};
   int length = 0;
+  bool isOutOfStock = false;
   int variantId = 0;
   String details = '';
 
@@ -1430,6 +1447,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ..removeWhere(
               (element) => element.last['status'] == 'outofvariation');
       }
+      isOutOfStock = customizationValues.isEmpty;
+      log("isOutOfStock ${isOutOfStock}");
       setState(() {});
     }
   }

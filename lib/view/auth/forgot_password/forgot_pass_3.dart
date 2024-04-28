@@ -7,9 +7,10 @@ import '../../../bloc/auth_cubit/auth_cubit.dart';
 import '../../../bloc/auth_cubit/auth_states.dart';
 import '../../../shared/components.dart';
 import '../../../utilities/app_ui.dart';
+
 class ForgotPass3 extends StatefulWidget {
   final String email;
-  const ForgotPass3({Key? key,required this.email}) : super(key: key);
+  const ForgotPass3({Key? key, required this.email}) : super(key: key);
 
   @override
   _ForgotPass3State createState() => _ForgotPass3State();
@@ -28,57 +29,103 @@ class _ForgotPass3State extends State<ForgotPass3> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: MediaQuery.of(context).padding.top,),
+                SizedBox(
+                  height: MediaQuery.of(context).padding.top,
+                ),
                 Row(
                   children: [
-                    IconButton(onPressed: (){
-                      Navigator.pop(context);
-                    }, icon: const Icon(Icons.close)),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.close)),
                   ],
                 ),
-                const SizedBox(height: 20,),
-                CustomText(text: "resetPass".tr(),fontSize: 20,fontWeight: FontWeight.w600,),
-                const SizedBox(height: 30,),
-                BlocBuilder<AuthCubit,AuthState>(
-                    builder: (context, state) {
-                      return Column(
-                        children: [
-                          CustomInput(controller: cubit.resetPass, hint: "pass".tr(), textInputType: TextInputType.text,obscureText: cubit.passVisibility,suffixIcon: IconButton(onPressed: (){
-                            cubit.passChangeVisibility();
-                          }, icon: Icon(cubit.passVisibilityIcon,color: AppUI.iconColor,size: 25,)),),
-                          const SizedBox(height: 20,),
-                          CustomInput(controller: cubit.resetRePass, hint: "rePass".tr(), textInputType: TextInputType.text,obscureText: cubit.rePassVisibility,suffixIcon: IconButton(onPressed: (){
-                            cubit.rePassChangeVisibility();
-                          }, icon: Icon(cubit.rePassVisibilityIcon,color: AppUI.iconColor,size: 25,)),),
-                          const SizedBox(height: 50,),
-                          BlocBuilder<AuthCubit,AuthState>(
-                              buildWhen: (_,state) => state is ResetPassLoadingState || state is ResetPassLoadedState,
-                              builder: (context, state) {
-                                if(state is ResetPassLoadingState){
-                                  return const LoadingWidget();
-                                }
-                                return CustomButton(text: "submit".tr(),onPressed: (){
-                                if(cubit.forgotPassFormKey.currentState!.validate()) {
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomText(
+                  text: "resetPass".tr(),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
+                  return Column(
+                    children: [
+                      CustomInput(
+                        controller: cubit.resetPass,
+                        hint: "pass".tr(),
+                        textInputType: TextInputType.text,
+                        obscureText: cubit.passVisibility,
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              cubit.passChangeVisibility();
+                            },
+                            icon: Icon(
+                              cubit.passVisibilityIcon,
+                              color: AppUI.iconColor,
+                              size: 25,
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CustomInput(
+                        controller: cubit.resetRePass,
+                        hint: "rePass".tr(),
+                        textInputType: TextInputType.text,
+                        obscureText: cubit.rePassVisibility,
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              cubit.rePassChangeVisibility();
+                            },
+                            icon: Icon(
+                              cubit.rePassVisibilityIcon,
+                              color: AppUI.iconColor,
+                              size: 25,
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      BlocBuilder<AuthCubit, AuthState>(
+                          buildWhen: (_, state) =>
+                              state is ResetPassLoadingState ||
+                              state is ResetPassLoadedState,
+                          builder: (context, state) {
+                            if (state is ResetPassLoadingState) {
+                              return const LoadingWidget();
+                            }
+                            return CustomButton(
+                              text: "submit".tr(),
+                              onPressed: () {
+                                if (cubit.forgotPassFormKey.currentState!
+                                    .validate()) {
                                   if (cubit.resetPass.text !=
                                       cubit.resetRePass.text) {
-                                    AppUtil.errorToast(context, "passMisfit".tr());
+                                    AppUtil.newErrorToastTOP(
+                                        context, "passMisfit".tr());
                                     return;
                                   }
                                   cubit.resetPassword(context);
                                 }
-                              },);
-                            }
-                          ),
-                        ],
-                      );
-                    }
-                ),
+                              },
+                            );
+                          }),
+                    ],
+                  );
+                }),
                 // const SizedBox(height: 20,),
                 // CustomText(text: "resendOTP".tr(),color: AppUI.errorColor,textDecoration: TextDecoration.underline),
                 // CustomInput(controller: TextEditingController(),hint: "newPass".tr(), textInputType: TextInputType.text),
                 // const SizedBox(height: 16,),
                 // CustomInput(controller: TextEditingController(),hint: "reNewPass".tr(), textInputType: TextInputType.text),
-                const SizedBox(height: 50,),
+                const SizedBox(
+                  height: 50,
+                ),
                 // Row(
                 //   children: [
                 //     Expanded(child: Divider()),
@@ -86,7 +133,6 @@ class _ForgotPass3State extends State<ForgotPass3> {
                 //     Expanded(child: Divider()),
                 //   ],
                 // ),
-
               ],
             ),
           ),

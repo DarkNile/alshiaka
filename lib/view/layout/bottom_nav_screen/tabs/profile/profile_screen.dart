@@ -4,6 +4,7 @@ import 'package:ahshiaka/shared/cash_helper.dart';
 import 'package:ahshiaka/shared/components.dart';
 import 'package:ahshiaka/utilities/app_ui.dart';
 import 'package:ahshiaka/utilities/app_util.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/auth/auth_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/settings/setting_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/social_accounts/social_accounts_screen.dart';
@@ -335,10 +336,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     text: "submit".tr(),
                                     width:
                                         AppUtil.responsiveWidth(context) * 0.3,
-                                    onPressed: () {
+                                    onPressed: () async {
                                       Navigator.of(context, rootNavigator: true)
                                           .pop();
                                       CashHelper.logOut(context);
+                                      await CacheHelper.clear();
                                     },
                                   ),
                                   const SizedBox(
@@ -407,7 +409,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print(response.body);
       print(response.statusCode);
       print("######################################################3333");
-      if (response.statusCode == 200 && response.body != null) {
+      if (response.statusCode == 200) {
         print("ssssssssssssssssssssssss");
         print(response.body);
         //Navigator.of(context, rootNavigator: true).pop();

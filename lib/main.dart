@@ -3,6 +3,7 @@ import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/firebase_options.dart';
 import 'package:ahshiaka/utilities/app_ui.dart';
 import 'package:ahshiaka/utilities/app_util.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/init_screens/splash_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,6 +27,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await CacheHelper.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.requestPermission(
@@ -109,8 +111,8 @@ class MyApp extends StatelessWidget {
           textTheme:
               GoogleFonts.montserratTextTheme(Theme.of(context).textTheme)
                   .copyWith(
-            bodyText1: GoogleFonts.montserrat(
-                textStyle: Theme.of(context).textTheme.bodyText1),
+            bodyLarge: GoogleFonts.montserrat(
+                textStyle: Theme.of(context).textTheme.bodyLarge),
           ),
         ),
         home: SplashScreen(),

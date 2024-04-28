@@ -2,6 +2,7 @@ import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/bloc/profile_cubit/profile_cubit.dart';
 import 'package:ahshiaka/models/auth_models/error_user_model.dart';
 import 'package:ahshiaka/models/auth_models/login/login_model.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/auth/auth_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/bottom_nav_tabs_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -156,7 +157,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
       emit(LoginLoadedState());
     } catch (e) {
-      // AppUtil.errorToast(context, e.toString());
+      AppUtil.newErrorToastTOP(context, e.toString());
       emit(LoginErrorState());
       return Future.error(e);
     }
@@ -165,7 +166,7 @@ class AuthCubit extends Cubit<AuthState> {
   var registerModel;
   register(context) async {
     if (registerPassword.text != registerConfirmPassword.text) {
-      AppUtil.errorToast(context, "passMisfit".tr());
+      AppUtil.newErrorToastTOP(context, "passMisfit".tr());
       return;
     }
     emit(RegisterLoadingState());
@@ -188,15 +189,17 @@ class AuthCubit extends Cubit<AuthState> {
         loginPhone.text = registerEmail.text;
         loginPassword.text = registerPassword.text;
         CashHelper.setSavedString("id", response['id'].toString());
+        // ==== Cache Country Code ====
+        await CacheHelper.write("Country Code", phoneNumber.isoCode);
         Map<String, dynamic> sendCodeResponse =
             await sendCode(registerEmail.text, context);
         var email = registerEmail.text;
         if (sendCodeResponse['data']['status'] == 200) {
           reset();
-          AppUtil.successToast(context, "codeSentSuccessfully".tr());
+          AppUtil.newSuccessToastTOP(context, "codeSentSuccessfully".tr());
           AppUtil.mainNavigator(context, ForgotPass2(email: email));
         } else {
-          AppUtil.errorToast(context, "someThingWentWrong".tr());
+          AppUtil.newErrorToastTOP(context, "someThingWentWrong".tr());
         }
       }
       emit(RegisterLoadedState());
@@ -214,9 +217,9 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       Map<String, dynamic> response = await AuthRepositories.sendCode(email);
       if (response['data']['status'] == 200) {
-        AppUtil.successToast(context, "codeSentSuccessfully".tr());
+        AppUtil.newSuccessToastTOP(context, "codeSentSuccessfully".tr());
       } else {
-        AppUtil.errorToast(context, "wrongmail".tr());
+        AppUtil.newErrorToastTOP(context, "wrongmail".tr());
       }
       emit(ResetPassLoadedState());
       return response;
@@ -239,9 +242,9 @@ class AuthCubit extends Cubit<AuthState> {
               email: forgotPassEmail.text,
               type: "forgot",
             ));
-        AppUtil.successToast(context, "codeSentSuccessfully".tr());
+        AppUtil.newSuccessToastTOP(context, "codeSentSuccessfully".tr());
       } else {
-        AppUtil.errorToast(context, "wrongmail".tr());
+        AppUtil.newErrorToastTOP(context, "wrongmail".tr());
       }
       emit(ResetPassLoadedState());
       return response;
@@ -257,7 +260,7 @@ class AuthCubit extends Cubit<AuthState> {
       Map<String, dynamic> response =
           await AuthRepositories.validateCode(email, verifyController1.text);
       if (response['data']['status'] == 200) {
-        AppUtil.successToast(context, "validCode".tr());
+        AppUtil.newSuccessToastTOP(context, "validCode".tr());
         if (type == "forgot") {
           AppUtil.mainNavigator(context, ForgotPass3(email: email));
         } else {
@@ -265,7 +268,7 @@ class AuthCubit extends Cubit<AuthState> {
           login(context);
         }
       } else {
-        AppUtil.errorToast(context, "someThingWentWrong".tr());
+        AppUtil.newErrorToastTOP(context, "someThingWentWrong".tr());
       }
       emit(ResetPassLoadedState());
       return response;
@@ -282,11 +285,12 @@ class AuthCubit extends Cubit<AuthState> {
           forgotPassEmail.text, resetPass.text, verifyController1.text);
       if (response['data']['status'] == 200) {
         reset();
-        await AppUtil.successToast(context, "passwordChangedSuccessfully".tr());
+        await AppUtil.newSuccessToastTOP(
+            context, "passwordChangedSuccessfully".tr());
         AppUtil.removeUntilNavigator(context, const AuthScreen());
         login(context);
       } else {
-        AppUtil.errorToast(context, "someThingWentWrong".tr());
+        AppUtil.newErrorToastTOP(context, "someThingWentWrong".tr());
       }
       emit(ResetPassLoadedState());
       return response;

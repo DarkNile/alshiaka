@@ -98,6 +98,13 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                 BlocBuilder<CheckoutCubit, CheckoutState>(
                     buildWhen: (_, __) => state is CheckoutChangeState,
                     builder: (context, state) {
+                      if (cubit.tabState == "current" &&
+                          checkoutCubit.pendingOrders.isEmpty) {
+                        return _NoOrdersWidget();
+                      } else if (cubit.tabState != "current" &&
+                          checkoutCubit.otherOrders.isEmpty) {
+                        return _NoOrdersWidget();
+                      }
                       return Expanded(
                         child: ListView(
                           shrinkWrap: true,
@@ -232,6 +239,23 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               ],
             );
           }),
+        ),
+      ),
+    );
+  }
+}
+
+class _NoOrdersWidget extends StatelessWidget {
+  const _NoOrdersWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Center(
+        child: CustomText(
+          text: "noOrders".tr(),
+          color: AppUI.mainColor,
+          fontSize: 30,
         ),
       ),
     );

@@ -71,7 +71,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
                             if (newAddressFormKey.currentState!.validate()) {
                               if (!AppUtil.isEmailValidate(
                                   cubit.emailController2.text)) {
-                                AppUtil.errorToast(
+                                AppUtil.newErrorToastTOP(
                                     context, "inValidEmail".tr());
                                 return;
                               }
@@ -79,7 +79,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
                               //         cubit.selectedState == AppUtil.ksa) &&
                               //     !AppUtil.isPhoneValidate(
                               //         cubit.phoneController.text)) {
-                              //   AppUtil.errorToast(
+                              //   AppUtil.newErrorToastTOP(
                               //       context, "inValidPhone".tr());
                               //   return;
                               // }
@@ -87,7 +87,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                       cubit.selectedState == AppUtil.ksa) &&
                                   !AppUtil.isAddressValidate(
                                       cubit.addressController.text)) {
-                                AppUtil.errorToast(
+                                AppUtil.newErrorToastTOP(
                                     context, "inValidAddress".tr());
                                 return;
                               }

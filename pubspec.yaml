@@ -72,6 +72,10 @@ dependencies:
   firebase_core: ^2.8.0
   firebase_messaging: ^14.3.0
   intl_phone_number_input: ^0.7.4
+  get_storage: ^2.1.1
+  dash_flags: ^0.1.1
+  another_flushbar: ^1.12.30
+
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,9 @@
+import 'dart:developer';
 import 'package:ahshiaka/main.dart';
 import 'package:ahshiaka/shared/cash_helper.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/settings/Condition.dart';
+import 'package:dash_flags/dash_flags.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,6 +21,14 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  String countryCode = '';
+  @override
+  void initState() {
+    countryCode = CacheHelper.read("Country Code") ?? "SA";
+    log("countryCode ${countryCode}");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CheckNetwork(
@@ -35,72 +46,77 @@ class _SettingScreenState extends State<SettingScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    // ListTile(
-                    //   onTap: () {
-                    //     // AppUtil.mainNavigator(context, EditProfileScreen());
-                    //   },
-                    //   leading: Image.asset(
-                    //     "${AppUI.iconPath}flag.png",
-                    //     width: 25,
-                    //   ),
-                    //   title: CustomText(text: "country".tr()),
-                    //   trailing: SizedBox(
-                    //     width: 100,
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.end,
-                    //       children: [
-                    //         CustomText(
-                    //             text: "Saudi",
-                    //             fontWeight: FontWeight.w100,
-                    //             color: AppUI.greyColor),
-                    //         const SizedBox(
-                    //           width: 5,
-                    //         ),
-                    //         Icon(
-                    //           Icons.arrow_forward_ios,
-                    //           color: AppUI.blackColor,
-                    //           size: 16,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    // const Divider(),
-                    // ListTile(
-                    //   onTap: () {
-                    //     // AppUtil.mainNavigator(context, MyOrdersScreen());
-                    //   },
-                    //   leading: Stack(
-                    //     alignment: Alignment.center,
-                    //     children: [
-                    //       SvgPicture.asset("${AppUI.iconPath}currency.svg"),
-                    //       SvgPicture.asset("${AppUI.iconPath}dolar.svg"),
-                    //     ],
-                    //   ),
-                    //   title: CustomText(text: "currency".tr()),
-                    //   trailing: SizedBox(
-                    //     width: 100,
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.end,
-                    //       children: [
-                    //         CustomText(
-                    //           text: "SAR",
-                    //           fontWeight: FontWeight.w100,
-                    //           color: AppUI.greyColor,
-                    //         ),
-                    //         const SizedBox(
-                    //           width: 5,
-                    //         ),
-                    //         Icon(
-                    //           Icons.arrow_forward_ios,
-                    //           color: AppUI.blackColor,
-                    //           size: 16,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    // const Divider(),
+                    ListTile(
+                      onTap: () {
+                        // AppUtil.mainNavigator(context, EditProfileScreen());
+                      },
+                      leading: CountryFlag(
+                        country: Country.fromCode(countryCode),
+                        height: 25,
+                      ), //  Image.asset(
+                      //   "${AppUI.iconPath}flag.png",
+                      //   width: 25,
+                      // ),
+                      title: CustomText(text: "country".tr()),
+                      trailing: SizedBox(
+                        width: 100,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            CustomText(
+                                text: countryCode.toLowerCase() == "sa"
+                                    ? "Saudi"
+                                    : "Country",
+                                fontWeight: FontWeight.w100,
+                                color: AppUI.greyColor),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: AppUI.blackColor,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      onTap: () {
+                        // AppUtil.mainNavigator(context, MyOrdersScreen());
+                      },
+                      leading: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SvgPicture.asset("${AppUI.iconPath}currency.svg"),
+                          SvgPicture.asset("${AppUI.iconPath}dolar.svg"),
+                        ],
+                      ),
+                      title: CustomText(text: "currency".tr()),
+                      trailing: SizedBox(
+                        width: 100,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            CustomText(
+                              text: "SAR",
+                              fontWeight: FontWeight.w100,
+                              color: AppUI.greyColor,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: AppUI.blackColor,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(),
                     ListTile(
                       onTap: () async {
                         // AppUtil.mainNavigator(context, ChangePasswordScreen());

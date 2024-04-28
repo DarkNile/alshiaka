@@ -230,56 +230,67 @@ class _HomeTabState extends State<HomeTab> {
                       ),
                     ),
                   ),
-
-                  // InkWell(
-                  //   onTap: (){
-                  //     AppUtil.mainNavigator(context, ProductsScreen(catId: 0, catName: "recommendedForYour".tr()));
-                  //   },
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.symmetric(horizontal: 16),
-                  //     child: Row(
-                  //       children: [
-                  //         CustomText(
-                  //           text: "recommendedForYour".tr(),
-                  //           fontSize: 18,
-                  //         ),
-                  //         const Spacer(),
-                  //         CustomText(text: "seeMore".tr(),color: AppUI.mainColor,)
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10,),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  //   child: SizedBox(
-                  //     height: 320,
-                  //     child: ListView(
-                  //       shrinkWrap: true,
-                  //       scrollDirection: Axis.horizontal,
-                  //       children:
-                  //       List.generate(cubit.recommendedProduct.length, (index) {
-                  //         return Row(
-                  //           children: [
-                  //             SizedBox(
-                  //               width: 170,
-                  //               child: ProductCard(
-                  //                 product: cubit.recommendedProduct[index],
-                  //                 onFav: () {
-                  //                   cubit.favProduct(cubit.recommendedProduct[index],context);
-                  //                 },
-                  //               ),
-                  //             ),
-                  //             const SizedBox( width: 20,)
-                  //           ],
-                  //         );
-                  //       }),
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(
-                  //   height: 20,
-                  // ),
+                  InkWell(
+                    onTap: () {
+                      AppUtil.mainNavigator(
+                          context,
+                          ProductsScreen(
+                              catId: 0, catName: "recommendedForYour".tr()));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          CustomText(
+                            text: "recommendedForYour".tr(),
+                            fontSize: 18,
+                          ),
+                          const Spacer(),
+                          CustomText(
+                            text: "seeMore".tr(),
+                            color: AppUI.mainColor,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SizedBox(
+                      height: 320,
+                      child: ListView(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        children: List.generate(cubit.recommendedProduct.length,
+                            (index) {
+                          return Row(
+                            children: [
+                              SizedBox(
+                                width: 170,
+                                child: ProductCard(
+                                  product: cubit.recommendedProduct[index],
+                                  onFav: () {
+                                    cubit.favProduct(
+                                        cubit.recommendedProduct[index],
+                                        context);
+                                  },
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              )
+                            ],
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   SizedBox(
                     height: 10,
                   ),
@@ -350,7 +361,6 @@ class _HomeTabState extends State<HomeTab> {
                   const SizedBox(
                     height: 0,
                   ),
-
                   const SizedBox(
                     height: 10,
                   ),
