@@ -477,6 +477,7 @@ class CustomDropDownMenu extends StatelessWidget {
 class ProductCard extends StatelessWidget {
   final type, buttonText;
   final product, from;
+  final bool isAddToCartShow;
   final Function()? onFav, onDelete, addToCart, onTap;
 
   const ProductCard(
@@ -488,6 +489,7 @@ class ProductCard extends StatelessWidget {
       this.onDelete,
       this.from,
       this.addToCart,
+      this.isAddToCartShow = true,
       this.onTap})
       : super(key: key);
 
@@ -652,13 +654,15 @@ class ProductCard extends StatelessWidget {
                             textDecoration: TextDecoration.lineThrough,
                             fontSize: 12,
                           ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * .38,
-                          child: CustomText(
-                            text: product!.name,
-                            max: 2,
-                            color: AppUI.alshiakaColor,
-                            fontSize: 12,
+                        Expanded(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * .38,
+                            child: CustomText(
+                              text: product!.name,
+                              max: 2,
+                              color: AppUI.alshiakaColor,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ],
@@ -853,6 +857,9 @@ class ProductCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Row(
+                      mainAxisAlignment: isAddToCartShow
+                          ? MainAxisAlignment.start
+                          : MainAxisAlignment.end,
                       children: [
                         InkWell(
                           onTap: () async {
@@ -882,25 +889,26 @@ class ProductCard extends StatelessWidget {
                                 "${AppUI.imgPath}trash_red.png",
                                 height: 19,
                               )),
-                        const Spacer(),
-                        InkWell(
-                            onTap: addToCart,
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  "${AppUI.imgPath}bag.png",
-                                  color: AppUI.mainColor,
-                                  height: 19,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                CustomText(
-                                  text: "addToBag".tr(),
-                                  color: AppUI.mainColor,
-                                )
-                              ],
-                            )),
+                        if (isAddToCartShow) const Spacer(),
+                        if (isAddToCartShow)
+                          InkWell(
+                              onTap: addToCart,
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "${AppUI.imgPath}bag.png",
+                                    color: AppUI.mainColor,
+                                    height: 19,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  CustomText(
+                                    text: "addToBag".tr(),
+                                    color: AppUI.mainColor,
+                                  )
+                                ],
+                              )),
                       ],
                     ),
                   )

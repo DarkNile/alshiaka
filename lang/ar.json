@@ -261,5 +261,7 @@
   "newDiscount": "اشتري ٢ ثوب و الثالث ٥٠٪",
 
   "phoneNumberRequired":"رقم الهاتف مطلوب",
-  "Loading...":"تحميل..."
+  "Loading...":"تحميل...",
+  "noOrders":"ليس لديك طلبات",
+  "notAvailable":"غير متوفر"
 }

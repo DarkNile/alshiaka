@@ -157,14 +157,15 @@ class _SignUpState extends State<SignUp> {
                                       .validate()) {
                                     if (!AppUtil.isEmailValidate(
                                         cubit.registerEmail.text)) {
-                                      AppUtil.errorToast(
+                                      AppUtil.newErrorToastTOP(
                                           context, "inValidEmail".tr());
                                       return;
                                     }
-
-                                    if (!AppUtil.isPhoneValidate(
-                                        cubit.registerPhone.text)) {
-                                      AppUtil.errorToast(
+                                    // Ksa
+                                    if (cubit.phoneCode == "+966" &&
+                                        !AppUtil.isPhoneValidate(
+                                            cubit.registerPhone.text)) {
+                                      AppUtil.newErrorToastTOP(
                                           context, "inValidPhone".tr());
                                       return;
                                     }
@@ -172,12 +173,12 @@ class _SignUpState extends State<SignUp> {
                                     if (cubit.registerModel!
                                         is! ErrorUserModel) {
                                       if (!mounted) return;
-                                      AppUtil.successToast(
+                                      AppUtil.newSuccessToastTOP(
                                           context, "doneCreatedUser".tr());
                                       // AppUtil.removeUntilNavigator(context, const BottomNavTabsScreen());
                                     } else {
                                       if (!mounted) return;
-                                      AppUtil.errorToast(
+                                      AppUtil.newErrorToastTOP(
                                           context, "loginFailed".tr());
                                     }
                                     // AppUtil.mainNavigator(context, const VerificationScreen(type:"register"));

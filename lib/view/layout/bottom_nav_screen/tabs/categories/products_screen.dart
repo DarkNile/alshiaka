@@ -1,11 +1,10 @@
-import 'dart:convert';
+import 'dart:developer';
 
 import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_cubit.dart';
 import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_states.dart';
 import 'package:ahshiaka/models/categories/products_model.dart';
 import 'package:ahshiaka/shared/components.dart';
 import 'package:ahshiaka/utilities/app_ui.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -779,6 +778,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                       .attributes[index].id);
                                                   print(cubit
                                                       .attributes[index].name);
+
                                                   return Column(
                                                     children: [
                                                       SizedBox(
@@ -809,10 +809,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                 .attributes[
                                                                     index]
                                                                 .toJson());
-                                                            /*    AppUtil.dialog2(
+                                                            AppUtil.dialog2(
                                                                 context, "", [
                                                               const LoadingWidget()
-                                                            ]);*/
+                                                            ]);
                                                             await cubit
                                                                 .fetchAttributeTerms(
                                                                     widget
@@ -823,9 +823,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         .id);
                                                             if (!mounted)
                                                               return;
-                                                            /*Navigator.pop(
-                                                                context);*/
-                                                            showattribute(
+                                                            Navigator.pop(
+                                                                context);
+                                                            await showattribute(
                                                               context,
                                                               index,
                                                               cubit
@@ -839,6 +839,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       index]
                                                                   .id!,
                                                             );
+
                                                             /*  AppUtil.dialog2(
                                                                 context,
                                                                 cubit
@@ -1140,15 +1141,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
     );
   }
 
-  void showattribute(BuildContext context, int _index, String name,
-      List<Attributes> data, int id) {
+  Future<void> showattribute(BuildContext context, int _index, String name,
+      List<Attributes> data, int id) async {
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
     int i = -1;
     if (id == 40) {
       data..removeWhere((element) => int.tryParse(element.name!) == null);
     }
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) => StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) => Scaffold(

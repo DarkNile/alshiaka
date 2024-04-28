@@ -2,16 +2,13 @@
 import 'dart:math';
 
 import 'package:ahshiaka/bloc/layout_cubit/bottom_nav_cubit.dart';
-import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_cubit.dart';
-import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/view/auth/auth_screen.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:easy_localization/easy_localization.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:geolocator/geolocator.dart';
-import 'dart:ui' as ui;
-import 'package:toast/toast.dart';
 
 import '../shared/cash_helper.dart';
 import '../shared/components.dart';
@@ -368,6 +365,75 @@ class AppUtil {
           height: 20,
         ),
     ]);
+  }
+
+  // ======= New ======
+
+  static newSuccessToastTOP(BuildContext context, String? msg) {
+    Flushbar(
+      messageText: Row(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: CustomText(
+              text: msg ?? "success".tr(),
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const Spacer(),
+          const Icon(
+            Icons.check,
+            color: Colors.white,
+          ),
+        ],
+      ),
+      messageColor: Colors.white,
+      messageSize: 18,
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      isDismissible: true,
+      duration: const Duration(seconds: 3),
+      flushbarPosition: FlushbarPosition.TOP,
+      barBlur: .1,
+      backgroundColor: AppUI.activeColor,
+      borderColor: AppUI.activeColor,
+      margin: const EdgeInsets.all(8),
+      borderRadius: BorderRadius.circular(10),
+    ).show(context);
+  }
+
+  static newErrorToastTOP(BuildContext context, String msg) {
+    Flushbar(
+      messageText: Row(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: CustomText(
+              text: msg,
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const Spacer(),
+          const Icon(
+            Icons.close,
+            color: Colors.white,
+          ),
+        ],
+      ),
+      messageColor: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      isDismissible: true,
+      duration: const Duration(seconds: 3),
+      flushbarPosition: FlushbarPosition.TOP,
+      barBlur: .1,
+      backgroundColor: AppUI.errorColor,
+      borderColor: AppUI.errorColor,
+      margin: const EdgeInsets.all(8),
+      borderRadius: BorderRadius.circular(10),
+    ).show(context);
   }
 
   static Future<void> initNotification() async {

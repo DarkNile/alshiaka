@@ -151,7 +151,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           }
         }
       } else {
-        AppUtil.errorToast(context, "couponNotFound".tr());
+        AppUtil.newErrorToastTOP(context, "couponNotFound".tr());
         return;
       }
     } else {
@@ -179,9 +179,9 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       }
     }
     if (couponApplied) {
-      AppUtil.successToast(context, "couponAppliedSuccessfully".tr());
+      AppUtil.newSuccessToastTOP(context, "couponAppliedSuccessfully".tr());
     } else {
-      AppUtil.errorToast(context, "couponNotFound".tr());
+      AppUtil.newErrorToastTOP(context, "couponNotFound".tr());
     }
     emit(ApplyCoupon());
   }
@@ -265,7 +265,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       print(
           "*******************************************************************************");
       loadaddresslocal();
-      AppUtil.successToast(context, "addedSuccessfully".tr());
+      AppUtil.newSuccessToastTOP(context, "addedSuccessfully".tr());
       // Navigator.of(context, rootNavigator: true).pop();
       // Navigator.of(context, rootNavigator: true).pop();
       AppUtil.mainNavigator(
@@ -314,7 +314,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         }
         // Navigator.of(context, rootNavigator: true).pop();
         // Navigator.of(context, rootNavigator: true).pop();
-        AppUtil.successToast(context, "addedSuccessfully".tr());
+        AppUtil.newSuccessToastTOP(context, "addedSuccessfully".tr());
         AppUtil.mainNavigator(
             context,
             AddressesScreen(

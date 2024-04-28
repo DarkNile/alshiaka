@@ -262,5 +262,8 @@
   "newDiscount": "Buy 2 & Get 50% on Third",
 
   "phoneNumberRequired":"Phone Number Required",
-  "Loading...":"Loading..."
+  "Loading...":"Loading...",
+  "noOrders":"You Have No Orders!"
+  ,
+  "notAvailable":"Out Of Stock"
 }

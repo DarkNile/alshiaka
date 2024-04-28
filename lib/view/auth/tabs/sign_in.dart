@@ -16,6 +16,7 @@ import '../../../utilities/app_ui.dart';
 import '../../../utilities/app_util.dart';
 import '../../layout/bottom_nav_screen/bottom_nav_tabs_screen.dart';
 import '../forgot_password/forgot_pass_1.dart';
+
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
 
@@ -24,16 +25,15 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return BlocConsumer<AuthCubit,AuthState>(
-        listener: (context,state){},
+    return BlocConsumer<AuthCubit, AuthState>(
+        listener: (context, state) {},
         builder: (context, state) {
           var cubit = AuthCubit.get(context);
           return GestureDetector(
-            onTap: (){
+            onTap: () {
               FocusManager.instance.primaryFocus?.unfocus();
             },
             child: Form(
@@ -44,51 +44,87 @@ class _SignInState extends State<SignIn> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
                       Container(
                           width: MediaQuery.of(context).size.width,
                           alignment: Alignment.center,
-                          child: CustomText(text: "signin".tr(),fontSize: SizeConfig.titleFontSize *1.2,fontWeight: FontWeight.w600,)),
-                      SizedBox(height: SizeConfig.padding * 1.5,),
-                      CustomInput(controller: cubit.loginPhone, hint: "email".tr(), textInputType: TextInputType.emailAddress,
+                          child: CustomText(
+                            text: "signin".tr(),
+                            fontSize: SizeConfig.titleFontSize * 1.2,
+                            fontWeight: FontWeight.w600,
+                          )),
+                      SizedBox(
+                        height: SizeConfig.padding * 1.5,
+                      ),
+                      CustomInput(
+                        controller: cubit.loginPhone, hint: "email".tr(),
+                        textInputType: TextInputType.emailAddress,
                         // suffixIcon: Image.asset("${AppUI.imgPath}sar.png",width: 60,),
                       ),
-                      SizedBox(height: SizeConfig.padding * 1.5 ,),
-                      CustomInput(controller: cubit.loginPassword, hint: "pass".tr(), textInputType: TextInputType.text,obscureText: cubit.loginVisibality,suffixIcon: IconButton(onPressed: (){
-                        cubit.loginChangeVisibility();
-                      }, icon: Icon(cubit.loginVisibilityIcon,color: AppUI.iconColor,size: 30,)),),
+                      SizedBox(
+                        height: SizeConfig.padding * 1.5,
+                      ),
+                      CustomInput(
+                        controller: cubit.loginPassword,
+                        hint: "pass".tr(),
+                        textInputType: TextInputType.text,
+                        obscureText: cubit.loginVisibality,
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              cubit.loginChangeVisibility();
+                            },
+                            icon: Icon(
+                              cubit.loginVisibilityIcon,
+                              color: AppUI.iconColor,
+                              size: 30,
+                            )),
+                      ),
                       SizedBox(height: SizeConfig.padding),
                       InkWell(
-                          onTap: (){
+                          onTap: () {
                             AppUtil.mainNavigator(context, const ForgotPass1());
                           },
-                          child: CustomText(text: "forgetPass".tr(),color: AppUI.mainColor,)),
-                      SizedBox(height: SizeConfig.padding,),
-                      if(state is LoginLoadingState)
+                          child: CustomText(
+                            text: "forgetPass".tr(),
+                            color: AppUI.mainColor,
+                          )),
+                      SizedBox(
+                        height: SizeConfig.padding,
+                      ),
+                      if (state is LoginLoadingState)
                         const LoadingWidget()
                       else
-                        CustomButton(text: "signin".tr(),width: double.infinity,onPressed: () async {
-                          if(!mounted)return;
-                          if(!AppUtil.isEmailValidate(cubit.loginPhone.text)){
-                            AppUtil.errorToast(context, "inValidEmail".tr());
-                            return ;
-                          }
-          
-                          if(cubit.loginFormKey.currentState!.validate()) {
-                            await cubit.login(context);
-                            if(cubit.loginModel! is !ErrorUserModel){
-                              if(!mounted)return;
-                              CheckoutCubit.get(context).fetchAddresses();
-                              AppUtil.successToast(context, 'loginSuccessfully'.tr());
-          
-                              AppUtil.removeUntilNavigator(context, const BottomNavTabsScreen());
-                            }else{
-                              if(!mounted)return;
-                              AppUtil.errorToast(context, 'loginFailed'.tr());
+                        CustomButton(
+                          text: "signin".tr(),
+                          width: double.infinity,
+                          onPressed: () async {
+                            if (!mounted) return;
+                            if (!AppUtil.isEmailValidate(
+                                cubit.loginPhone.text)) {
+                              AppUtil.newErrorToastTOP(
+                                  context, "inValidEmail".tr());
+                              return;
                             }
-                          }
-                        },),
-                      SizedBox(height: MediaQuery.of(context).size.height*.05),
+
+                            if (cubit.loginFormKey.currentState!.validate()) {
+                              await cubit.login(context);
+                              if (cubit.loginModel! is! ErrorUserModel) {
+                                if (!mounted) return;
+                                CheckoutCubit.get(context).fetchAddresses();
+                                AppUtil.newSuccessToastTOP(
+                                    context, 'loginSuccessfully'.tr());
+
+                                AppUtil.removeUntilNavigator(
+                                    context, const BottomNavTabsScreen());
+                              } else {
+                                if (!mounted) return;
+                                AppUtil.newErrorToastTOP(
+                                    context, 'loginFailed'.tr());
+                              }
+                            }
+                          },
+                        ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * .05),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -97,12 +133,17 @@ class _SignInState extends State<SignIn> {
                                 AppUtil.removeUntilNavigator(
                                     context, const BottomNavTabsScreen());
                               },
-                              child: CustomText(text: "skipLogin".tr(),color: AppUI.mainColor,fontWeight: FontWeight.w600,fontSize: 16.0,)),
+                              child: CustomText(
+                                text: "skipLogin".tr(),
+                                color: AppUI.mainColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.0,
+                              )),
                         ],
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*.1),
+                      SizedBox(height: MediaQuery.of(context).size.height * .1),
                       //const Spacer(),
-                     /* Row(
+                      /* Row(
                         children: [
                           const Expanded(child: Divider()),
                           Expanded(child: CustomText(text: "orLoginWith".tr(),color: AppUI.shimmerColor,textAlign: TextAlign.center,)),
@@ -138,21 +179,24 @@ class _SignInState extends State<SignIn> {
                         children: [
                           InkWell(
                               onTap: () async {
-                                AppUtil.mainNavigator(
-                                    context, const SignUp());
+                                AppUtil.mainNavigator(context, const SignUp());
                               },
-                              child: CustomText(text: "donthaveaccount".tr(),fontWeight: FontWeight.w600,fontSize: 16.0,)),
+                              child: CustomText(
+                                text: "donthaveaccount".tr(),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.0,
+                              )),
                         ],
                       ),
-                      SizedBox(height: SizeConfig.padding * 1.5,),
+                      SizedBox(
+                        height: SizeConfig.padding * 1.5,
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
           );
-        }
-    );
+        });
   }
-
 }

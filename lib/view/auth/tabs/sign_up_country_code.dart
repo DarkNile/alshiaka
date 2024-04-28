@@ -13,10 +13,10 @@ class SignUpCountryCodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InternationalPhoneNumberInput(
-      countries: [
-        'SA',
-        'EG',
-      ],
+      // countries: [
+      //   'SA',
+      //   'EG',
+      // ],
       onInputChanged: (PhoneNumber number) {
         log(number.phoneNumber.toString());
         cubit.phoneCode = number.dialCode ?? "+966";
