@@ -173,6 +173,7 @@ class _SignUpState extends State<SignUp> {
                                     if (cubit.registerModel!
                                         is! ErrorUserModel) {
                                       if (!mounted) return;
+                                      await AppUtil.setQuestMode(false);
                                       AppUtil.newSuccessToastTOP(
                                           context, "doneCreatedUser".tr());
                                       // AppUtil.removeUntilNavigator(context, const BottomNavTabsScreen());

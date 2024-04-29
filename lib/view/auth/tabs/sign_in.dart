@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ahshiaka/shared/cash_helper.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/utilities/size_config.dart';
 import 'package:ahshiaka/view/auth/tabs/sign_up.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -110,6 +111,7 @@ class _SignInState extends State<SignIn> {
                               if (cubit.loginModel! is! ErrorUserModel) {
                                 if (!mounted) return;
                                 CheckoutCubit.get(context).fetchAddresses();
+                                await AppUtil.setQuestMode(false);
                                 AppUtil.newSuccessToastTOP(
                                     context, 'loginSuccessfully'.tr());
 
@@ -130,6 +132,7 @@ class _SignInState extends State<SignIn> {
                         children: [
                           InkWell(
                               onTap: () async {
+                                await AppUtil.setQuestMode(true);
                                 AppUtil.removeUntilNavigator(
                                     context, const BottomNavTabsScreen());
                               },

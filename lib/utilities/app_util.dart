@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:ahshiaka/bloc/layout_cubit/bottom_nav_cubit.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/auth/auth_screen.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -492,5 +493,14 @@ class AppUtil {
   static double roundDouble(double value, int places) {
     num mod = pow(10.0, places);
     return ((value * mod).round().toDouble() / mod);
+  }
+
+  //  ====  Set Quest Mode  ====
+  static Future<void> setQuestMode(bool isQuest) async {
+    await CacheHelper.write("isQuest", isQuest);
+  }
+
+  static bool getQuestMode() {
+    return CacheHelper.read("isQuest") ?? false;
   }
 }
