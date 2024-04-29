@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/models/checkout/shipping_model.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/add_new_address/widgets/account_information_widget.dart';
@@ -15,7 +14,7 @@ import 'package:ahshiaka/shared/CheckNetwork.dart';
 
 // ignore: must_be_immutable
 class AddNewAddress extends StatefulWidget {
-  bool isquest;
+  bool isQuest;
   final Address0? address;
   final String? addressKey;
   final bool isFromProfile;
@@ -23,7 +22,7 @@ class AddNewAddress extends StatefulWidget {
       {Key? key,
       this.address,
       this.addressKey,
-      required this.isquest,
+      required this.isQuest,
       required this.isFromProfile})
       : super(key: key);
 
@@ -39,6 +38,8 @@ class _AddNewAddressState extends State<AddNewAddress> {
     super.initState();
     getData(widget.isFromProfile);
   }
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,93 +67,116 @@ class _AddNewAddressState extends State<AddNewAddress> {
                         //
                         AddressInformationWidget(cubit: cubit),
                         //
-                        InkWell(
-                          onTap: () async {
-                            if (newAddressFormKey.currentState!.validate()) {
-                              if (!AppUtil.isEmailValidate(
-                                  cubit.emailController2.text)) {
-                                AppUtil.newErrorToastTOP(
-                                    context, "inValidEmail".tr());
-                                return;
-                              }
-                              // if ((cubit.selectedState != "" &&
-                              //         cubit.selectedState == AppUtil.ksa) &&
-                              //     !AppUtil.isPhoneValidate(
-                              //         cubit.phoneController.text)) {
-                              //   AppUtil.newErrorToastTOP(
-                              //       context, "inValidPhone".tr());
-                              //   return;
-                              // }
-                              if ((cubit.selectedState != "" &&
-                                      cubit.selectedState == AppUtil.ksa) &&
-                                  !AppUtil.isAddressValidate(
-                                      cubit.addressController.text)) {
-                                AppUtil.newErrorToastTOP(
-                                    context, "inValidAddress".tr());
-                                return;
-                              }
+                        StatefulBuilder(
+                          builder: (BuildContext context, setStateBuilder) =>
+                              isLoading
+                                  ? const LoadingWidget()
+                                  : InkWell(
+                                      onTap: () async {
+                                        if (newAddressFormKey.currentState!
+                                            .validate()) {
+                                          if (!AppUtil.isEmailValidate(
+                                              cubit.emailController2.text)) {
+                                            AppUtil.newErrorToastTOP(
+                                                context, "inValidEmail".tr());
+                                            return;
+                                          }
+                                          // if ((cubit.selectedState != "" &&
+                                          //         cubit.selectedState == AppUtil.ksa) &&
+                                          //     !AppUtil.isPhoneValidate(
+                                          //         cubit.phoneController.text)) {
+                                          //   AppUtil.newErrorToastTOP(
+                                          //       context, "inValidPhone".tr());
+                                          //   return;
+                                          // }
+                                          if ((cubit.selectedState != "" &&
+                                                  cubit.selectedState ==
+                                                      AppUtil.ksa) &&
+                                              !AppUtil.isAddressValidate(cubit
+                                                  .addressController.text)) {
+                                            AppUtil.newErrorToastTOP(
+                                                context, "inValidAddress".tr());
+                                            return;
+                                          }
 
-                              AppUtil.dialog2(context, "", [
-                                const LoadingWidget(),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                              ]);
+                                          setStateBuilder(() {
+                                            isLoading = true;
+                                          });
 
-                              // ?   IF COUNTRY IS NOT KSA
-                              // ? selectedRegion == selectedState == country
-                              // i remove   widget.address != null
-                              if (cubit.selectedState == AppUtil.ksa) {
-                                log("KSA");
-                                log("cubit.selectedRegion ${cubit.selectedRegion}");
-                                log("cubit.selectedCity ${cubit.selectedCity}");
-                                await CheckoutCubit.get(context).saveAddress(
-                                  context,
-                                  address_id: widget.addressKey,
-                                  isquest: widget.isquest,
-                                  selectedRegion: cubit.selectedRegion,
-                                  selectedCity: cubit.selectedCity,
-                                );
-                                final response =
-                                    await CheckoutCubit.get(context).sendPhone(
-                                  '${cubit.phoneCode}${cubit.phoneController.text}',
-                                );
+                                          // ?   IF COUNTRY IS NOT KSA
+                                          // ? selectedRegion == selectedState == country
+                                          // i remove   widget.address != null
+                                          if (cubit.selectedState ==
+                                              AppUtil.ksa) {
+                                            log("KSA");
+                                            log("cubit.selectedRegion ${cubit.selectedRegion}");
+                                            log("cubit.selectedCity ${cubit.selectedCity}");
+                                            await CheckoutCubit.get(context)
+                                                .saveAddress(
+                                              context,
+                                              address_id: widget.addressKey,
+                                              isQuest: widget.isQuest,
+                                              selectedRegion:
+                                                  cubit.selectedRegion,
+                                              selectedCity: cubit.selectedCity,
+                                            );
+                                            setStateBuilder(() {
+                                              isLoading = false;
+                                            });
 
-                                if (response["success"] == 1) {
-                                  AppUtil.mainNavigator(
-                                      context,
-                                      OTPScreen(
-                                        phone:
-                                            '${cubit.phoneCode}${cubit.phoneController.text}',
-                                        addressId: widget.addressKey,
-                                        isQuest: widget.isquest,
-                                        selectedCity: cubit.selectedCity,
-                                        selectedRegion: cubit.selectedRegion,
-                                      ));
-                                }
-                              }
-                              // ? IF COUNTRY IS Not KSA
-                              else if (cubit.selectedState != '' &&
-                                  cubit.cityController.text != '' &&
-                                  cubit.selectedState != AppUtil.ksa) {
-                                cubit.countryController.text =
-                                    cubit.selectedState;
-                                cubit.selectedRegion = cubit.selectedState;
-                                cubit.cityController.text = cubit.selectedCity;
-                                log("NOT KSA");
-                                log("cubit.selectedRegion ${cubit.selectedRegion}");
-                                log("cubit.selectedCity ${cubit.selectedCity}");
-                                await CheckoutCubit.get(context).saveAddress(
-                                  context,
-                                  address_id: widget.addressKey,
-                                  isquest: widget.isquest,
-                                  selectedRegion: cubit.selectedState,
-                                  selectedCity: cubit.selectedCity,
-                                );
-                              }
-                            }
-                          },
-                          child: CustomButton(text: "save".tr()),
+                                            final response =
+                                                await CheckoutCubit.get(context)
+                                                    .sendPhone(
+                                              '${cubit.phoneCode}${cubit.phoneController.text}',
+                                            );
+
+                                            if (response["success"] == 1) {
+                                              AppUtil.mainNavigator(
+                                                  context,
+                                                  OTPScreen(
+                                                    phone:
+                                                        '${cubit.phoneCode}${cubit.phoneController.text}',
+                                                    addressId:
+                                                        widget.addressKey,
+                                                    isQuest: widget.isQuest,
+                                                    selectedCity:
+                                                        cubit.selectedCity,
+                                                    selectedRegion:
+                                                        cubit.selectedRegion,
+                                                  ));
+                                            }
+                                          }
+                                          // ? IF COUNTRY IS Not KSA
+                                          else if (cubit.selectedState != '' &&
+                                              cubit.cityController.text != '' &&
+                                              cubit.selectedState !=
+                                                  AppUtil.ksa) {
+                                            cubit.countryController.text =
+                                                cubit.selectedState;
+                                            cubit.selectedRegion =
+                                                cubit.selectedState;
+                                            cubit.cityController.text =
+                                                cubit.selectedCity;
+                                            log("NOT KSA");
+                                            log("cubit.selectedRegion ${cubit.selectedRegion}");
+                                            log("cubit.selectedCity ${cubit.selectedCity}");
+                                            await CheckoutCubit.get(context)
+                                                .saveAddress(
+                                              context,
+                                              address_id: widget.addressKey,
+                                              isQuest: widget.isQuest,
+                                              selectedRegion:
+                                                  cubit.selectedState,
+                                              selectedCity: cubit.selectedCity,
+                                            );
+                                            setStateBuilder(() {
+                                              isLoading = false;
+                                            });
+                                          }
+                                        }
+                                      },
+                                      child: CustomButton(text: "save".tr()),
+                                    ),
                         ),
                         const SizedBox(
                           height: 30,
@@ -169,6 +193,30 @@ class _AddNewAddressState extends State<AddNewAddress> {
     );
   }
 
+  Future<void> myLoading(BuildContext context) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                title: const LoadingWidget(),
+
+                // content: SingleChildScrollView(
+                //   child: ListBody(
+                //     children: dialogBody,
+                //   ),
+                // ),
+              ),
+            ],
+          );
+        });
+  }
+
   getData(bool isFromProfile) async {
     // hint    State == Country == Region
     final cubit = CheckoutCubit.get(context);
@@ -181,7 +229,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
 
     print(cubit.user);
     print(cubit.email);
-    print('isquest: ${widget.isquest}');
+    print(' isQuest: ${widget.isQuest}');
 
     cubit.regions = [
       "Al Baha Area",

@@ -93,28 +93,7 @@ class _BagScreenState extends State<BagScreen> {
   }
 
   getTaxAramex(CheckoutCubit cubit) async {
-    if (cubit.selectedCountry?.code != null) {
-      double weight = 0.0;
-      cubit.cartList.forEach((prod) {
-        weight += double.parse(prod.weight.toString());
-      });
-
-      var numberOfPieces =
-          cubit.qty.fold(0, (previousValue, q) => previousValue + q).toString();
-      log("Weight $weight");
-      log("country ${cubit.selectedCountry!.code}");
-      log("city ${cubit.cityController.text}");
-      log("numberOfPieces $numberOfPieces");
-
-      await cubit.getTaxAramex(
-          context: context,
-          country: cubit.selectedCountry!.code,
-          city: cubit.cityController.text,
-          numberOfPieces: numberOfPieces,
-          actualWeight: weight.toString());
-    } else {
-      log("selectedCountry == null ");
-    }
+    await cubit.getTaxAramex();
   }
 
   @override

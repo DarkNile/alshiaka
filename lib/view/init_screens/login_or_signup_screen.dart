@@ -4,6 +4,7 @@ import 'package:ahshiaka/shared/CheckNetwork.dart';
 import 'package:ahshiaka/shared/components.dart';
 import 'package:ahshiaka/utilities/app_ui.dart';
 import 'package:ahshiaka/utilities/app_util.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +115,8 @@ class _LoginOrSignupScreenState extends State<LoginOrSignupScreen> {
                               height: SizeConfig.padding,
                             ),
                             InkWell(
-                                onTap: () {
+                                onTap: () async {
+                                  await AppUtil.setQuestMode(true);
                                   AppUtil.removeUntilNavigator(
                                       context, const BottomNavTabsScreen());
                                 },

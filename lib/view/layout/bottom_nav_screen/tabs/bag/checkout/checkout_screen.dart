@@ -5,7 +5,9 @@ import 'package:ahshiaka/bloc/layout_cubit/bottom_nav_cubit.dart';
 import 'package:ahshiaka/bloc/layout_cubit/categories_cubit/categories_cubit.dart';
 import 'package:ahshiaka/bloc/profile_cubit/profile_cubit.dart';
 import 'package:ahshiaka/shared/cash_helper.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/bottom_nav_tabs_screen.dart';
+import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/addresses_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/payment/Webview.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/my_orders/my_orders_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -36,6 +38,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Map selectedCustomizations = {};
 
   String email = "";
+  bool isQuest = false;
   getEmail() async {
     await ProfileCubit.get(context).fetchCustomer();
     email = ProfileCubit.get(context).email.text;
@@ -51,6 +54,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
+    isQuest = AppUtil.getQuestMode();
     final cubit = CheckoutCubit.get(context);
     cubit.fetchCountries();
     if (cubit.selectedState != AppUtil.ksa) {
@@ -76,26 +80,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   getTaxAramex(CheckoutCubit cubit) async {
-    if (cubit.selectedCountry?.code != null) {
-      double weight = 0.0;
-      cubit.cartList.forEach((prod) {
-        weight += double.parse(prod.weight.toString());
-      });
-
-      var numberOfPieces =
-          cubit.qty.fold(0, (previousValue, q) => previousValue + q).toString();
-      log("Weight $weight");
-      log("country ${cubit.selectedCountry!.code}");
-      log("city ${cubit.cityController.text}");
-      log("numberOfPieces $numberOfPieces");
-
-      await cubit.getTaxAramex(
-          context: context,
-          country: cubit.selectedCountry!.code,
-          city: cubit.cityController.text,
-          numberOfPieces: numberOfPieces,
-          actualWeight: weight.toString());
-    }
+    await cubit.getTaxAramex();
   }
 
   @override
@@ -592,7 +577,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     AppUtil.mainNavigator(
                                         context,
                                         AddressesScreen(
-                                          isquest: email == "",
+                                          isQuest: isQuest,
                                         ));
                                   },
                                   child: Row(
@@ -612,7 +597,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             AppUtil.mainNavigator(
                                                 context,
                                                 AddressesScreen(
-                                                  isquest: email == "",
+                                                  isQuest: isQuest,
                                                 ));
                                           },
                                           icon: const Icon(
@@ -648,7 +633,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             AppUtil.mainNavigator(
                                                 context,
                                                 AddressesScreen(
-                                                  isquest: email == "",
+                                                  isQuest: isQuest,
                                                 ));
                                           },
                                           child: CustomText(

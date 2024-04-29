@@ -13,6 +13,7 @@ import 'package:ahshiaka/models/checkout/shipping_methods_model.dart';
 import 'package:ahshiaka/models/checkout/shipping_model.dart';
 import 'package:ahshiaka/shared/components.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen.dart';
+import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/addresses_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/otp_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/my_orders/my_orders_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -218,7 +219,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   DbHelper db = new DbHelper();
   List dataLocal = [];
-  loadaddresslocal() async {
+  loadAddressLocal() async {
     dataLocal = await db.allProduct();
     // mainProvider.ResetCounter();
     /*   for(int i=0;i<dataLocal.length;i++){
@@ -229,9 +230,9 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     emit(AddressesState());
   }
 
-  saveAddress(context,
+  saveAddress(BuildContext context,
       {String? address_id,
-      required bool isquest,
+      required bool isQuest,
       required String selectedRegion,
       required String selectedCity}) async {
     final bool isKsa = (selectedState == AppUtil.ksa);
@@ -245,7 +246,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     log("state: ${stateController.text}");
     log("address: ${addressController.text}");
     log("code: ${postCodeController.text}");
-    if (isquest) {
+    if (isQuest) {
       AddressMedelLocal c = new AddressMedelLocal({
         "firstname": nameController2.text,
         "lastname": surNameController2.text,
@@ -258,21 +259,24 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         "code": postCodeController.text,
       });
       log("Save Address to Local DB");
+      log("Address Id ${address_id}");
 
       int x = await db.addToCart(c, address_id);
       print(x);
       print(db.allProduct());
       print(
           "*******************************************************************************");
-      loadaddresslocal();
+      loadAddressLocal();
       AppUtil.newSuccessToastTOP(context, "addedSuccessfully".tr());
       // Navigator.of(context, rootNavigator: true).pop();
       // Navigator.of(context, rootNavigator: true).pop();
-      AppUtil.mainNavigator(
-          context,
-          AddressesScreen(
-            isquest: isquest,
-          ));
+      // AppUtil.mainNavigator(
+      //     context,
+      //     AddressesScreen(
+      //       isTwoBack: true,
+      //       isQuest: isQuest,
+      //     ));
+
       nameController2.clear();
       surNameController2.clear();
       countryController.clear();
@@ -307,7 +311,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
             address_id: address_id);
         if (response is String) {
           saveAddress(context,
-              isquest: false,
+              isQuest: false,
               selectedCity: selectedCity,
               selectedRegion: selectedRegion);
           return;
@@ -315,11 +319,13 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         // Navigator.of(context, rootNavigator: true).pop();
         // Navigator.of(context, rootNavigator: true).pop();
         AppUtil.newSuccessToastTOP(context, "addedSuccessfully".tr());
-        AppUtil.mainNavigator(
-            context,
-            AddressesScreen(
-              isquest: isquest,
-            ));
+        // AppUtil.mainNavigator(
+        //     context,
+        //     AddressesScreen(
+        //       isTwoBack: true,
+        //       isQuest: isQuest,
+        //     ));
+
         fetchAddresses();
         if (address_id == null) {
           nameController.clear();
@@ -378,10 +384,12 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         selectedAddress = null;
         addresses = null;
       }
+
+      emit(AddressesState());
     } catch (e) {
+      emit(AddressesState());
       return Future.error(e);
     }
-    emit(AddressesState());
   }
 
   deleteAddress(addressKey) async {
@@ -585,35 +593,46 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   //? ========= Total Aramex =========
   AmountAramexModel? amountAramexModel;
-  Future<AmountAramexModel?> getTaxAramex(
-      {required BuildContext context,
-      required String country,
-      required String city,
-      required String numberOfPieces,
-      required String actualWeight}) async {
+  Future<AmountAramexModel?> getTaxAramex() async {
     emit(GetTotalLoadingState());
-    try {
-      log("getTotalAramex");
-      var response = await CheckoutRepository.getTaxAramex(
-          country: country,
-          city: city,
-          actualWeight: actualWeight,
-          numberOfPieces: numberOfPieces);
-      log("response ${response.statusCode}");
-      var data = jsonDecode(response.body);
-      log("response ${data}");
-      if (response.body.contains('error')) {
-        emit(GetTotalErrorState(response.body));
-        return null;
-      } else {
-        amountAramexModel = AmountAramexModel.fromJson(data);
-        emit(GetTotalLoadedState(amountAramexModel!));
-        return amountAramexModel;
+    if (selectedCountry?.code != null) {
+      double weight = 0.0;
+      cartList.forEach((prod) {
+        weight += double.parse(prod.weight.toString());
+      });
+      var numberOfPieces =
+          qty.fold(0, (previousValue, q) => previousValue + q).toString();
+      log("Weight $weight");
+      log("country ${selectedCountry!.code}");
+      log("city ${cityController.text}");
+      log("numberOfPieces $numberOfPieces");
+
+      try {
+        log("getTotalAramex");
+        var response = await CheckoutRepository.getTaxAramex(
+            country: selectedCountry!.code,
+            city: cityController.text,
+            numberOfPieces: numberOfPieces,
+            actualWeight: weight.toString());
+        log("response ${response.statusCode}");
+        var data = jsonDecode(response.body);
+        log("response ${data}");
+        if (response.body.contains('error')) {
+          emit(GetTotalErrorState(response.body));
+          return null;
+        } else {
+          amountAramexModel = AmountAramexModel.fromJson(data);
+          emit(GetTotalLoadedState(amountAramexModel!));
+          return amountAramexModel;
+        }
+      } catch (e) {
+        log("error getTotalAramex ${e}");
+        emit(GetTotalErrorState(e.toString()));
       }
-    } catch (e) {
-      log("error getTotalAramex ${e}");
-      emit(GetTotalErrorState(e.toString()));
+    } else {
+      log("selectedCountry == null ");
     }
+
     return null;
   }
 

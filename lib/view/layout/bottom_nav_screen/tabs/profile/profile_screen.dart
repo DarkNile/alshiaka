@@ -6,6 +6,7 @@ import 'package:ahshiaka/utilities/app_ui.dart';
 import 'package:ahshiaka/utilities/app_util.dart';
 import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/auth/auth_screen.dart';
+import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/addresses_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/settings/setting_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/profile/social_accounts/social_accounts_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -30,6 +31,14 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String email = "";
   bool loading = true;
+
+  bool isQuest = false;
+  @override
+  void initState() {
+    super.initState();
+    isQuest = AppUtil.getQuestMode();
+  }
+
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -187,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               AppUtil.mainNavigator(
                                   context,
                                   AddressesScreen(
-                                    isquest: email == "",
+                                    isQuest: isQuest,
                                     isFromProfile: true,
                                   ));
                             },
