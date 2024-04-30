@@ -1373,7 +1373,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               return CustomCard(
                 height: 75,
                 child: CustomButton(
-                  text: (isOutOfStock && !cubit.isLoading)
+                  text: (widget.product.qty == 0)
                       ? "notAvailable".tr()
                       : "addToBag".tr(),
                   color: ((isSizeSelectedMap.isEmpty ||
@@ -1419,7 +1419,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Map isSizeSelectedMap = {};
   Map isTallSelectedMap = {};
   int length = 0;
-  bool isOutOfStock = false;
   int variantId = 0;
   String details = '';
 
@@ -1447,8 +1446,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ..removeWhere(
               (element) => element.last['status'] == 'outofvariation');
       }
-      isOutOfStock = customizationValues.isEmpty;
-      log("isOutOfStock ${isOutOfStock}");
       setState(() {});
     }
   }

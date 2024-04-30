@@ -122,7 +122,7 @@ class _BottomNavTabsScreenState extends State<BottomNavTabsScreen> {
             ) {
               var bottomNavProvider = BottomNavCubit.get(context);
               return Container(
-                padding: EdgeInsets.only(top: 6),
+                padding: EdgeInsets.only(top: 8, bottom: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
