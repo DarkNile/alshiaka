@@ -593,7 +593,8 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   //? ========= Total Aramex =========
   AmountAramexModel? amountAramexModel;
-  Future<AmountAramexModel?> getTaxAramex() async {
+  Future<AmountAramexModel?> getTaxAramex(
+      {bool? isPOP, required BuildContext context}) async {
     emit(GetTotalLoadingState());
     if (selectedCountry?.code != null) {
       double weight = 0.0;
@@ -622,6 +623,16 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           return null;
         } else {
           amountAramexModel = AmountAramexModel.fromJson(data);
+
+          log("isPOP isPOP isPOP $isPOP");
+          // if (isPOP == true) {
+          //   AppUtil.newSuccessToastTOP(context, "تم الحفظ بنجاح");
+          // }
+          // if (context.mounted && isPOP == true) {
+          //   log("POP  ==== POP ");
+          //   Navigator.of(context).pop();
+          // }
+          // isPOP == true ? Navigator.of(context).pop() : null;
           emit(GetTotalLoadedState(amountAramexModel!));
           return amountAramexModel;
         }

@@ -1,4 +1,5 @@
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
+import 'package:ahshiaka/models/checkout/amount_aramex_model.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/widgets/add_new_address_button_widget.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/widgets/empty_adress_widget.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,42 @@ class AddressisQuestWidget extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () async {
+                          if (isFromProfile) {
+                            var phoneNumber =
+                                await PhoneNumber.getRegionInfoFromPhoneNumber(
+                                    c.phone);
+                            log("phoneNumber \n $phoneNumber \n");
+                            cubit.phoneNumber = phoneNumber;
+                            cubit.selectedState = c.state;
+                            cubit.stateController.text = cubit.selectedState;
+                            log("Edit Local cubit.selectedState ========> ${cubit.selectedState}");
+
+                            setSelectedCountry(cubit);
+                            cubit.updateState();
+
+                            print(c.city);
+                            AppUtil.mainNavigator(
+                              context,
+                              AddNewAddress(
+                                isQuest: isQuest,
+                                isFromProfile: isFromProfile,
+                                address: Address0(
+                                  shippingFirstName: c.firstname,
+                                  shippingLastName: c.lastname,
+                                  shippingCity: c.city,
+                                  shippingAddress1: c.address.toString(),
+                                  shippingEmail: c.email,
+                                  shippingPhone: c.phone,
+                                  shippingPostcode: c.code,
+                                  shippingCountry: c.region,
+                                  shippingState: c.state,
+                                ),
+                                //
+                                addressKey: index.toString(),
+                              ),
+                            );
+                            return;
+                          }
                           cubit.selectedState = c.state;
                           cubit.selectedCity = c.city;
                           cubit.cityController.text = c.city;
@@ -54,8 +91,9 @@ class AddressisQuestWidget extends StatelessWidget {
                           }
                           cubit.updateState();
                           if (cubit.selectedState != AppUtil.ksa &&
-                              (!isFromProfile)) {
-                            await getTaxAramex(cubit);
+                              (!isFromProfile) &&
+                              context.mounted) {
+                            await getTaxAramex(cubit, context, true);
                           }
 
                           cubit.selectedAddress = AddressesModel(
@@ -72,7 +110,9 @@ class AddressisQuestWidget extends StatelessWidget {
                               defaultAddress: index == 0 ? true : false);
 
                           // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+
                           cubit.emit(AddressesState());
+                          cubit.updateState();
                           if (context.mounted) {
                             Navigator.pop(context);
                           }
@@ -215,8 +255,9 @@ class AddressisQuestWidget extends StatelessWidget {
   }
 }
 
-getTaxAramex(CheckoutCubit cubit) async {
-  await cubit.getTaxAramex();
+Future<AmountAramexModel?> getTaxAramex(
+    CheckoutCubit cubit, BuildContext context, bool isPOP) async {
+  return await cubit.getTaxAramex(context: context, isPOP: isPOP);
 }
 
 setSelectedCountry(CheckoutCubit cubit) async {

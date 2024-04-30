@@ -19,6 +19,7 @@ import 'package:flutter_paytabs_bridge/BaseBillingShippingInfo.dart';
 import 'package:flutter_paytabs_bridge/PaymentSdkConfigurationDetails.dart';
 import 'package:flutter_paytabs_bridge/PaymentSdkLocale.dart';
 import 'package:flutter_paytabs_bridge/flutter_paytabs_bridge.dart';
+// import 'package:flutter_phoenix/generated/i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../../../shared/components.dart';
 import '../../../../../../../utilities/app_ui.dart';
@@ -58,7 +59,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final cubit = CheckoutCubit.get(context);
     cubit.fetchCountries();
     if (cubit.selectedState != AppUtil.ksa) {
-      getTaxAramex(cubit);
+      getTaxAramex(cubit, context);
     }
 
     ProfileCubit.get(context).fetchCustomer();
@@ -79,8 +80,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     print('test $selectedCustomizations}');
   }
 
-  getTaxAramex(CheckoutCubit cubit) async {
-    await cubit.getTaxAramex();
+  getTaxAramex(CheckoutCubit cubit, BuildContext context) async {
+    await cubit.getTaxAramex(context: context);
   }
 
   @override
@@ -428,7 +429,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                           AppUtil
                                                                               .ksa) {
                                                                         await getTaxAramex(
-                                                                            cubit);
+                                                                            cubit,
+                                                                            context);
                                                                       }
                                                                     }
                                                                   },
@@ -476,7 +478,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                         AppUtil
                                                                             .ksa) {
                                                                       await getTaxAramex(
-                                                                          cubit);
+                                                                          cubit,
+                                                                          context);
                                                                     }
                                                                   },
                                                                   child: CircleAvatar(
@@ -519,7 +522,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                           AppUtil
                                                                               .ksa) {
                                                                         await getTaxAramex(
-                                                                            cubit);
+                                                                            cubit,
+                                                                            context);
                                                                       }
                                                                       //
                                                                       await CashHelper.setSavedString(
@@ -822,14 +826,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 .symmetric(
                                                                 vertical: 8,
                                                                 horizontal: 15),
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: cubit.selectedPaymentGetaways != null
-                                                                    ? cubit.selectedPaymentGetaways!.id == cubit.paymentGetawayNoCash[index].id
-                                                                        ? AppUI.mainColor
-                                                                        : AppUI.backgroundColor
-                                                                    : AppUI.backgroundColor),
-                                                            borderRadius: BorderRadius.circular(10)),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: AppUI
+                                                                        .mainColor
+
+                                                                    //  cubit.selectedPaymentGetaways != null
+                                                                    //     ? cubit.selectedPaymentGetaways!.id == cubit.paymentGetawayNoCash[index].id
+                                                                    //         ? AppUI.mainColor
+                                                                    //         : AppUI.backgroundColor
+                                                                    //     : AppUI.backgroundColor
+                                                                    ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10)),
                                                         alignment:
                                                             Alignment.center,
                                                         // child: Image.asset(
@@ -1339,14 +1351,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       // if (cubit.selectedPaymentGetaways!.id ==
                                       //     "aps_cc") {
                                       // if (!mounted) return;
-                                      // AppUtil.mainNavigator(
-                                      //     context,
-                                      //     CustomWebview(
-                                      //       url:
-                                      //           'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
-                                      //       type: "",
-                                      //       orderId: response['id'].toString(),
-                                      //     ));
+                                      AppUtil.mainNavigator(
+                                          context,
+                                          CustomWebview(
+                                            url:
+                                                'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
+                                            type: "",
+                                            orderId: response['id'].toString(),
+                                          ));
                                       print("payWithVisa");
                                       payWithVisa(
                                         double.parse(total),

@@ -45,8 +45,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
     }
   }
 
-  getTaxAramex(CheckoutCubit cubit) async {
-    await cubit.getTaxAramex();
+  getTaxAramex(CheckoutCubit cubit, BuildContext context) async {
+    await cubit.getTaxAramex(context: context);
   }
 
   setSelectedCountry(CheckoutCubit cubit) async {
