@@ -10,8 +10,6 @@ import '../../shared/components.dart';
 import '../../utilities/app_ui.dart';
 
 class AuthScreen extends StatefulWidget {
-
-
   const AuthScreen({Key? key}) : super(key: key);
 
   @override
@@ -20,7 +18,6 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -38,30 +35,30 @@ class _AuthScreenState extends State<AuthScreen>
             toolbarHeight: 0.0,
             elevation: 0,
             //bottomChildHeight: 100.0,
-            bottomChildHeight: SizeConfig.safeBlockVertical* 20,
+            bottomChildHeight: SizeConfig.safeBlockVertical * 20,
             bottomChild: Container(
               alignment: Alignment.center,
               //height: 100,
-              height: SizeConfig.safeBlockVertical* 20,
+              height: SizeConfig.safeBlockVertical * 20,
               child: Image.asset(
                 "${AppUI.imgPath}logo.png",
                 //height: 33,
-                height: SizeConfig.safeBlockVertical* 7,
+                height: SizeConfig.safeBlockVertical * 7,
               ),
             ),
           ),
           body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  color: AppUI.whiteColor,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 0.5,
-                        width: double.infinity,
-                        color: AppUI.shimmerColor,
-                      ),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                color: AppUI.whiteColor,
+                child: Column(
+                  children: [
+                    Container(
+                      height: 0.5,
+                      width: double.infinity,
+                      color: AppUI.shimmerColor,
+                    ),
                     /*  TabBar(
                           controller: tabBarController,
                           indicatorWeight: 4,
@@ -89,30 +86,33 @@ class _AuthScreenState extends State<AuthScreen>
                                   textAlign: TextAlign.center),
                             ),
                           ]),*/
-                      Container(
-                        height: 0.5,
-                        width: double.infinity,
-                        color: AppUI.shimmerColor,
-                      ),
-                    ],
-                  ),
+                    Container(
+                      height: 0.5,
+                      width: double.infinity,
+                      color: AppUI.shimmerColor,
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: SignIn(),
-                ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: SignIn(),
+              ),
+            ],
+          ),
         ),
-
         Positioned(
           top: 60,
           right: 30,
           child: GestureDetector(
               onTap: () => Navigator.pop(context),
               child: Icon(
-                Icons.arrow_back,
+                AppUtil.rtlDirection(context)
+                    ? Icons.arrow_back
+                    : Icons.arrow_forward,
+                // Icons.arrow_back,
                 size: 30,
-              )),)
+              )),
+        )
       ],
     );
   }

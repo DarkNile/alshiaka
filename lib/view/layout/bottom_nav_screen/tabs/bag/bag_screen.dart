@@ -92,8 +92,8 @@ class _BagScreenState extends State<BagScreen> {
     refreshPage();
   }
 
-  getTaxAramex(CheckoutCubit cubit) async {
-    await cubit.getTaxAramex();
+  getTaxAramex(CheckoutCubit cubit, BuildContext context) async {
+    await cubit.getTaxAramex(context: context);
   }
 
   @override
@@ -508,7 +508,8 @@ class _BagScreenState extends State<BagScreen> {
                                                                         AppUtil
                                                                             .ksa) {
                                                                       await getTaxAramex(
-                                                                          cubit);
+                                                                          cubit,
+                                                                          context);
                                                                     }
                                                                   }
                                                                 },
@@ -581,7 +582,8 @@ class _BagScreenState extends State<BagScreen> {
                                                                       AppUtil
                                                                           .ksa) {
                                                                     await getTaxAramex(
-                                                                        cubit);
+                                                                        cubit,
+                                                                        context);
                                                                   }
                                                                 },
                                                                 child:
