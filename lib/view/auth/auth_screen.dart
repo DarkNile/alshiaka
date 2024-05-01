@@ -102,14 +102,15 @@ class _AuthScreenState extends State<AuthScreen>
         ),
         Positioned(
           top: 60,
-          right: 30,
+          left: AppUtil.rtlDirection(context) ? null : 20,
+          right: AppUtil.rtlDirection(context) ? 20 : null,
           child: GestureDetector(
               onTap: () => Navigator.pop(context),
               child: Icon(
-                AppUtil.rtlDirection(context)
-                    ? Icons.arrow_back
-                    : Icons.arrow_forward,
-                // Icons.arrow_back,
+                // AppUtil.rtlDirection(context)
+                //     ? Icons.arrow_back
+                //     : Icons.arrow_back,
+                Icons.arrow_back,
                 size: 30,
               )),
         )

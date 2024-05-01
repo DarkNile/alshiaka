@@ -51,9 +51,7 @@ class _SignUpState extends State<SignUp> {
                                 GestureDetector(
                                     onTap: () => Navigator.pop(context),
                                     child: Icon(
-                                      AppUtil.rtlDirection(context)
-                                          ? Icons.arrow_forward
-                                          : Icons.arrow_back,
+                                      Icons.arrow_back,
                                     )),
                                 CustomText(
                                   text: "createAccount".tr(),

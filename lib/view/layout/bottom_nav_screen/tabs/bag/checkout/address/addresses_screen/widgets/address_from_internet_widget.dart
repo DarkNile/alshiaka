@@ -90,6 +90,7 @@ class AddressFromInternetWidget extends StatelessWidget {
                         if (cubit.selectedState != AppUtil.ksa &&
                             !(isFromProfile) &&
                             context.mounted) {
+                          AppUtil.newSuccessToastTOP(context, null);
                           tax = await getTaxAramex(cubit, context, true);
                         }
 
@@ -124,115 +125,136 @@ class AddressFromInternetWidget extends StatelessWidget {
                           Navigator.pop(context);
                         }
                       },
-                      child: Container(
-                        color: AppUI.whiteColor,
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(
-                                    text:
-                                        index == 0 ? "primaryAddress".tr() : "",
-                                    color: AppUI.mainColor,
-                                    fontSize: 12,
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  CustomText(
-                                    text: cubit.addresses!.shipping!
-                                        .address0![index].shippingCity,
-                                    color: AppUI.blackColor,
-                                    fontSize: 12,
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  CustomText(
-                                    text: cubit.addresses!.shipping!
-                                        .address0![index].shippingAddress1,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w100,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                                child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                // Edit
-                                InkWell(
-                                    onTap: () async {
-                                      log("Edit From Internet");
-                                      String phone = cubit.addresses?.shipping!
-                                              .address0?[index].shippingPhone ??
-                                          "+9665";
-                                      log("phone ${phone}");
-                                      var phoneNumber = await PhoneNumber
-                                          .getRegionInfoFromPhoneNumber(phone);
-                                      log("phoneNumber \n $phoneNumber \n");
-                                      cubit.phoneNumber = phoneNumber;
-                                      cubit.selectedState = cubit
-                                          .addresses!
-                                          .shipping!
-                                          .address0![index]
-                                          .shippingState!;
-                                      cubit.stateController.text =
-                                          cubit.selectedState;
-                                      log("Edit Fetch cubit.selectedState ========> ${cubit.selectedState}");
-                                      setSelectedCountry(cubit);
-                                      cubit.updateState();
-                                      AppUtil.mainNavigator(
-                                          context,
-                                          AddNewAddress(
-                                            isFromProfile: isFromProfile,
-                                            address: cubit.addresses!.shipping!
-                                                .address0![index],
-                                            addressKey: cubit.addresses!
-                                                .shipping!.addressesKey![index],
-                                            isQuest: isQuest,
-                                          ));
-                                    },
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: AppUI.greyColor,
-                                      size: 19,
-                                    )),
-                                const SizedBox(
-                                  width: 15,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: AppUI.whiteColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color: cubit.selectedState ==
+                                          cubit.addresses!.shipping!
+                                              .address0![index].shippingState!
+                                      ? AppUI.mainColor
+                                      : AppUI.whiteColor)),
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                      text: index == 0
+                                          ? "primaryAddress".tr()
+                                          : "",
+                                      color: AppUI.mainColor,
+                                      fontSize: 12,
+                                    ),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                    CustomText(
+                                      text: cubit.addresses!.shipping!
+                                          .address0![index].shippingCity,
+                                      color: AppUI.blackColor,
+                                      fontSize: 12,
+                                    ),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                    CustomText(
+                                      text: cubit.addresses!.shipping!
+                                          .address0![index].shippingAddress1,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w100,
+                                    ),
+                                  ],
                                 ),
-                                InkWell(
-                                    onTap: () async {
-                                      AppUtil.dialog2(context, "", [
-                                        const LoadingWidget(),
-                                        const SizedBox(
-                                          height: 30,
-                                        )
-                                      ]);
-                                      // OLD
-                                      //await cubit
-                                      // .deleteAddress("address_$index");
-                                      log("cubit.addresses.shipping!.addressesKey![index]");
-                                      log("${cubit.addresses?.shipping!.addressesKey![index]}");
-                                      await cubit.deleteAddress(cubit.addresses!
-                                          .shipping!.addressesKey![index]);
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop();
-                                    },
-                                    child: Icon(
-                                      Icons.delete,
-                                      color: AppUI.greyColor,
-                                      size: 19,
-                                    )),
-                              ],
-                            )),
-                          ],
+                              ),
+                              Expanded(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  // Edit
+                                  InkWell(
+                                      onTap: () async {
+                                        log("Edit From Internet");
+                                        String phone = cubit
+                                                .addresses
+                                                ?.shipping!
+                                                .address0?[index]
+                                                .shippingPhone ??
+                                            "+9665";
+                                        log("phone ${phone}");
+                                        var phoneNumber = await PhoneNumber
+                                            .getRegionInfoFromPhoneNumber(
+                                                phone);
+                                        log("phoneNumber \n $phoneNumber \n");
+                                        cubit.phoneNumber = phoneNumber;
+                                        cubit.selectedState = cubit
+                                            .addresses!
+                                            .shipping!
+                                            .address0![index]
+                                            .shippingState!;
+                                        cubit.stateController.text =
+                                            cubit.selectedState;
+                                        log("Edit Fetch cubit.selectedState ========> ${cubit.selectedState}");
+                                        setSelectedCountry(cubit);
+                                        cubit.updateState();
+                                        AppUtil.mainNavigator(
+                                            context,
+                                            AddNewAddress(
+                                              isFromProfile: isFromProfile,
+                                              address: cubit.addresses!
+                                                  .shipping!.address0![index],
+                                              addressKey: cubit
+                                                  .addresses!
+                                                  .shipping!
+                                                  .addressesKey![index],
+                                              isQuest: isQuest,
+                                            ));
+                                      },
+                                      child: Icon(
+                                        Icons.edit,
+                                        color: AppUI.greyColor,
+                                        size: 19,
+                                      )),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  InkWell(
+                                      onTap: () async {
+                                        AppUtil.dialog2(context, "", [
+                                          const LoadingWidget(),
+                                          const SizedBox(
+                                            height: 30,
+                                          )
+                                        ]);
+                                        // OLD
+                                        //await cubit
+                                        // .deleteAddress("address_$index");
+                                        log("cubit.addresses.shipping!.addressesKey![index]");
+                                        log("${cubit.addresses?.shipping!.addressesKey![index]}");
+                                        await cubit.deleteAddress(cubit
+                                            .addresses!
+                                            .shipping!
+                                            .addressesKey![index]);
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                      },
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: AppUI.greyColor,
+                                        size: 19,
+                                      )),
+                                ],
+                              )),
+                            ],
+                          ),
                         ),
                       ),
                     ),

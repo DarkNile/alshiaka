@@ -60,6 +60,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     cubit.fetchCountries();
     if (cubit.selectedState != AppUtil.ksa) {
       getTaxAramex(cubit, context);
+      log("VISA ${cubit.paymentGetawayNoCash.length} ");
+      cubit.selectedPaymentGetaways = cubit.paymentGetawayNoCash[0];
     }
 
     ProfileCubit.get(context).fetchCustomer();
@@ -97,6 +99,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             log("TOTALLL ${cubit.total}");
 
             if (cubit.cartList.isEmpty) {
+              log("cubit.cartList.isEmpty ${cubit.cartList.isEmpty}");
               return Scaffold(
                 backgroundColor: AppUI.backgroundColor,
                 body: Column(
@@ -149,10 +152,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       CustomAppBar(
                         title: "checkout".tr(),
                         onBack: () {
-                          // AppUtil.mainNavigator(context, BagScreen());
-                          BottomNavCubit.get(context).setCurrentIndex(2);
-                          AppUtil.removeUntilNavigator(
-                              context, const BottomNavTabsScreen());
+                          log("CheckoutScreen ${cubit.cartList.length}");
+                          if (cubit.cartList.isEmpty) {
+                            // AppUtil.mainNavigator(context, BagScreen());
+                            BottomNavCubit.get(context).setCurrentIndex(2);
+                            AppUtil.removeUntilNavigator(
+                                context, const BottomNavTabsScreen());
+                          } else {
+                            Navigator.pop(context);
+                          }
                         },
                       ),
 
@@ -377,30 +385,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                           .values
                                                                           .last
                                                                           .isNotEmpty)
-                                                                    Row(
-                                                                      children: [
-                                                                        CustomText(
-                                                                          text: selectedCustomizations[cubit.cartList[index].mainProductId.toString()].keys.last +
-                                                                              ':',
-                                                                          color:
-                                                                              AppUI.blackColor,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              4,
-                                                                        ),
-                                                                        CustomText(
-                                                                          text: selectedCustomizations[cubit.cartList[index].mainProductId.toString()]
-                                                                              .values
-                                                                              .last,
-                                                                          color:
-                                                                              AppUI.iconColor,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ],
+                                                                    SizedBox(
+                                                                      width: MediaQuery.of(context).size.width /
+                                                                              2 +
+                                                                          10,
+                                                                      child:
+                                                                          Row(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(
+                                                                            text:
+                                                                                selectedCustomizations[cubit.cartList[index].mainProductId.toString()].keys.last + ':',
+                                                                            color:
+                                                                                AppUI.blackColor,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                4,
+                                                                          ),
+                                                                          Expanded(
+                                                                            child:
+                                                                                CustomText(
+                                                                              text: selectedCustomizations[cubit.cartList[index].mainProductId.toString()].values.last,
+                                                                              color: AppUI.iconColor,
+                                                                              max: 3,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                 ],
                                                               ),
@@ -804,6 +820,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         cubit.selectedPaymentGetaways =
                                                             cubit.paymentGetawayNoCash[
                                                                 index];
+                                                        cubit.emit(
+                                                            SelectedPaymentState());
                                                         // if (cubit
                                                         //         .selectedPaymentGetaways !=
                                                         //     cubit.paymentGetawayNoCash[
@@ -826,22 +844,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 .symmetric(
                                                                 vertical: 8,
                                                                 horizontal: 15),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: AppUI
-                                                                        .mainColor
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color:
+                                                                    //  AppUI
+                                                                    //     .mainColor
 
-                                                                    //  cubit.selectedPaymentGetaways != null
-                                                                    //     ? cubit.selectedPaymentGetaways!.id == cubit.paymentGetawayNoCash[index].id
-                                                                    //         ? AppUI.mainColor
-                                                                    //         : AppUI.backgroundColor
-                                                                    //     : AppUI.backgroundColor
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10)),
+                                                                    cubit.selectedPaymentGetaways != null
+                                                                        ? cubit.selectedPaymentGetaways!.id == cubit.paymentGetawayNoCash[index].id
+                                                                            ? AppUI.mainColor
+                                                                            : AppUI.backgroundColor
+                                                                        : AppUI.backgroundColor),
+                                                            borderRadius: BorderRadius.circular(10)),
                                                         alignment:
                                                             Alignment.center,
                                                         // child: Image.asset(
@@ -1242,7 +1256,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
                 bottomNavigationBar: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0).copyWith(bottom: 16),
                   child: BlocBuilder<CheckoutCubit, CheckoutState>(
                       buildWhen: (_, state) =>
                           state is CheckoutLoadingState ||
@@ -1265,6 +1279,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           onPressed: state is GetTotalErrorState
                               ? null
                               : () async {
+                                  log("cubit.cartList.length.toString()" +
+                                      cubit.cartList.length.toString());
                                   if (cubit.selectedAddress == null) {
                                     AppUtil.newErrorToastTOP(context,
                                         "pleaseSelectShippingAddress".tr());
@@ -1351,14 +1367,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       // if (cubit.selectedPaymentGetaways!.id ==
                                       //     "aps_cc") {
                                       // if (!mounted) return;
-                                      AppUtil.mainNavigator(
-                                          context,
-                                          CustomWebview(
-                                            url:
-                                                'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
-                                            type: "",
-                                            orderId: response['id'].toString(),
-                                          ));
+                                      // AppUtil.mainNavigator(
+                                      //     context,
+                                      //     CustomWebview(
+                                      //       url:
+                                      //           'https://alshiaka.com/wp-json/payment/urls/get?order_id=$responseId&integrate_type=aps_cc&consumer_key=ck_0aa636e54b329a08b5328b7d32ffe86f3efd8cbe&consumer_secret=cs_7e2c98933686d9859a318365364d0c7c085e557b&lang=en',
+                                      //       type: "",
+                                      //       orderId: response['id'].toString(),
+                                      //     ));
                                       print("payWithVisa");
                                       payWithVisa(
                                         double.parse(total),
@@ -1424,15 +1440,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             print('${transactionDetails["isSuccess"]}');
             if (transactionDetails["isSuccess"]) {
               print("successful transaction");
+              cubit.fetchCartList(context);
               cubit.sendEmail(orderId);
             } else {
               print("failed transaction");
               AppUtil.newErrorToastTOP(context, 'paymentFailed'.tr());
             }
           } else if (event["status"] == "error") {
+            cubit.updateState();
+            log("ERROR");
             // Handle error here.
             print(event["status"]);
           } else if (event["status"] == "event") {
+            // Handle cancel events here.
+            print(event["status"]);
+          } else {
+            cubit.updateState();
+            log("ERROR");
             // Handle cancel events here.
             print(event["status"]);
           }

@@ -179,7 +179,7 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                     ),
                         ),
                         const SizedBox(
-                          height: 30,
+                          height: 34,
                         )
                       ],
                     ),
