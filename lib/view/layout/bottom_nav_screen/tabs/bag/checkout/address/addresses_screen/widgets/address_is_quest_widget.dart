@@ -93,6 +93,7 @@ class AddressisQuestWidget extends StatelessWidget {
                           if (cubit.selectedState != AppUtil.ksa &&
                               (!isFromProfile) &&
                               context.mounted) {
+                            AppUtil.newSuccessToastTOP(context, null);
                             await getTaxAramex(cubit, context, true);
                           }
 
@@ -113,128 +114,144 @@ class AddressisQuestWidget extends StatelessWidget {
 
                           cubit.emit(AddressesState());
                           cubit.updateState();
+
                           if (context.mounted) {
                             Navigator.pop(context);
                           }
                         },
-                        child: Container(
-                          color: AppUI.whiteColor,
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomText(
-                                      text: index == 0
-                                          ? "primaryAddress".tr()
-                                          : "",
-                                      color: AppUI.mainColor,
-                                      fontSize: 12,
-                                    ),
-                                    const SizedBox(
-                                      height: 6,
-                                    ),
-                                    CustomText(
-                                      text: c.city,
-                                      color: AppUI.blackColor,
-                                      fontSize: 12,
-                                    ),
-                                    const SizedBox(
-                                      height: 6,
-                                    ),
-                                    CustomText(
-                                      text: c.address.toString(),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w100,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  //? ========= Edit =========
-                                  InkWell(
-                                      onTap: () async {
-                                        var phoneNumber = await PhoneNumber
-                                            .getRegionInfoFromPhoneNumber(
-                                                c.phone);
-                                        log("phoneNumber \n $phoneNumber \n");
-                                        cubit.phoneNumber = phoneNumber;
-                                        cubit.selectedState = c.state;
-                                        cubit.stateController.text =
-                                            cubit.selectedState;
-                                        log("Edit Local cubit.selectedState ========> ${cubit.selectedState}");
-
-                                        setSelectedCountry(cubit);
-                                        cubit.updateState();
-
-                                        print(c.city);
-                                        AppUtil.mainNavigator(
-                                          context,
-                                          AddNewAddress(
-                                            isQuest: isQuest,
-                                            isFromProfile: isFromProfile,
-                                            address: Address0(
-                                              shippingFirstName: c.firstname,
-                                              shippingLastName: c.lastname,
-                                              shippingCity: c.city,
-                                              shippingAddress1:
-                                                  c.address.toString(),
-                                              shippingEmail: c.email,
-                                              shippingPhone: c.phone,
-                                              shippingPostcode: c.code,
-                                              shippingCountry: c.region,
-                                              shippingState: c.state,
-                                            ),
-                                            //
-                                            addressKey: index.toString(),
-                                          ),
-                                        );
-                                      },
-                                      child: Icon(
-                                        Icons.edit,
-                                        color: AppUI.greyColor,
-                                        size: 19,
-                                      )),
-                                  const SizedBox(
-                                    width: 15,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: AppUI.whiteColor,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                    color: cubit.selectedState == c.state
+                                        ? AppUI.mainColor
+                                        : AppUI.whiteColor)),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text: index == 0
+                                            ? "primaryAddress".tr()
+                                            : "",
+                                        color: AppUI.mainColor,
+                                        fontSize: 12,
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      CustomText(
+                                        text: c.city,
+                                        color: AppUI.blackColor,
+                                        fontSize: 12,
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      CustomText(
+                                        text: c.address.toString(),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w100,
+                                      ),
+                                    ],
                                   ),
-                                  GestureDetector(
-                                      onTap: () async {
-                                        //? ========= Delete =========
-                                        AppUtil.dialog2(context, "", [
-                                          const LoadingWidget(),
-                                          const SizedBox(
-                                            height: 30,
-                                          )
-                                        ]);
-                                        print(c.code);
-                                        print(
-                                            "sssssssssssssssssssssssssssssssssssssssss");
-                                        cubit.db.delete(c.code);
-                                        cubit.loadAddressLocal();
-                                        setState(() {});
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                ),
+                                Expanded(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    //? ========= Edit =========
+                                    InkWell(
+                                        onTap: () async {
+                                          log("Edit From Internet");
+                                          String phone = c.phone == ''
+                                              ? "+96655"
+                                              : c.phone;
+                                          log("phone ${phone}");
+                                          var phoneNumber = await PhoneNumber
+                                              .getRegionInfoFromPhoneNumber(
+                                                  phone);
+                                          log("phoneNumber \n $phoneNumber \n");
+                                          cubit.phoneNumber = phoneNumber;
+                                          cubit.selectedState = c.state;
+                                          cubit.stateController.text =
+                                              cubit.selectedState;
+                                          log("Edit Local cubit.selectedState ========> ${cubit.selectedState}");
+
+                                          setSelectedCountry(cubit);
+                                          cubit.updateState();
+
+                                          print(c.city);
+                                          AppUtil.mainNavigator(
+                                            context,
+                                            AddNewAddress(
+                                              isQuest: isQuest,
+                                              isFromProfile: isFromProfile,
+                                              address: Address0(
+                                                shippingFirstName: c.firstname,
+                                                shippingLastName: c.lastname,
+                                                shippingCity: c.city,
+                                                shippingAddress1:
+                                                    c.address.toString(),
+                                                shippingEmail: c.email,
+                                                shippingPhone: c.phone,
+                                                shippingPostcode: c.code,
+                                                shippingCountry: c.region,
+                                                shippingState: c.state,
+                                              ),
+                                              //
+                                              addressKey: index.toString(),
+                                            ),
+                                          );
+                                        },
                                         child: Icon(
-                                          Icons.delete,
+                                          Icons.edit,
                                           color: AppUI.greyColor,
                                           size: 19,
-                                        ),
-                                      )),
-                                ],
-                              )),
-                            ],
+                                        )),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    GestureDetector(
+                                        onTap: () async {
+                                          //? ========= Delete =========
+                                          AppUtil.dialog2(context, "", [
+                                            const LoadingWidget(),
+                                            const SizedBox(
+                                              height: 30,
+                                            )
+                                          ]);
+                                          print(c.code);
+                                          print(
+                                              "sssssssssssssssssssssssssssssssssssssssss");
+                                          cubit.db.delete(c.code);
+                                          cubit.loadAddressLocal();
+                                          setState(() {});
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.delete,
+                                            color: AppUI.greyColor,
+                                            size: 19,
+                                          ),
+                                        )),
+                                  ],
+                                )),
+                              ],
+                            ),
                           ),
                         ),
                       ),

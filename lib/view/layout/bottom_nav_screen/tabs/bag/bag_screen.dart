@@ -431,14 +431,22 @@ class _BagScreenState extends State<BagScreen> {
                                                                         width:
                                                                             4,
                                                                       ),
-                                                                      CustomText(
-                                                                        text: selectedCustomizations[cubit.cartList[index].mainProductId.toString()]
-                                                                            .values
-                                                                            .last,
-                                                                        color: AppUI
-                                                                            .iconColor,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
+                                                                      SizedBox(
+                                                                        width: MediaQuery.of(context).size.width /
+                                                                                2 -
+                                                                            10,
+                                                                        child:
+                                                                            CustomText(
+                                                                          text: selectedCustomizations[cubit.cartList[index].mainProductId.toString()]
+                                                                              .values
+                                                                              .last,
+                                                                          color:
+                                                                              AppUI.iconColor,
+                                                                          max:
+                                                                              2,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
                                                                       ),
                                                                     ],
                                                                   ),

@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ahshiaka/shared/CheckNetwork.dart';
 import '../../../../../../utilities/app_ui.dart';
+
 class TrackOrderScreen extends StatefulWidget {
   final OrdersModel? order;
-  const TrackOrderScreen({Key? key,this.order}) : super(key: key);
+  const TrackOrderScreen({Key? key, this.order}) : super(key: key);
 
   @override
   _TrackOrderScreenState createState() => _TrackOrderScreenState();
@@ -22,9 +23,10 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
     super.initState();
     track();
   }
+
   @override
   Widget build(BuildContext context) {
-    final cubit= ProfileCubit.get(context);
+    final cubit = ProfileCubit.get(context);
 
     return CheckNetwork(
       child: Scaffold(
@@ -32,24 +34,25 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
         body: Column(
           children: [
             CustomAppBar(title: "yourOrder".tr()),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             Container(
               color: AppUI.whiteColor,
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text.rich(
-                      TextSpan(
-                          text: '${"orderId".tr()}: #${widget.order!.id} ',
-                          children: <InlineSpan>[
-                            // TextSpan(
-                            //   text: 'beingProcessed'.tr(),
-                            //   style: TextStyle(fontSize: 14,fontWeight: FontWeight.w100,color: AppUI.mainColor),
-                            // ),
-                          ]
-                      )
+                  Text.rich(TextSpan(
+                      text: '${"orderId".tr()}: #${widget.order!.id} ',
+                      children: <InlineSpan>[
+                        // TextSpan(
+                        //   text: 'beingProcessed'.tr(),
+                        //   style: TextStyle(fontSize: 14,fontWeight: FontWeight.w100,color: AppUI.mainColor),
+                        // ),
+                      ])),
+                  const SizedBox(
+                    height: 15,
                   ),
-                  const SizedBox(height: 15,),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -59,48 +62,85 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                           CircleAvatar(
                             radius: 25,
                             backgroundColor: AppUI.activeColor,
-                            child: Icon(Icons.check,color: AppUI.whiteColor,size: 28,),
+                            child: Icon(
+                              Icons.check,
+                              color: AppUI.whiteColor,
+                              size: 28,
+                            ),
                           ),
                           CustomText(text: 'beingProcessed'.tr())
                         ],
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 20),
-                        height: 1,width: AppUtil.responsiveWidth(context)*0.15,color: AppUI.activeColor,
-                     ),
-                      const SizedBox(width: 10,),
-                      Column(
-                        children: [
-                        cubit.trackResponse.isEmpty && cubit.tabState =="current"?CircleAvatar(
-                          radius: 25,
-                          backgroundColor: AppUI.backgroundColor,
-                          child: SvgPicture.asset("${AppUI.iconPath}onway.svg"),
-                        ):CircleAvatar(
-                          radius: 25,
-                          backgroundColor: AppUI.activeColor,
-                          child: Icon(Icons.check,color: AppUI.whiteColor,size: 28,),
-                        ),
-                        CustomText(text: "onWay".tr(),)
-                      ],
+                        height: 1,
+                        width: AppUtil.responsiveWidth(context) * 0.15,
+                        color: AppUI.activeColor,
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            cubit.trackResponse.isEmpty &&
+                                    cubit.tabState == "current"
+                                ? CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: AppUI.backgroundColor,
+                                    child: SvgPicture.asset(
+                                        "${AppUI.iconPath}onway.svg"),
+                                  )
+                                : CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: AppUI.activeColor,
+                                    child: Icon(
+                                      Icons.check,
+                                      color: AppUI.whiteColor,
+                                      size: 28,
+                                    ),
+                                  ),
+                            CustomText(
+                              text: "onWay".tr(),
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Container(
                         margin: const EdgeInsets.only(top: 20),
-                        height: 1,width: AppUtil.responsiveWidth(context)*0.15,color: cubit.tabState =="current"?AppUI.backgroundColor:AppUI.activeColor,
+                        height: 1,
+                        width: AppUtil.responsiveWidth(context) * 0.15,
+                        color: cubit.tabState == "current"
+                            ? AppUI.backgroundColor
+                            : AppUI.activeColor,
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Column(
                         children: [
-                          cubit.tabState =="current"?CircleAvatar(
-                            radius: 25,
-                            backgroundColor: AppUI.backgroundColor,
-                            child: SvgPicture.asset("${AppUI.iconPath}delivered.svg"),
-                          ):CircleAvatar(
-                            radius: 25,
-                            backgroundColor: AppUI.activeColor,
-                            child: Icon(Icons.check,color: AppUI.whiteColor,size: 28,),
-                          ),
-                          CustomText(text: "delivered".tr(),)
+                          cubit.tabState == "current"
+                              ? CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: AppUI.backgroundColor,
+                                  child: SvgPicture.asset(
+                                      "${AppUI.iconPath}delivered.svg"),
+                                )
+                              : CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: AppUI.activeColor,
+                                  child: Icon(
+                                    Icons.check,
+                                    color: AppUI.whiteColor,
+                                    size: 28,
+                                  ),
+                                ),
+                          CustomText(
+                            text: "delivered".tr(),
+                          )
                         ],
                       ),
                     ],
@@ -108,7 +148,9 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             Expanded(
               child: Container(
                 color: AppUI.whiteColor,
@@ -136,9 +178,16 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                     //       )
                     //   ),
                     // ),
-                    const SizedBox(height: 20,),
-                    CustomText(text: "orderDetails".tr(),fontSize: 18,),
-                    const SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CustomText(
+                      text: "orderDetails".tr(),
+                      fontSize: 18,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Column(
                       children: [
                         Row(
@@ -148,16 +197,21 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                             CustomText(text: "${widget.order!.id}"),
                           ],
                         ),
-                        const SizedBox(height: 10,),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           children: [
                             CustomText(text: "${"createdAt".tr()} : "),
                             const Spacer(),
-                            CustomText(text: widget.order!.dateCreated!.substring(0,10)),
+                            CustomText(
+                                text: widget.order!.dateCreated!
+                                    .substring(0, 10)),
                           ],
                         ),
-                        const SizedBox(height: 10,),
-
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           children: [
                             CustomText(text: "${"orderValue".tr()} : "),

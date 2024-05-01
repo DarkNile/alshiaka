@@ -195,6 +195,7 @@ class CustomText extends StatelessWidget {
               : TextAlign.left
           : textAlign,
       maxLines: max == null ? 1000 : max,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
           color: color ?? AppUI.blackColor,
           height: height != null ? height : 1.6,

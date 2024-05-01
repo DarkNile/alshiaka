@@ -582,7 +582,8 @@ class CheckoutCubit extends Cubit<CheckoutState> {
               : ProfileCubit.get(context).profileModel[0].id);
       String email = await CashHelper.getSavedString("email", "");
       CashHelper.setSavedString("${email}cartList", "");
-      await fetchCartList(context);
+      // Only On Success Payment
+      // await fetchCartList(context);
       emit(CheckoutChangeState());
       return response;
     } catch (e) {
