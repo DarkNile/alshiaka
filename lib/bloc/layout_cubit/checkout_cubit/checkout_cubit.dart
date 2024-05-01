@@ -35,6 +35,11 @@ import 'checkout_state.dart';
 class CheckoutCubit extends Cubit<CheckoutState> {
   CheckoutCubit() : super(CheckoutInitial());
 
+  void emitState(CheckoutState state) {
+    emit(state);
+    log("emitState  : " + state.toString());
+  }
+
   static CheckoutCubit get(context) => BlocProvider.of(context);
 
   List<ProductModel> cartList = [];
@@ -498,6 +503,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 //create order
   createOrder(context) async {
     emit(CheckoutLoadingState());
+
     String email = await CashHelper.getSavedString("email", "");
     if (email != "") {
       selectedAddress!.email = email;
@@ -868,6 +874,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           otherOrders.add(OrdersModel.fromJson(element));
         }
       });
+      // cartList.clear();
       emit(CheckoutChangeState());
     } catch (e) {
       return Future.error(e);

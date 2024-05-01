@@ -15,55 +15,78 @@ import '../../../../../../../../../shared/components.dart';
 import '../../../../../../../../../utilities/app_ui.dart';
 import '../../../../../../../../../utilities/app_util.dart';
 
-class AddressisQuestWidget extends StatelessWidget {
+class AddressIsQuestWidget extends StatefulWidget {
   final CheckoutCubit cubit;
   final bool isFromProfile;
   final bool isQuest;
-  const AddressisQuestWidget(
+  const AddressIsQuestWidget(
       {super.key,
       required this.cubit,
       required this.isFromProfile,
       required this.isQuest});
 
   @override
+  State<AddressIsQuestWidget> createState() => _AddressIsQuestWidgetState();
+}
+
+class _AddressIsQuestWidgetState extends State<AddressIsQuestWidget> {
+  void dispose() {
+    if (widget.cubit.selectedState != AppUtil.ksa && !(widget.isFromProfile)) {
+      getTaxAramex(widget.cubit, context, true);
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     log("Address Is Quest Widget");
     return Expanded(
-      child: cubit.dataLocal.length == 0
+      child: widget.cubit.dataLocal.length == 0
           ? EmptyAddressWidget(
-              isQuest: isQuest,
-              isFromProfile: isFromProfile,
+              isQuest: widget.isQuest,
+              isFromProfile: widget.isFromProfile,
             )
           : StatefulBuilder(
               builder: (BuildContext context, setState) => ListView(
                 shrinkWrap: true,
-                children: List.generate(cubit.dataLocal.length, (index) {
+                children: List.generate(widget.cubit.dataLocal.length, (index) {
                   AddressMedelLocal c =
-                      AddressMedelLocal.fromMap(cubit.dataLocal[index]);
+                      AddressMedelLocal.fromMap(widget.cubit.dataLocal[index]);
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       InkWell(
                         onTap: () async {
-                          if (isFromProfile) {
-                            var phoneNumber =
-                                await PhoneNumber.getRegionInfoFromPhoneNumber(
-                                    c.phone);
-                            log("phoneNumber \n $phoneNumber \n");
-                            cubit.phoneNumber = phoneNumber;
-                            cubit.selectedState = c.state;
-                            cubit.stateController.text = cubit.selectedState;
-                            log("Edit Local cubit.selectedState ========> ${cubit.selectedState}");
+                          if (widget.isFromProfile) {
+                            var phoneNumber;
 
-                            setSelectedCountry(cubit);
-                            cubit.updateState();
+                            String phone = c.phone == '' ? "966555" : c.phone;
+                            try {
+                              log("phoneNumber try");
+                              phoneNumber = await PhoneNumber
+                                  .getRegionInfoFromPhoneNumber(phone);
+                            } catch (e) {
+                              log("phoneNumber catch");
+                              phoneNumber = await PhoneNumber
+                                  .getRegionInfoFromPhoneNumber("+966555");
+                            }
+
+                            log("phoneNumber \n $phoneNumber \n");
+                            widget.cubit.phoneNumber = phoneNumber;
+                            widget.cubit.selectedState = c.state;
+                            widget.cubit.stateController.text =
+                                widget.cubit.selectedState;
+                            log("Edit Local cubit.selectedState ========> ${widget.cubit.selectedState}");
+
+                            setSelectedCountry(widget.cubit);
+                            widget.cubit.updateState();
 
                             print(c.city);
                             AppUtil.mainNavigator(
                               context,
                               AddNewAddress(
-                                isQuest: isQuest,
-                                isFromProfile: isFromProfile,
+                                isQuest: widget.isQuest,
+                                isFromProfile: widget.isFromProfile,
                                 address: Address0(
                                   shippingFirstName: c.firstname,
                                   shippingLastName: c.lastname,
@@ -81,23 +104,27 @@ class AddressisQuestWidget extends StatelessWidget {
                             );
                             return;
                           }
-                          cubit.selectedState = c.state;
-                          cubit.selectedCity = c.city;
-                          cubit.cityController.text = c.city;
-                          cubit.stateController.text = cubit.selectedState;
-                          log("OnTap Local cubit.selectedState ========> ${cubit.selectedState}");
-                          if (!isFromProfile) {
-                            await setSelectedCountry(cubit);
+                          widget.cubit.selectedState = c.state;
+                          widget.cubit.selectedCity = c.city;
+                          widget.cubit.cityController.text = c.city;
+                          widget.cubit.stateController.text =
+                              widget.cubit.selectedState;
+                          log("OnTap Local cubit.selectedState ========> ${widget.cubit.selectedState}");
+                          if (!widget.isFromProfile) {
+                            await setSelectedCountry(widget.cubit);
                           }
-                          cubit.updateState();
-                          if (cubit.selectedState != AppUtil.ksa &&
-                              (!isFromProfile) &&
+                          widget.cubit.updateState();
+                          if (widget.cubit.selectedState != AppUtil.ksa &&
+                              (!widget.isFromProfile) &&
                               context.mounted) {
-                            AppUtil.newSuccessToastTOP(context, null);
-                            await getTaxAramex(cubit, context, true);
+                            log("VISA ${widget.cubit.paymentGetawayNoCash.length} ");
+                            widget.cubit.selectedPaymentGetaways =
+                                widget.cubit.paymentGetawayNoCash[0];
+                            // AppUtil.newSuccessToastTOP(context, null);
+                            // await getTaxAramex(widget.cubit, context, true);
                           }
 
-                          cubit.selectedAddress = AddressesModel(
+                          widget.cubit.selectedAddress = AddressesModel(
                               fullName: c.firstname,
                               surName: c.lastname,
                               phoneNumber: c.phone,
@@ -112,8 +139,8 @@ class AddressisQuestWidget extends StatelessWidget {
 
                           // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
-                          cubit.emit(AddressesState());
-                          cubit.updateState();
+                          widget.cubit.emit(AddressesState());
+                          widget.cubit.updateState();
 
                           if (context.mounted) {
                             Navigator.pop(context);
@@ -127,9 +154,11 @@ class AddressisQuestWidget extends StatelessWidget {
                                 color: AppUI.whiteColor,
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                    color: cubit.selectedState == c.state
+                                    color: ((!widget.isFromProfile) &&
+                                            widget.cubit.selectedState ==
+                                                c.state
                                         ? AppUI.mainColor
-                                        : AppUI.whiteColor)),
+                                        : AppUI.whiteColor))),
                             padding: const EdgeInsets.all(16),
                             child: Row(
                               children: [
@@ -181,21 +210,23 @@ class AddressisQuestWidget extends StatelessWidget {
                                               .getRegionInfoFromPhoneNumber(
                                                   phone);
                                           log("phoneNumber \n $phoneNumber \n");
-                                          cubit.phoneNumber = phoneNumber;
-                                          cubit.selectedState = c.state;
-                                          cubit.stateController.text =
-                                              cubit.selectedState;
-                                          log("Edit Local cubit.selectedState ========> ${cubit.selectedState}");
+                                          widget.cubit.phoneNumber =
+                                              phoneNumber;
+                                          widget.cubit.selectedState = c.state;
+                                          widget.cubit.stateController.text =
+                                              widget.cubit.selectedState;
+                                          log("Edit Local cubit.selectedState ========> ${widget.cubit.selectedState}");
 
-                                          setSelectedCountry(cubit);
-                                          cubit.updateState();
+                                          setSelectedCountry(widget.cubit);
+                                          widget.cubit.updateState();
 
                                           print(c.city);
                                           AppUtil.mainNavigator(
                                             context,
                                             AddNewAddress(
-                                              isQuest: isQuest,
-                                              isFromProfile: isFromProfile,
+                                              isQuest: widget.isQuest,
+                                              isFromProfile:
+                                                  widget.isFromProfile,
                                               address: Address0(
                                                 shippingFirstName: c.firstname,
                                                 shippingLastName: c.lastname,
@@ -233,8 +264,8 @@ class AddressisQuestWidget extends StatelessWidget {
                                           print(c.code);
                                           print(
                                               "sssssssssssssssssssssssssssssssssssssssss");
-                                          cubit.db.delete(c.code);
-                                          cubit.loadAddressLocal();
+                                          widget.cubit.db.delete(c.code);
+                                          widget.cubit.loadAddressLocal();
                                           setState(() {});
                                           Navigator.of(context,
                                                   rootNavigator: true)
@@ -258,10 +289,10 @@ class AddressisQuestWidget extends StatelessWidget {
                       const SizedBox(
                         height: 15,
                       ),
-                      if (cubit.dataLocal.length < 1)
+                      if (widget.cubit.dataLocal.length < 1)
                         AddNewAddressButtonWidget(
-                          isFromProfile: isFromProfile,
-                          isQuest: isQuest,
+                          isFromProfile: widget.isFromProfile,
+                          isQuest: widget.isQuest,
                         )
                     ],
                   );

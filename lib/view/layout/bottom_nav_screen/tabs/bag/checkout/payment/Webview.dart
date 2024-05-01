@@ -17,11 +17,13 @@ class CustomWebview extends StatefulWidget {
   String url;
   String type;
   String orderId;
+  final CheckoutCubit cubit;
 
   CustomWebview({
     required this.url,
     required this.type,
     required this.orderId,
+    required this.cubit,
   });
   @override
   State<StatefulWidget> createState() {
@@ -46,7 +48,9 @@ class _state extends State<CustomWebview> {
     // TODO: implement build
     return WillPopScope(
       onWillPop: () async {
-        AppUtil.removeUntilNavigator(context, const BottomNavTabsScreen());
+        log("onWillPop");
+        Navigator.pop(context);
+        // AppUtil.removeUntilNavigator(context, const BottomNavTabsScreen());
         return true;
       },
       child: Scaffold(
@@ -56,8 +60,9 @@ class _state extends State<CustomWebview> {
             CustomAppBar(
                 title: "checkout".tr(),
                 onBack: () {
-                  AppUtil.removeUntilNavigator(
-                      context, const BottomNavTabsScreen());
+                  Navigator.pop(context);
+                  // AppUtil.removeUntilNavigator(
+                  //     context, const BottomNavTabsScreen());
                 }),
             Expanded(
               child: WebView(
