@@ -59,9 +59,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final cubit = CheckoutCubit.get(context);
     cubit.fetchCountries();
     if (cubit.selectedState != AppUtil.ksa) {
-      getTaxAramex(cubit, context);
       log("VISA ${cubit.paymentGetawayNoCash.length} ");
       cubit.selectedPaymentGetaways = cubit.paymentGetawayNoCash[0];
+      getTaxAramex(cubit, context);
     }
 
     ProfileCubit.get(context).fetchCustomer();
@@ -1018,10 +1018,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       height: 5,
                                                     ),
                                                     CustomText(
-                                                      text: state is GetTotalLoadedState &&
+                                                      text: cubit
+                                                                      .amountAramexModel
+                                                                      ?.amount
+                                                                      ?.value !=
+                                                                  null &&
                                                               cubit.selectedState !=
                                                                   AppUtil.ksa
-                                                          ? "${state.amountAramex.amount!.value!} ${state.amountAramex.amount!.currencyCode!} "
+                                                          ? "${cubit.amountAramexModel!.amount!.value} ${cubit.amountAramexModel!.amount!.currencyCode!} "
                                                           : index == 0
                                                               ? "${cubit.shippingMethods[index].settings!.cost!.value} SAR"
                                                               : "0.0 SAR",
@@ -1103,10 +1107,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       CustomText(text: "shipping".tr()),
                                       const Spacer(),
                                       CustomText(
-                                          text: state is GetTotalLoadedState &&
+                                          text: cubit.amountAramexModel?.amount
+                                                          ?.value !=
+                                                      null &&
                                                   cubit.selectedState !=
                                                       AppUtil.ksa
-                                              ? "${state.amountAramex.amount!.value!} ${state.amountAramex.amount!.currencyCode!} "
+                                              ? "${cubit.amountAramexModel?.amount?.value!} ${cubit.amountAramexModel?.amount?.currencyCode!} "
                                               : cubit.selectedShippingMethods !=
                                                       null
                                                   ? cubit.selectedShippingMethods!
@@ -1162,11 +1168,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         CustomText(text: "TAX".tr()),
                                         const Spacer(),
                                         CustomText(
-                                            text: state is GetTotalLoadedState &&
+                                            text: cubit.amountAramexModel
+                                                            ?.amount?.value !=
+                                                        null &&
                                                     cubit.selectedState !=
                                                         AppUtil.ksa
                                                 //AppUtil.calculateTax(cubit.total + state.amountAramex.amount!.value!)[0]
-                                                ? "${AppUtil.calculateTax(cubit.total + state.amountAramex.amount!.value!, "TAX EGY").toStringAsFixed(2)} ${state.amountAramex.amount!.currencyCode!} "
+                                                ? "${AppUtil.calculateTax(cubit.total + cubit.amountAramexModel!.amount!.value!, "TAX EGY").toStringAsFixed(2)} ${cubit.amountAramexModel!.amount!.currencyCode!} "
                                                 //value!) : 0 : 0)))[0]
                                                 // : "${AppUtil.calculateTax(cubit.total + (cubit.selectedPaymentGetaways != null && cubit.selectedPaymentGetaways!.id == "cod" ? 5.75 : 0) + ((cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : 0 : 0)), "TAX KSA").toStringAsFixed(2)} SAR"),
                                                 : "${AppUtil.calculateTax(cubit.total, "TAX KSA").toStringAsFixed(2)} SAR"),
@@ -1181,10 +1189,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       CustomText(text: "total".tr()),
                                       const Spacer(),
                                       CustomText(
-                                          text: state is GetTotalLoadedState &&
+                                          text: cubit.amountAramexModel?.amount
+                                                          ?.value !=
+                                                      null &&
                                                   cubit.selectedState !=
                                                       AppUtil.ksa
-                                              ? "${cubit.total + state.amountAramex.amount!.value!} ${state.amountAramex.amount!.currencyCode!} "
+                                              ? "${cubit.total + cubit.amountAramexModel!.amount!.value!} ${cubit.amountAramexModel!.amount!.currencyCode!} "
                                               : "${cubit.selectedPaymentGetaways != null && cubit.selectedPaymentGetaways!.id == "cod" ? (cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : cubit.total : cubit.total) + 5.75 : (cubit.selectedShippingMethods != null ? cubit.selectedShippingMethods!.methodId == "flat_rate" ? cubit.total + double.parse(cubit.selectedShippingMethods!.settings!.cost!.value!) : cubit.total : cubit.total)} SAR"),
                                     ],
                                   ),
@@ -1256,7 +1266,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
                 bottomNavigationBar: Padding(
-                  padding: const EdgeInsets.all(8.0).copyWith(bottom: 16),
+                  padding: const EdgeInsets.all(8.0).copyWith(bottom: 24),
                   child: BlocBuilder<CheckoutCubit, CheckoutState>(
                       buildWhen: (_, state) =>
                           state is CheckoutLoadingState ||
@@ -1266,6 +1276,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           state is GetTotalLoadedState ||
                           state is GetTotalErrorState,
                       builder: (context, state) {
+                        log("state :: Butoom" + state.toString());
                         if (state is CheckoutLoadingState ||
                             state is GetTotalLoadingState) {
                           return const SizedBox(
@@ -1300,8 +1311,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   if (cubit.selectedPaymentGetaways!.id ==
                                       "cod") {
                                     await cubit.fetchOrders(context);
-                                    cubit.emit(CheckoutLoadedState());
+                                    // cubit.emit(CheckoutLoadedState());
+
                                     if (!mounted) return;
+
                                     AppUtil.mainNavigator(
                                         context, const MyOrdersScreen());
                                   }
@@ -1327,6 +1340,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     AppUtil.mainNavigator(
                                         context,
                                         CustomWebview(
+                                          cubit: cubit,
                                           url: url,
                                           type: "taby",
                                           orderId: '',
@@ -1349,8 +1363,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   else {
                                     //? ========   Visa   ========
 
-                                    Map<String, dynamic> response =
+                                    var response =
                                         await cubit.createOrder(context);
+                                    log("response TYPE :: ${response.runtimeType}");
                                     print(cubit.selectedPaymentGetaways!.id);
                                     print('response :: $response');
                                     print("response['id']  :: " +
@@ -1376,10 +1391,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       //       orderId: response['id'].toString(),
                                       //     ));
                                       print("payWithVisa");
+                                      cubit.emitState(
+                                        CheckoutLoadedState(),
+                                      );
+
                                       payWithVisa(
                                         double.parse(total),
                                         responseId.toString(),
                                       );
+
                                       // }
                                     }
                                   }
@@ -1431,7 +1451,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
     );
     FlutterPaytabsBridge.startCardPayment(configuration, (event) {
-      print(event);
+      print("startCardPayment" + event);
       setState(() {
         setState(() {
           if (event["status"] == "success") {

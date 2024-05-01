@@ -108,7 +108,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   }
 
                   return widget.isQuest
-                      ? AddressisQuestWidget(
+                      ? AddressIsQuestWidget(
                           cubit: cubit,
                           isFromProfile: widget.isFromProfile,
                           isQuest: widget.isQuest,
