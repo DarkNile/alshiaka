@@ -11,6 +11,7 @@ class InfoAndCare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      physics: NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(8),
       children: [
         Row(

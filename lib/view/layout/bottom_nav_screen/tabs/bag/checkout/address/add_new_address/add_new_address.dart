@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/models/checkout/shipping_model.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/add_new_address/widgets/account_information_widget.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/add_new_address/widgets/address_information_widget.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/otp_screen.dart';
@@ -120,6 +121,12 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                                   cubit.selectedRegion,
                                               selectedCity: cubit.selectedCity,
                                             );
+                                            await CacheHelper.write(
+                                                "Country Code",
+                                                cubit.selectedState ==
+                                                        AppUtil.ksa
+                                                    ? "SA"
+                                                    : "EG");
                                             setStateBuilder(() {
                                               isLoading = false;
                                             });
@@ -169,6 +176,12 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                                   cubit.selectedState,
                                               selectedCity: cubit.selectedCity,
                                             );
+                                            await CacheHelper.write(
+                                                "Country Code",
+                                                cubit.selectedState ==
+                                                        AppUtil.ksa
+                                                    ? "SA"
+                                                    : "EG");
                                             setStateBuilder(() {
                                               isLoading = false;
                                             });
@@ -205,12 +218,6 @@ class _AddNewAddressState extends State<AddNewAddress> {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 title: const LoadingWidget(),
-
-                // content: SingleChildScrollView(
-                //   child: ListBody(
-                //     children: dialogBody,
-                //   ),
-                // ),
               ),
             ],
           );
@@ -853,5 +860,6 @@ class _AddNewAddressState extends State<AddNewAddress> {
     }
 
     setState(() {});
+    cubit.updateState();
   }
 }

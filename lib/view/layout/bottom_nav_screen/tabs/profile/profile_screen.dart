@@ -4,6 +4,7 @@ import 'package:ahshiaka/shared/cash_helper.dart';
 import 'package:ahshiaka/shared/components.dart';
 import 'package:ahshiaka/utilities/app_ui.dart';
 import 'package:ahshiaka/utilities/app_util.dart';
+import 'package:ahshiaka/utilities/app_verstion.dart';
 import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/auth/auth_screen.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/addresses_screen.dart';
@@ -134,9 +135,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 AppUtil.mainNavigator(
                                     context, const EditProfileScreen());
                               } else {
-                                AppUtil.errorToast(
-                                    context, "youMustLoginFirst".tr(),
-                                    type: "login");
+                                AppUtil.newErrorToastTOP(
+                                    context, "youMustLoginFirst".tr());
                               }
                             },
                             leading: SvgPicture.asset(
@@ -152,9 +152,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ListTile(
                             onTap: () {
                               if (email == "") {
-                                AppUtil.errorToast(
-                                    context, "youMustLoginFirst".tr(),
-                                    type: "login");
+                                AppUtil.newErrorToastTOP(
+                                    context, "youMustLoginFirst".tr());
                               } else {
                                 AppUtil.mainNavigator(
                                     context, const MyOrdersScreen());
@@ -176,9 +175,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 AppUtil.mainNavigator(
                                     context, const ChangePasswordScreen());
                               } else {
-                                AppUtil.errorToast(
-                                    context, "youMustLoginFirst".tr(),
-                                    type: "login");
+                                AppUtil.newErrorToastTOP(
+                                    context, "youMustLoginFirst".tr());
                               }
                             },
                             leading:
@@ -384,6 +382,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           size: 16,
                         ),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CustomText(
+                      text: "${'version'.tr()} ${AppVersion.version}",
+                      fontSize: 12,
+                      color: AppUI.greyColor,
                     ),
                     const SizedBox(
                       height: 20,

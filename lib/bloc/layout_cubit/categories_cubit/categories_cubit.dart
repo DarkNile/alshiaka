@@ -816,7 +816,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       CashHelper.setSavedString(
           "recoCatId", product.categories[0]['id'].toString());
     }
-    AppUtil.successToast(context, "addedSuccessfully".tr(), type: "cart");
+    AppUtil.newSuccessToastTOP(context, "addedSuccessfully".tr());
     await CheckoutCubit.get(context).fetchCartList(context);
     await CashHelper.setSavedString(
         "selectedCustomizations", jsonEncode(cubit.selectedCustomizations));

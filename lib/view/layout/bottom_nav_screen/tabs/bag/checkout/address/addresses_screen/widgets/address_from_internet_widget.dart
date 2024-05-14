@@ -1,5 +1,6 @@
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/models/checkout/amount_aramex_model.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/widgets/add_new_address_button_widget.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/widgets/empty_adress_widget.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,7 @@ class _AddressFromInternetWidgetState extends State<AddressFromInternetWidget> {
                           log("Edit From Internet");
                           String phone = widget.cubit.addresses?.shipping!
                                   .address0?[index].shippingPhone ??
-                              "+9665";
+                              "+966555";
                           log("phone ${phone}");
                           var phoneNumber;
                           try {
@@ -113,6 +114,11 @@ class _AddressFromInternetWidgetState extends State<AddressFromInternetWidget> {
                         if (!widget.isFromProfile) {
                           await setSelectedCountry(widget.cubit);
                         }
+                        await CacheHelper.write(
+                            "Country Code",
+                            widget.cubit.selectedState == AppUtil.ksa
+                                ? "SA"
+                                : "EG");
 
                         widget.cubit.updateState();
                         if (widget.cubit.selectedState != AppUtil.ksa &&

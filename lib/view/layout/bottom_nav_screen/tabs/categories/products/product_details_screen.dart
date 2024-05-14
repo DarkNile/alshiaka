@@ -112,6 +112,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     // setState(() {});
   }
 
+  bool isInfoAndCare = false;
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -188,7 +190,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: imageProvider,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.fitHeight,
                                   ),
                                 ),
                               ),
@@ -923,54 +925,66 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 color: AppUI.backgroundColor,
                 width: AppUtil.responsiveWidth(context),
               ),
-              SizedBox(
-                height: 200,
-                child: DefaultTabController(
-                  length: 2,
-                  initialIndex: 0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TabBar(
-                          indicatorWeight: 2,
-                          indicatorColor: AppUI.mainColor,
-                          unselectedLabelColor: AppUI.blackColor,
-                          labelColor: AppUI.mainColor,
-                          isScrollable: true,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          physics: const BouncingScrollPhysics(),
-                          tabs: <Widget>[
-                            Tab(
-                              child: Text(
-                                "details".tr(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w100,
+              StatefulBuilder(
+                builder: (BuildContext context, setStateBuilderInfo) {
+                  return SizedBox(
+                    height: isInfoAndCare ? 350 : 150,
+                    child: DefaultTabController(
+                      length: 2,
+                      initialIndex: 0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TabBar(
+                              indicatorWeight: 2,
+                              indicatorColor: AppUI.mainColor,
+                              unselectedLabelColor: AppUI.blackColor,
+                              labelColor: AppUI.mainColor,
+                              onTap: (value) {
+                                setStateBuilderInfo(() {
+                                  value == 1
+                                      ? isInfoAndCare = true
+                                      : isInfoAndCare = false;
+                                });
+                              },
+                              isScrollable: true,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              physics: const BouncingScrollPhysics(),
+                              tabs: <Widget>[
+                                Tab(
+                                  child: Text(
+                                    "details".tr(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w100,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Tab(
-                              child: Text(
-                                "infoAndCare".tr(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w100,
+                                Tab(
+                                  child: Text(
+                                    "infoAndCare".tr(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w100,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
+                              ]),
+                          Expanded(
+                            child: TabBarView(children: <Widget>[
+                              Details(
+                                product: widget.product,
+                                variantId: variantId,
                               ),
-                            ),
-                          ]),
-                      Expanded(
-                        child: TabBarView(children: <Widget>[
-                          Details(
-                            product: widget.product,
-                            variantId: variantId,
+                              InfoAndCare(product: widget.product),
+                            ]),
                           ),
-                          InfoAndCare(product: widget.product),
-                        ]),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
               Container(
                 height: 30,
@@ -1299,7 +1313,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             AppUtil.mainNavigator(
                                 context,
                                 ProductsScreen(
-                                    catId: widget.product.categoriesIds,
+                                    catId: widget.product.categoriesIds == null
+                                        ? 0
+                                        : widget.product.categoriesIds,
                                     catName: "recommended".tr()));
                           },
                           child: Padding(

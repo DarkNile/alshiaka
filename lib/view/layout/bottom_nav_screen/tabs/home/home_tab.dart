@@ -260,7 +260,7 @@ class _HomeTabState extends State<HomeTab> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: SizedBox(
-                      height: 325,
+                      height: 330,
                       child: ListView(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,

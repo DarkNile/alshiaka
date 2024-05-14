@@ -265,5 +265,6 @@
   "Loading...":"Loading...",
   "noOrders":"You Have No Orders!"
   ,
-  "notAvailable":"Out Of Stock"
+  "notAvailable":"Out Of Stock",
+  "version": "version"
 }
