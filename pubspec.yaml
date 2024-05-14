@@ -76,6 +76,7 @@ dependencies:
   get_storage: ^2.1.1
   dash_flags: ^0.1.1
   another_flushbar: ^1.12.30
+  package_info_plus: ^1.4.3+1
 
 
 dev_dependencies:

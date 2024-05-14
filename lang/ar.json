@@ -263,5 +263,6 @@
   "phoneNumberRequired":"رقم الهاتف مطلوب",
   "Loading...":"تحميل...",
   "noOrders":"ليس لديك طلبات",
-  "notAvailable":"غير متوفر"
+  "notAvailable":"غير متوفر",
+  "version": "الإصدار"
 }

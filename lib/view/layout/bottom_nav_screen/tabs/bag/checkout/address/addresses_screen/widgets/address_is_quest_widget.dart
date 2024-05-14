@@ -1,5 +1,6 @@
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/models/checkout/amount_aramex_model.dart';
+import 'package:ahshiaka/utilities/cache_helper.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/widgets/add_new_address_button_widget.dart';
 import 'package:ahshiaka/view/layout/bottom_nav_screen/tabs/bag/checkout/address/addresses_screen/widgets/empty_adress_widget.dart';
 import 'package:flutter/material.dart';
@@ -136,6 +137,12 @@ class _AddressIsQuestWidgetState extends State<AddressIsQuestWidget> {
                               postCode: c.code,
                               country: c.region,
                               defaultAddress: index == 0 ? true : false);
+
+                          await CacheHelper.write(
+                              "Country Code",
+                              widget.cubit.selectedState == AppUtil.ksa
+                                  ? "SA"
+                                  : "EG");
 
                           // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 

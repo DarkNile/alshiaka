@@ -66,7 +66,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             CustomText(
                                 text: countryCode.toLowerCase() == "sa"
                                     ? "Saudi"
-                                    : "Country",
+                                    : "Egypt",
                                 fontWeight: FontWeight.w100,
                                 color: AppUI.greyColor),
                             const SizedBox(
