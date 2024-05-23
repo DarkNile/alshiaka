@@ -114,11 +114,13 @@ class _AddressFromInternetWidgetState extends State<AddressFromInternetWidget> {
                         if (!widget.isFromProfile) {
                           await setSelectedCountry(widget.cubit);
                         }
-                        await CacheHelper.write(
-                            "Country Code",
-                            widget.cubit.selectedState == AppUtil.ksa
-                                ? "SA"
-                                : "EG");
+                        if (index == 0) {
+                          await CacheHelper.write(
+                              "Country Code",
+                              widget.cubit.selectedState == AppUtil.ksa
+                                  ? "SA"
+                                  : "EG");
+                        }
 
                         widget.cubit.updateState();
                         if (widget.cubit.selectedState != AppUtil.ksa &&

@@ -86,6 +86,7 @@ class _AddressIsQuestWidgetState extends State<AddressIsQuestWidget> {
                             AppUtil.mainNavigator(
                               context,
                               AddNewAddress(
+                                isCacheCode: index == 0,
                                 isQuest: widget.isQuest,
                                 isFromProfile: widget.isFromProfile,
                                 address: Address0(
@@ -137,12 +138,13 @@ class _AddressIsQuestWidgetState extends State<AddressIsQuestWidget> {
                               postCode: c.code,
                               country: c.region,
                               defaultAddress: index == 0 ? true : false);
-
-                          await CacheHelper.write(
-                              "Country Code",
-                              widget.cubit.selectedState == AppUtil.ksa
-                                  ? "SA"
-                                  : "EG");
+                          if (index == 0) {
+                            await CacheHelper.write(
+                                "Country Code",
+                                widget.cubit.selectedState == AppUtil.ksa
+                                    ? "SA"
+                                    : "EG");
+                          }
 
                           // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
@@ -231,6 +233,7 @@ class _AddressIsQuestWidgetState extends State<AddressIsQuestWidget> {
                                           AppUtil.mainNavigator(
                                             context,
                                             AddNewAddress(
+                                              isCacheCode: index == 0,
                                               isQuest: widget.isQuest,
                                               isFromProfile:
                                                   widget.isFromProfile,
