@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:ahshiaka/bloc/profile_cubit/profile_states.dart';
 import 'package:ahshiaka/models/auth_models/profile_model.dart';
@@ -10,12 +11,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repository/profile_repository.dart';
 import '../../shared/cash_helper.dart';
 
-
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
   static ProfileCubit get(context) => BlocProvider.of(context);
-var contactUsFormKey = GlobalKey<FormState>();
-var changePassFormState = GlobalKey<FormState>();
+  var contactUsFormKey = GlobalKey<FormState>();
+  var changePassFormState = GlobalKey<FormState>();
   String _tabState = "current";
 
   String get tabState => _tabState;
@@ -25,14 +25,13 @@ var changePassFormState = GlobalKey<FormState>();
     emit(ProfileChangeTabState());
   }
 
-
   // edit profile
   var firstName = TextEditingController();
   var lastName = TextEditingController();
   var email = TextEditingController();
   var phoneN = TextEditingController();
 
-var id;
+  var id;
   var contactName = TextEditingController();
   var contactEmail = TextEditingController();
   var msg = TextEditingController();
@@ -79,10 +78,11 @@ var id;
     emit(LoadingProfileState());
     String email = await CashHelper.getSavedString("email", "");
     print(email);
-    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-    if(email!=""){
+    print(
+        "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+    if (email != "") {
       print("#################################################3");
-      try{
+      try {
         List response = await ProfileRepository.fetchCustomer(email);
         profileModel.add(ProfileModel.fromJson(response[0]));
         firstName.text = profileModel[0].firstName!;
@@ -91,7 +91,7 @@ var id;
         this.id = profileModel[0].id!;
         await getPhone();
         emit(LoadedProfileState());
-      }catch(e){
+      } catch (e) {
         emit(ErrorProfileState());
         return Future.error(e);
       }
@@ -104,19 +104,16 @@ var id;
       "first_name": firstName.text,
       "last_name": lastName.text,
       "email": email.text,
-      "billing": {
-        "first_name":firstName.text
-      },
-      "shipping": {
-        "first_name": firstName.text
-      }
+      "billing": {"first_name": firstName.text},
+      "shipping": {"first_name": firstName.text}
     };
-    try{
-      var response = await ProfileRepository.editCustomer(profileModel[0].id,jsonEncode(data));
+    try {
+      var response = await ProfileRepository.editCustomer(
+          profileModel[0].id, jsonEncode(data));
       await updatePhone();
       await fetchCustomer();
       emit(AddLoadedProfileState());
-    }catch(e){
+    } catch (e) {
       emit(AddErrorProfileState());
       return Future.error(e);
     }
@@ -126,15 +123,15 @@ var id;
     emit(ChangePassLoadingState());
     String email = await CashHelper.getSavedString("email", "");
     var data = {
-      "email" : email,
+      "email": email,
       "old_password": oldPassword.text,
       "password": password.text,
       "password_confirm": rePassword.text
     };
-    try{
+    try {
       var response = await ProfileRepository.changePass(data);
       emit(ChangePassLoadedState());
-    }catch(e){
+    } catch (e) {
       emit(ChangePassErrorState());
       return Future.error(e);
     }
@@ -142,44 +139,44 @@ var id;
 
   contactUs() async {
     var data = {
-      "contact_name" : contactName.text,
+      "contact_name": contactName.text,
       "contact_email": contactEmail.text,
       "contact_message": msg.text
     };
-    try{
+    try {
       var response = await ProfileRepository.contactUs(data);
-    }catch(e){
+    } catch (e) {
       return Future.error(e);
     }
   }
 
   List trackResponse = [];
   track(orderId) async {
-    try{
+    try {
       trackResponse = await ProfileRepository.track(orderId);
-    }catch(e){
+    } catch (e) {
       return Future.error(e);
     }
   }
 
   getPhone() async {
     String email = await CashHelper.getSavedString("email", "");
-    try{
+    try {
       var response = await ProfileRepository.getPhone(email);
       phoneN.text = response['phone'];
-    }catch(e){
+      log("response[phone] = ${response['phone']}");
+    } catch (e) {
       return Future.error(e);
     }
   }
 
-  updatePhone({email,phone}) async {
+  updatePhone({email, phone}) async {
     String emaill = await CashHelper.getSavedString("email", "");
-    try{
-      await ProfileRepository.updatePhone(email??emaill,phone??phoneN.text);
-    }catch(e){
+    try {
+      await ProfileRepository.updatePhone(
+          email ?? emaill, phone ?? phoneN.text);
+    } catch (e) {
       return Future.error(e);
     }
   }
-
-
 }

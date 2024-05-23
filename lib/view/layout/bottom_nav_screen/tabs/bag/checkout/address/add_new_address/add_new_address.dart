@@ -15,6 +15,7 @@ import 'package:ahshiaka/shared/CheckNetwork.dart';
 
 // ignore: must_be_immutable
 class AddNewAddress extends StatefulWidget {
+  bool isCacheCode;
   bool isQuest;
   final Address0? address;
   final String? addressKey;
@@ -24,7 +25,8 @@ class AddNewAddress extends StatefulWidget {
       this.address,
       this.addressKey,
       required this.isQuest,
-      required this.isFromProfile})
+      required this.isFromProfile,
+      this.isCacheCode = false})
       : super(key: key);
 
   @override
@@ -121,12 +123,14 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                                   cubit.selectedRegion,
                                               selectedCity: cubit.selectedCity,
                                             );
-                                            await CacheHelper.write(
-                                                "Country Code",
-                                                cubit.selectedState ==
-                                                        AppUtil.ksa
-                                                    ? "SA"
-                                                    : "EG");
+                                            if (widget.isCacheCode) {
+                                              await CacheHelper.write(
+                                                  "Country Code",
+                                                  cubit.selectedState ==
+                                                          AppUtil.ksa
+                                                      ? "SA"
+                                                      : "EG");
+                                            }
                                             setStateBuilder(() {
                                               isLoading = false;
                                             });
@@ -176,12 +180,14 @@ class _AddNewAddressState extends State<AddNewAddress> {
                                                   cubit.selectedState,
                                               selectedCity: cubit.selectedCity,
                                             );
-                                            await CacheHelper.write(
-                                                "Country Code",
-                                                cubit.selectedState ==
-                                                        AppUtil.ksa
-                                                    ? "SA"
-                                                    : "EG");
+                                            if (widget.isCacheCode) {
+                                              await CacheHelper.write(
+                                                  "Country Code",
+                                                  cubit.selectedState ==
+                                                          AppUtil.ksa
+                                                      ? "SA"
+                                                      : "EG");
+                                            }
                                             setStateBuilder(() {
                                               isLoading = false;
                                             });

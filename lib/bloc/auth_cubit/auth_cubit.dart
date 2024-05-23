@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ahshiaka/bloc/layout_cubit/checkout_cubit/checkout_cubit.dart';
 import 'package:ahshiaka/bloc/profile_cubit/profile_cubit.dart';
 import 'package:ahshiaka/models/auth_models/error_user_model.dart';
@@ -190,6 +192,7 @@ class AuthCubit extends Cubit<AuthState> {
         loginPassword.text = registerPassword.text;
         CashHelper.setSavedString("id", response['id'].toString());
         // ==== Cache Country Code ====
+        log("country code ${phoneNumber.isoCode}");
         await CacheHelper.write("Country Code", phoneNumber.isoCode);
         Map<String, dynamic> sendCodeResponse =
             await sendCode(registerEmail.text, context);
